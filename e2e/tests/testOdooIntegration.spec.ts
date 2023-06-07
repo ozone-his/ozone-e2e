@@ -3,7 +3,7 @@ import { HomePage } from '../utils/functions/testBase';
 import { patientName } from '../utils/functions/testBase';
 
 let homePage: HomePage;
-let fullName = patientName.firstName + ' ' + patientName.lastName;
+let fullName = patientName.firstName + ' ' + patientName.givenName;
 
 test.beforeEach(async ({ page }) =>  {
     const homePage = new HomePage(page);
@@ -12,6 +12,7 @@ test.beforeEach(async ({ page }) =>  {
     await expect(page).toHaveURL(/.*home/);
 
     await homePage.createPatient();
+    await homePage.startPatientVisit();
     await homePage.createLabOrder();
     await homePage.goToOdoo();
 });
