@@ -1,5 +1,12 @@
 import { Page,expect } from '@playwright/test';
 
+export var patientName = {
+  firstName : `e2etest${Math.floor(Math.random() * 1000)}`,
+  lastName : (Math.random() + 1).toString(36).substring(2),
+}
+
+let fullName = patientName.firstName + ' ' + patientName.lastName;
+
 export class HomePage {
   constructor(readonly page: Page) {}
 
@@ -19,10 +26,11 @@ export class HomePage {
 
   async createPatient() {
     await this.page.getByRole('button', { name: 'Add Patient' }).click();
-    await this.page.getByLabel('First Name').fill('Mikeal');
-    await this.page.getByLabel('Family Name').fill('Edwards');
+    await this.page.getByLabel('First Name').fill(patientName.firstName);
+    await this.page.getByLabel('Family Name').fill(patientName.lastName);
     await this.page.locator('label').filter({ hasText: /^Male$/ }).locator('span').first().click();
     await this.page.locator('div').filter({ hasText: /^Date of Birth Known\?YesNo$/ }).getByRole('tab', { name: 'No' }).click();
+    await this.page.getByLabel('Estimated age in years').clear();
     await this.page.getByLabel('Estimated age in years').type('24');
     await this.page.getByLabel('Estimated age in months').type('8');
     await this.page.getByRole('button', { name: 'Register Patient' }).click();
@@ -37,8 +45,8 @@ export class HomePage {
   }
 
   async endPatientVisit() {
-    await this.page.getByTestId('patientSearchBar').fill('Mikeal Edwards');
-    await this.page.getByRole('link', { name: 'Mikeal Edwards' }).click();
+    await this.page.getByTestId('patientSearchBar').fill(`${fullName}`);
+    await this.page.getByRole('link', { name: `${fullName}`}).click();
     await this.page.getByRole('button', { name: 'Actions', exact: true }).click();
     await this.page.getByRole('menuitem', { name: 'End visit' }).click();
     await this.page.getByRole('button', { name: 'danger End Visit' }).click();
@@ -50,7 +58,7 @@ export class HomePage {
 
   async deletePatient(){
     await this.page.goto('https://demo.ozone-his.com/openmrs/admin/patients/index.htm');
-    await this.page.getByPlaceholder(' ').type('Mikeal Edwards');
+    await this.page.getByPlaceholder(' ').type(`${fullName}`);
     await this.page.locator('#openmrsSearchTable tbody tr.odd td:nth-child(1)').click();
     await this.page.locator('input[name="voidReason"]').fill('Delete patient created by smoke tests');
     await this.page.getByRole('button', { name: 'Delete Patient', exact: true }).click();
