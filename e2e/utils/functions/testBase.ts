@@ -1,9 +1,8 @@
 import { Page,expect } from '@playwright/test';
 
 export var patientName = {
-  firstName : `e2etest${Math.floor(Math.random() * 1000)}`,
-  givenName : (Math.random() + 1).toString(36).substring(2),
-
+  firstName : `E2e${Math.floor(Math.random() * 10000)}`,
+  givenName : `Test${(Math.random() + 1).toString(36).substring(2)}`
 }
 
 let fullName = patientName.firstName + ' ' + patientName.givenName;
@@ -28,9 +27,9 @@ export class HomePage {
   async createPatient() {
     await this.page.getByRole('button', { name: 'Add Patient' }).click();
     await this.page.getByLabel('First Name').clear();
-    await this.page.getByLabel('First Name').type(patientName.firstName);
+    await this.page.getByLabel('First Name').fill(patientName.firstName);
     await this.page.getByLabel('Family Name').clear();
-    await this.page.getByLabel('Family Name').type(patientName.givenName);
+    await this.page.getByLabel('Family Name').fill(patientName.givenName);
     await this.page.locator('label').filter({ hasText: /^Male$/ }).locator('span').first().click();
     await this.page.locator('div').filter({ hasText: /^Date of Birth Known\?YesNo$/ }).getByRole('tab', { name: 'No' }).click();
     await this.page.getByLabel('Estimated age in years').clear();
@@ -44,8 +43,11 @@ export class HomePage {
 
     await expect(this.page.getByText('New Patient Created')).toBeVisible();
 
-    await this.page.getByTitle('close notification').click();
-    await this.page.getByRole('button', { name: 'Close' }).click();
+    await this.page.getByRole('button', { name: 'Start a visit' }).click();
+    await this.page.locator('label').filter({ hasText: 'Facility Visit' }).locator('span').first().click();
+    await this.page.locator('form').getByRole('button', { name: 'Start a visit' }).click();
+
+    await expect(this.page.getByText('Facility Visit started successfully')).toBeVisible();
   }
 
   async startPatientVisit() {
@@ -55,9 +57,6 @@ export class HomePage {
     await this.page.locator('form').getByRole('button', { name: 'Start a visit' }).click();
 
     await expect(this.page.getByText('Facility Visit started successfully')).toBeVisible();
-
-    await this.page.getByTitle('close notification').click();
-    await this.page.getByRole('button', { name: 'Close' }).click();
   }
 
   async endPatientVisit() {
@@ -85,14 +84,14 @@ export class HomePage {
   }
 
   async createLabOrder() {
-    await this.findPatient(`${fullName}`)
+    await this.page.waitForSelector('div.-esm-patient-chart__action-menu__chartExtensions___Pqgr8 div:nth-child(3) button');
     await this.page.locator('div').filter({ hasText: /^Form$/ }).getByRole('button').click();
 
     await expect(this.page.getByText('Laboratory Tests')).toBeVisible();
 
     await this.page.getByText('Laboratory Tests').click();
     await this.page.getByRole('button', { name: 'Add', exact: true }).click();
-    await this.page.locator('#tab select').selectOption('160735AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+    await this.page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
     await this.page.getByRole('button', { name: 'Save and close' }).click();
 
     await expect(this.page.getByText('Lab order(s) generated')).toBeVisible();
@@ -101,7 +100,6 @@ export class HomePage {
   }
 
   async createDrugOrder() {
-    await this.findPatient(`${fullName}`)
     await this.page.getByRole('complementary').filter({ hasText: 'MedicationsNoteFormPatient lists' }).getByRole('button').first().click();
     await this.page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Hydrochlorothiazide');
     await this.page.getByRole('listitem').filter({ hasText: 'Hydrochlorothiazide 50mg — 50mg — tabletImmediately add to basket' }).click();
