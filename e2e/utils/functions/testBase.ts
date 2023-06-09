@@ -1,8 +1,8 @@
 import { Page,expect } from '@playwright/test';
 
 export var patientName = {
-  firstName : `E2e${Math.floor(Math.random() * 10000)}`,
-  givenName : `Test${(Math.random() + 1).toString(36).substring(2)}`
+  firstName : `e2eTest${Math.floor(Math.random() * 10000)}`,
+  givenName : `${(Math.random() + 1).toString(36).substring(2)}`
 }
 
 let fullName = patientName.firstName + ' ' + patientName.givenName;
