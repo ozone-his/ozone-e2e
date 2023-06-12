@@ -1,11 +1,11 @@
 import { Page,expect } from '@playwright/test';
 
 export var patientName = {
-  firstName : `e2eTest${Math.floor(Math.random() * 10000)}`,
-  givenName : `${(Math.random() + 1).toString(36).substring(2)}`
+  firstName : '',
+  givenName : ''
 }
 
-let fullName = patientName.firstName + ' ' + patientName.givenName;
+var patientFullName = '';
 
 export class HomePage {
   constructor(readonly page: Page) {}
@@ -25,6 +25,13 @@ export class HomePage {
   }
 
   async createPatient() {
+    patientName = {
+      firstName : `e2e_test_${Math.floor(Math.random() * 10000)}`,
+      givenName : `${(Math.random() + 1).toString(36).substring(2)}`
+    }
+
+    patientFullName = patientName.firstName + ' ' + patientName.givenName;
+
     await this.page.getByRole('button', { name: 'Add Patient' }).click();
     await this.page.getByLabel('First Name').clear();
     await this.page.getByLabel('First Name').fill(patientName.firstName);
@@ -51,7 +58,7 @@ export class HomePage {
   }
 
   async startPatientVisit() {
-    await this.findPatient(`${fullName}`)
+    await this.findPatient(`${patientFullName}`)
     await this.page.getByRole('button', { name: 'Start a visit' }).click();
     await this.page.locator('label').filter({ hasText: 'Facility Visit' }).locator('span').first().click();
     await this.page.locator('form').getByRole('button', { name: 'Start a visit' }).click();
@@ -60,7 +67,7 @@ export class HomePage {
   }
 
   async endPatientVisit() {
-    await this.findPatient(`${fullName}`)
+    await this.findPatient(`${patientFullName}`)
     await this.page.getByRole('button', { name: 'Actions', exact: true }).click();
     await this.page.getByRole('menuitem', { name: 'End visit' }).click();
     await this.page.getByRole('button', { name: 'danger End Visit' }).click();
@@ -72,7 +79,7 @@ export class HomePage {
 
   async deletePatient(){
     await this.page.goto('https://demo.ozone-his.com/openmrs/admin/patients/index.htm');
-    await this.page.getByPlaceholder(' ').type(`${fullName}`);
+    await this.page.getByPlaceholder(' ').type(`${patientFullName}`);
     await this.page.locator('#openmrsSearchTable tbody tr.odd td:nth-child(1)').click();
     await this.page.locator('input[name="voidReason"]').fill('Delete patient created by smoke tests');
     await this.page.getByRole('button', { name: 'Delete Patient', exact: true }).click();
@@ -133,6 +140,6 @@ export class HomePage {
   async findPatient(searchText: string) {
     await this.patientSearchIcon().click();
     await this.patientSearchBar().type(searchText);
-    await this.page.getByRole('link', { name: `${fullName}`}).click();
+    await this.page.getByRole('link', { name: `${patientFullName}`}).click();
   }
 }
