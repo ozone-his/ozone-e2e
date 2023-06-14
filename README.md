@@ -1,6 +1,6 @@
 # Ozone Pro E2E Tests
 
-[![Ozone E2E Tests](https://github.com/kdaud/ozone-e2e-tests/actions/workflows/e2e.yml/badge.svg)](https://github.com/kdaud/ozone-e2e-tests/actions/workflows/e2e.yml)
+[![Ozone E2E Tests](https://github.com/ozone-his/ozone-e2e-tests/actions/workflows/e2e.yml/badge.svg)](https://github.com/ozone-his/ozone-e2e-tests/actions/workflows/e2e.yml)
 
 Welcome to Ozone Pro test suite that uses [Playwright](https://playwright.dev)
 framework. 
