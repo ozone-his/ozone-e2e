@@ -78,7 +78,7 @@ export class HomePage {
   }
 
   async deletePatient(){
-    await this.page.goto('https://demo.ozone-his.com/openmrs/admin/patients/index.htm');
+    await this.page.goto('https://ozone-qa.mekomsolutions.net/openmrs/admin/patients/index.htm');
     await this.page.getByPlaceholder(' ').type(`${patientFullName}`);
     await this.page.locator('#openmrsSearchTable tbody tr.odd td:nth-child(1)').click();
     await this.page.locator('input[name="voidReason"]').fill('Delete patient created by smoke tests');
@@ -98,7 +98,7 @@ export class HomePage {
 
     await this.page.getByText('Laboratory Tests').click();
     await this.page.getByRole('button', { name: 'Add', exact: true }).click();
-    await this.page.locator('#tab select').selectOption('161431AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+    await this.page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
     await this.page.getByRole('button', { name: 'Save and close' }).click();
 
     await expect(this.page.getByText('Lab order(s) generated')).toBeVisible();
@@ -127,14 +127,14 @@ export class HomePage {
   }
 
   async goToOdoo() {
-    await this.page.goto("https://erp.demo.ozone-his.com");
+    await this.page.goto("https://erp.ozone-qa.mekomsolutions.net/");
     await this.page.getByPlaceholder('Email').type('admin');
     await this.page.getByPlaceholder('Password').type('admin');
     await this.page.getByRole('button', { name: 'Log in' }).click();
   }
 
   async goToSENAITE() {
-    await this.page.goto("https://lims.demo.ozone-his.com");
+    await this.page.goto("https://lims.ozone-qa.mekomsolutions.net/");
   }
 
   async findPatient(searchText: string) {
