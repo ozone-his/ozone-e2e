@@ -26,7 +26,7 @@ export class HomePage {
 
   async createPatient() {
     patientName = {
-      firstName : `e2eTest${Math.floor(Math.random() * 10000)}`,
+      firstName : `e2e_test_${Math.floor(Math.random() * 10000)}`,
       givenName : `${(Math.random() + 1).toString(36).substring(2)}`
     }
 
