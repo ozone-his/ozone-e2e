@@ -3,7 +3,6 @@ import { HomePage } from '../utils/functions/testBase';
 import { patientName } from '../utils/functions/testBase';
 
 let homePage: HomePage;
-let patientFullName = patientName.firstName + ' ' + patientName.givenName;
 
 test.beforeEach(async ({ page }) =>  {
     const homePage = new HomePage(page);
@@ -20,14 +19,14 @@ test('patient with lab order becomes customer in Odoo', async ({ page }) => {
   await page.locator("//a[contains(@class, 'full')]").click();
   await page.getByRole('menuitem', { name: 'Sales' }).click();
   await page.getByPlaceholder('Search...').click();
-  await page.getByPlaceholder('Search...').type(`${patientFullName}`);
+  await page.getByPlaceholder('Search...').type(`${patientName.firstName + ' ' + patientName.givenName}`);
   await page.getByPlaceholder('Search...').press('Enter');
   await page.waitForSelector("div.table-responsive table thead tr th:nth-child(4)");
 
   // syncs patient as an Odoo customer
   const customer =
   await page.locator("table tbody tr:nth-child(1) td.o_data_cell.o_field_cell.o_list_many2one.o_readonly_modifier.o_required_modifier").textContent();
-  await expect(customer?.includes(`${patientFullName}`)).toBeTruthy();
+  await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
 
   // amends customer running quotation
   const quotation =
