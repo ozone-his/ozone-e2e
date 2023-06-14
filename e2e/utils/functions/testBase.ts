@@ -98,9 +98,7 @@ export class HomePage {
 
     await this.page.getByText('Laboratory Tests').click();
     await this.page.getByRole('button', { name: 'Add', exact: true }).click();
-    await this.page.locator('#tab select').selectOption('160735AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
-    await this.page.getByRole('button', { name: 'Add', exact: true }).click();
-    await this.page.getByRole('combobox').nth(2).selectOption('1325AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+    await this.page.locator('#tab select').selectOption('161431AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
     await this.page.getByRole('button', { name: 'Save and close' }).click();
 
     await expect(this.page.getByText('Lab order(s) generated')).toBeVisible();
