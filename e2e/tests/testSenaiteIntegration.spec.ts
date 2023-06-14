@@ -20,11 +20,6 @@ test.beforeEach(async ({ page }) =>  {
 test('patient with lab order becomes client in SENAITE', async ({ page }) => {
   await page.locator("//i[contains(@class, 'sidebar-toggle-icon')]").click();
   await page.getByRole('link', { name: 'Samples Samples' }).click();
-  await page.getByRole('button', { name: 'All' }).click();
-  await page.getByRole('textbox', { name: 'Search' }).type(`${patientName.firstName + ' ' + patientName.givenName}`);
-  await page.getByRole('textbox', { name: 'Search' }).press('Enter');
-  await page.getByRole('button', { name: 'Active' }).click();
-  await page.getByRole('textbox', { name: 'Search' }).clear();
   await page.getByRole('textbox', { name: 'Search' }).type(`${patientName.firstName + ' ' + patientName.givenName}`);
   await page.locator('div.col-sm-3.text-right button:nth-child(2) i').click();
 
