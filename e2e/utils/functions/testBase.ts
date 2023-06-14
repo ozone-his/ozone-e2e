@@ -1,7 +1,7 @@
 import { Page,expect } from '@playwright/test';
 
 export var patientName = {
-  firstName : `e2eTest${Math.floor(Math.random() * 10000)}`,
+  firstName : `e2e_test_${Math.floor(Math.random() * 10000)}`,
   givenName : `${(Math.random() + 1).toString(36).substring(2)}`
 }
 
@@ -29,9 +29,9 @@ export class HomePage {
 
     await this.page.getByRole('button', { name: 'Add Patient' }).click();
     await this.page.getByLabel('First Name').clear();
-    await this.page.getByLabel('First Name').fill(patientName.firstName);
+    await this.page.getByLabel('First Name').fill(`${patientName.firstName}`);
     await this.page.getByLabel('Family Name').clear();
-    await this.page.getByLabel('Family Name').fill(patientName.givenName);
+    await this.page.getByLabel('Family Name').fill(`${patientName.givenName}`);
     await this.page.locator('label').filter({ hasText: /^Male$/ }).locator('span').first().click();
     await this.page.locator('div').filter({ hasText: /^Date of Birth Known\?YesNo$/ }).getByRole('tab', { name: 'No' }).click();
     await this.page.getByLabel('Estimated age in years').clear();
@@ -93,7 +93,7 @@ export class HomePage {
 
     await this.page.getByText('Laboratory Tests').click();
     await this.page.getByRole('button', { name: 'Add', exact: true }).click();
-    await this.page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+    await this.page.locator('#tab select').selectOption('160225AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
     await this.page.getByRole('button', { name: 'Save and close' }).click();
 
     await expect(this.page.getByText('Lab order(s) generated')).toBeVisible();
