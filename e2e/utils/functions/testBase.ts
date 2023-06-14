@@ -1,8 +1,8 @@
 import { Page,expect } from '@playwright/test';
 
 export var patientName = {
-  firstName : `e2e_test_${Math.floor(Math.random() * 10000)}`,
-  givenName : `${(Math.random() + 1).toString(36).substring(2)}`
+  firstName : '',
+  givenName : ''
 }
 
 var patientFullName = '';
@@ -25,6 +25,11 @@ export class HomePage {
   }
 
   async createPatient() {
+    patientName = {
+      firstName : `e2eTest${Math.floor(Math.random() * 10000)}`,
+      givenName : `${(Math.random() + 1).toString(36).substring(2)}`
+    }
+
     patientFullName = patientName.firstName + ' ' + patientName.givenName;
 
     await this.page.getByRole('button', { name: 'Add Patient' }).click();

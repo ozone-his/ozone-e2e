@@ -28,11 +28,11 @@ test('patient with lab order becomes client in SENAITE', async ({ page }) => {
   // syncs patient as a SENAITE client
   const client =
   await page.locator('table tbody tr:nth-child(1) td.contentcell.Client div span span a').textContent();
-  // await expect(client?.includes(`${patientFullName}`)).toBeTruthy();
+  await expect(client?.includes(`${patientFullName}`)).toBeTruthy();
 
   const status =
   await page.locator('table tbody tr:nth-child(1) td.contentcell.state_title div span span').textContent();
-  // await expect(status?.includes("Sample due")).toBeTruthy();
+  await expect(status?.includes("Sample due")).toBeTruthy();
 });
 
 test.afterEach(async ( {page}) =>  {
