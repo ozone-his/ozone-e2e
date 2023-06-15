@@ -137,8 +137,8 @@ export class HomePage {
     await this.page.getByLabel('Quantity to dispense').fill('15');
     await this.page.getByLabel('Prescription refills').fill('3');
     await this.page.getByPlaceholder('e.g. "Hypertension"').type('Hypertension');
-    await this.page.locator('button.cds--btn.cds--btn--xl.cds--btn--primary').click({ force: true });
-    await this.page.locator('button.-esm-patient-medications__order-basket__button___km0L6.cds--btn.cds--btn--primary').click({ force: true });
+    await this.page.getByRole('button', { name: 'Save order' }).click({ force: true });
+    await this.page.getByRole('button', { name: 'Sign and close' }).click({ force: true });
 
     await expect(this.page.getByText('Order placed')).toBeVisible();
   }
