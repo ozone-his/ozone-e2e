@@ -138,7 +138,10 @@ export class HomePage {
     await this.page.getByLabel('Prescription refills').fill('3');
     await this.page.getByPlaceholder('e.g. "Hypertension"').type('Hypertension');
     await this.page.getByRole('button', { name: 'Save order' }).click({ force: true });
-    await this.page.getByRole('button', { name: 'Sign and close' }).click({ force: true });
+
+    const signAndCloseButton = this.page.getByRole('button', { name: 'Sign and close' });
+    await signAndCloseButton.waitFor({state: "visible"})
+    await signAndCloseButton.click({ force: true });
 
     await expect(this.page.getByText('Order placed')).toBeVisible();
   }
