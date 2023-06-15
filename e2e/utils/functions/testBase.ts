@@ -24,6 +24,17 @@ export class HomePage {
     await this.page.getByRole('button', { name: 'Confirm' }).click();
   }
 
+  async goToOdoo() {
+    await this.page.goto("https://erp.ozone-qa.mekomsolutions.net/");
+    await this.page.getByPlaceholder('Email').type('admin');
+    await this.page.getByPlaceholder('Password').type('admin');
+    await this.page.getByRole('button', { name: 'Log in' }).click();
+  }
+
+  async goToSENAITE() {
+    await this.page.goto("https://lims.ozone-qa.mekomsolutions.net/");
+  }
+
   async createPatient() {
     patientName = {
       firstName : `e2e_test_${Math.floor(Math.random() * 10000)}`,
@@ -55,6 +66,12 @@ export class HomePage {
     await this.page.locator('form').getByRole('button', { name: 'Start a visit' }).click();
 
     await expect(this.page.getByText('Facility Visit started successfully')).toBeVisible();
+  }
+
+  async findPatient(searchText: string) {
+    await this.patientSearchIcon().click();
+    await this.patientSearchBar().type(searchText);
+    await this.page.getByRole('link', { name: `${patientFullName}`}).click();
   }
 
   async startPatientVisit() {
@@ -108,8 +125,8 @@ export class HomePage {
 
   async createDrugOrder() {
     await this.page.getByRole('complementary').filter({ hasText: 'MedicationsNoteFormPatient lists' }).getByRole('button').first().click();
-    await this.page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Hydrochlorothiazide');
-    await this.page.getByRole('listitem').filter({ hasText: 'Hydrochlorothiazide 50mg — 50mg — tabletImmediately add to basket' }).click();
+    await this.page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 81mg');
+    await this.page.getByRole('listitem').filter({ hasText: 'Aspirin 81mg — 81mg — tabletImmediately add to basket' }).click();
     await this.page.getByPlaceholder('Dose').fill('4');
     await this.page.getByRole('button', { name: 'Open', exact: true }).nth(1).click();
     await this.page.getByText('Intravenous').click();
@@ -119,27 +136,20 @@ export class HomePage {
     await this.page.getByLabel('Duration', { exact: true }).fill('5');
     await this.page.getByLabel('Quantity to dispense').fill('15');
     await this.page.getByLabel('Prescription refills').fill('3');
-    await this.page.getByPlaceholder('e.g. "Hypertension"').fill('Hypertension');
-    await this.page.getByRole('button', { name: 'Save order' }).click();
+    await this.page.getByPlaceholder('e.g. "Hypertension"').type('Hypertension');
+    await this.page.locator('//*[@id="drugOrderForm"]/div[3]/button[2]').click();
     await this.page.getByRole('button', { name: 'Sign and close' }).click();
 
     await expect(this.page.getByText('Order placed')).toBeVisible();
   }
 
-  async goToOdoo() {
-    await this.page.goto("https://erp.ozone-qa.mekomsolutions.net/");
-    await this.page.getByPlaceholder('Email').type('admin');
-    await this.page.getByPlaceholder('Password').type('admin');
-    await this.page.getByRole('button', { name: 'Log in' }).click();
+  async searchCustomerInOdoo() {
+    await this.page.locator("//a[contains(@class, 'full')]").click();
+    await this.page.getByRole('menuitem', { name: 'Sales' }).click();
+    await this.page.getByPlaceholder('Search...').click();
+    await this.page.getByPlaceholder('Search...').type(`${patientName.firstName + ' ' + patientName.givenName}`);
+    await this.page.getByPlaceholder('Search...').press('Enter');
+    await this.page.waitForSelector("div.table-responsive table thead tr th:nth-child(4)");
   }
 
-  async goToSENAITE() {
-    await this.page.goto("https://lims.ozone-qa.mekomsolutions.net/");
-  }
-
-  async findPatient(searchText: string) {
-    await this.patientSearchIcon().click();
-    await this.patientSearchBar().type(searchText);
-    await this.page.getByRole('link', { name: `${patientFullName}`}).click();
-  }
 }
