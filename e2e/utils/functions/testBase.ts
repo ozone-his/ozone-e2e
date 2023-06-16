@@ -138,8 +138,7 @@ export class HomePage {
     await this.page.getByRole('button', { name: 'Save order' }).click({ force: true });
 
     const signAndCloseButton = this.page.getByRole('button', { name: 'Sign and close' });
-    // await signAndCloseButton.waitFor(({state: "visible"}));
-    await signAndCloseButton.isVisible();
+    await signAndCloseButton.waitFor(({state: "attached"}));
 
     await expect(this.page.getByText('Sign and close')).toBeVisible();
 
