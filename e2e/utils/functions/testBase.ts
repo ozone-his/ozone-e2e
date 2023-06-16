@@ -26,9 +26,7 @@ export class HomePage {
 
   async goToOdoo() {
     await this.page.goto("https://erp.ozone-qa.mekomsolutions.net/");
-    await this.page.getByPlaceholder('Email').type('admin');
-    await this.page.getByPlaceholder('Password').type('admin');
-    await this.page.getByRole('button', { name: 'Log in' }).click();
+    await this.page.getByRole('link', { name: 'Login with Single Sign-On' }).click();
   }
 
   async goToSENAITE() {
@@ -139,8 +137,6 @@ export class HomePage {
     await this.page.getByPlaceholder('e.g. "Hypertension"').type('Hypertension');
     await this.page.getByRole('button', { name: 'Save order' }).click({ force: true });
 
-    await expect(this.page.getByText('Sign and close')).toBeVisible();
-
     await this.page.getByRole('button', { name: 'Sign and close' }).click({ force: true });
 
     await expect(this.page.getByText('Order placed')).toBeVisible();
@@ -149,6 +145,7 @@ export class HomePage {
   async searchCustomerInOdoo() {
     await this.page.locator("//a[contains(@class, 'full')]").click();
     await this.page.getByRole('menuitem', { name: 'Sales' }).click();
+    await this.page.getByRole('img', { name: 'Remove' }).click();
     await this.page.getByPlaceholder('Search...').click();
     await this.page.getByPlaceholder('Search...').type(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.getByPlaceholder('Search...').press('Enter');
