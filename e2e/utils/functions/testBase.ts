@@ -24,6 +24,15 @@ export class HomePage {
     await this.page.getByRole('button', { name: 'Confirm' }).click();
   }
 
+  async goToOdoo() {
+    await this.page.goto("https://erp.ozone-qa.mekomsolutions.net/");
+    await this.page.getByRole('link', { name: 'Login with Single Sign-On' }).click();
+  }
+
+  async goToSENAITE() {
+    await this.page.goto("https://lims.ozone-qa.mekomsolutions.net/");
+  }
+
   async createPatient() {
     patientName = {
       firstName : `e2e_test_${Math.floor(Math.random() * 10000)}`,
@@ -124,17 +133,6 @@ export class HomePage {
     await this.page.getByRole('button', { name: 'Sign and close' }).click();
 
     await expect(this.page.getByText('Order placed')).toBeVisible();
-  }
-
-  async goToOdoo() {
-    await this.page.goto("https://erp.ozone-qa.mekomsolutions.net/");
-    await this.page.getByPlaceholder('Email').type('admin');
-    await this.page.getByPlaceholder('Password').type('admin');
-    await this.page.getByRole('button', { name: 'Log in' }).click();
-  }
-
-  async goToSENAITE() {
-    await this.page.goto("https://lims.ozone-qa.mekomsolutions.net/");
   }
 
   async findPatient(searchText: string) {

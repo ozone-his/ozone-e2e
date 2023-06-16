@@ -18,10 +18,10 @@ test.beforeEach(async ({ page }) =>  {
 test('patient with lab order becomes customer in Odoo', async ({ page }) => {
   await page.locator("//a[contains(@class, 'full')]").click();
   await page.getByRole('menuitem', { name: 'Sales' }).click();
+  await page.getByRole('img', { name: 'Remove' }).click();
   await page.getByPlaceholder('Search...').click();
   await page.getByPlaceholder('Search...').type(`${patientName.firstName + ' ' + patientName.givenName}`);
   await page.getByPlaceholder('Search...').press('Enter');
-  await page.waitForSelector("div.table-responsive table thead tr th:nth-child(4)");
 
   // syncs patient as an Odoo customer
   const customer =
