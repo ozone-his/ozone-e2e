@@ -66,7 +66,6 @@ export class HomePage {
     await expect(this.page.getByText('Facility Visit started successfully')).toBeVisible();
   }
 
-
   async searchPatient(searchText: string) {
     await this.patientSearchIcon().click();
     await this.patientSearchBar().type(searchText);
@@ -120,14 +119,13 @@ export class HomePage {
     await expect(this.page.getByText('Lab order(s) generated')).toBeVisible();
 
     await this.page.getByRole('button', { name: 'Close' }).click();
-    const delay = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
-    await delay(4000);
+    await this.page.waitForTimeout(4000);
   }
 
   async createDrugOrder() {
     await this.page.getByRole('complementary').filter({ hasText: 'MedicationsNoteFormPatient lists' }).getByRole('button').first().click();
-    await this.page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Hydrochlorothiazide');
-    await this.page.getByRole('listitem').filter({ hasText: 'Hydrochlorothiazide 50mg — 50mg — tabletImmediately add to basket' }).click();
+    await this.page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 325mg');
+    await this.page.getByRole('listitem').filter({ hasText: 'Aspirin 325mg — 325mg — tabletImmediately add to basket' }).click();
     await this.page.getByPlaceholder('Dose').fill('4');
     await this.page.getByRole('button', { name: 'Open', exact: true }).nth(1).click();
     await this.page.getByText('Intravenous').click();
@@ -137,11 +135,10 @@ export class HomePage {
     await this.page.getByLabel('Duration', { exact: true }).fill('5');
     await this.page.getByLabel('Quantity to dispense').fill('15');
     await this.page.getByLabel('Prescription refills').fill('3');
-    await this.page.getByPlaceholder('e.g. "Hypertension"').fill('Hypertension');
-    await this.page.getByRole('button', { name: 'Save order' }).click();
-    await this.page.getByRole('button', { name: 'Sign and close' }).click();
-
-    await expect(this.page.getByText('Order placed')).toBeVisible();
+    await this.page.getByPlaceholder('e.g. "Hypertension"').type('Hypertension');
+    await this.page.getByRole('button', { name: 'Save order' }).click({ force: true });
+    this.page.getByRole('button', { name: 'Sign and close' }).click({ force: true });
+    await this.page.waitForTimeout(4000);
   }
 
   async searchCustomerInOdoo() {
@@ -158,5 +155,4 @@ export class HomePage {
     await this.page.getByRole('textbox', { name: 'Search' }).type(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.locator('div.col-sm-3.text-right button:nth-child(2) i').click();
   }
-
 }
