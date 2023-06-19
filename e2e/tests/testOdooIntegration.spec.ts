@@ -11,17 +11,13 @@ test.beforeEach(async ({ page }) =>  {
     await expect(page).toHaveURL(/.*home/);
 
     await homePage.createPatient();
-    await homePage.createLabOrder();
-    await homePage.goToOdoo();
 });
 
 test('patient with lab order becomes customer in Odoo', async ({ page }) => {
-  await page.locator("//a[contains(@class, 'full')]").click();
-  await page.getByRole('menuitem', { name: 'Sales' }).click();
-  await page.getByRole('img', { name: 'Remove' }).click();
-  await page.getByPlaceholder('Search...').click();
-  await page.getByPlaceholder('Search...').type(`${patientName.firstName + ' ' + patientName.givenName}`);
-  await page.getByPlaceholder('Search...').press('Enter');
+  const homePage = new HomePage(page);
+  await homePage.createLabOrder();
+  await homePage.goToOdoo();
+  await homePage.searchCustomerInOdoo();
 
   // syncs patient as an Odoo customer
   const customer =
