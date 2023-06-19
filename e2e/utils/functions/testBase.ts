@@ -1,7 +1,5 @@
 import { Page, expect } from '@playwright/test';
 
-const delay = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
-
 export var patientName = {
   firstName : '',
   givenName : ''
@@ -121,7 +119,7 @@ export class HomePage {
     await expect(this.page.getByText('Lab order(s) generated')).toBeVisible();
 
     await this.page.getByRole('button', { name: 'Close' }).click();
-    await delay(4000);
+    await this.page.waitForTimeout(4000);
   }
 
   async createDrugOrder() {
@@ -140,7 +138,7 @@ export class HomePage {
     await this.page.getByPlaceholder('e.g. "Hypertension"').type('Hypertension');
     await this.page.getByRole('button', { name: 'Save order' }).click({ force: true });
     this.page.getByRole('button', { name: 'Sign and close' }).click({ force: true });
-    await delay(4000);
+    await this.page.waitForTimeout(4000);
   }
 
   async searchCustomerInOdoo() {
