@@ -11,17 +11,16 @@ test.beforeEach(async ({ page }) =>  {
     await expect(page).toHaveURL(/.*home/);
 
     await homePage.createPatient();
-    await homePage.createLabOrder();
-    await homePage.goToSENAITE();
-
-    await expect(page).toHaveURL(/.*senaite/);
 });
 
 test('patient with lab order becomes client in SENAITE', async ({ page }) => {
-  await page.locator("//i[contains(@class, 'sidebar-toggle-icon')]").click();
-  await page.getByRole('link', { name: 'Samples Samples' }).click();
-  await page.getByRole('textbox', { name: 'Search' }).type(`${patientName.firstName + ' ' + patientName.givenName}`);
-  await page.locator('div.col-sm-3.text-right button:nth-child(2) i').click();
+  const homePage = new HomePage(page);
+  await homePage.createLabOrder();
+  await homePage.goToSENAITE();
+
+  await expect(page).toHaveURL(/.*senaite/);
+
+  await homePage.searchClientInSENAITE();
 
   // syncs patient as a SENAITE client
   const client =

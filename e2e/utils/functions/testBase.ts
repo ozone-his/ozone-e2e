@@ -66,14 +66,14 @@ export class HomePage {
     await expect(this.page.getByText('Facility Visit started successfully')).toBeVisible();
   }
 
-  async findPatient(searchText: string) {
+  async searchPatient(searchText: string) {
     await this.patientSearchIcon().click();
     await this.patientSearchBar().type(searchText);
     await this.page.getByRole('link', { name: `${patientFullName}`}).click();
   }
 
   async startPatientVisit() {
-    await this.findPatient(`${patientFullName}`)
+    await this.searchPatient(`${patientFullName}`)
     await this.page.getByRole('button', { name: 'Start a visit' }).click();
     await this.page.locator('label').filter({ hasText: 'Facility Visit' }).locator('span').first().click();
     await this.page.locator('form').getByRole('button', { name: 'Start a visit' }).click();
@@ -82,7 +82,7 @@ export class HomePage {
   }
 
   async endPatientVisit() {
-    await this.findPatient(`${patientFullName}`)
+    await this.searchPatient(`${patientFullName}`)
     await this.page.getByRole('button', { name: 'Actions', exact: true }).click();
     await this.page.getByRole('menuitem', { name: 'End visit' }).click();
     await this.page.getByRole('button', { name: 'danger End Visit' }).click();
@@ -119,6 +119,8 @@ export class HomePage {
     await expect(this.page.getByText('Lab order(s) generated')).toBeVisible();
 
     await this.page.getByRole('button', { name: 'Close' }).click();
+    const delay = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
+    await delay(4000);
   }
 
   async createDrugOrder() {
@@ -151,10 +153,14 @@ export class HomePage {
     await this.page.locator("//a[contains(@class, 'full')]").click();
     await this.page.getByRole('menuitem', { name: 'Sales' }).click();
     await this.page.getByRole('img', { name: 'Remove' }).click();
-    await this.page.getByPlaceholder('Search...').click();
     await this.page.getByPlaceholder('Search...').type(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.getByPlaceholder('Search...').press('Enter');
-    await this.page.waitForSelector("div.table-responsive table thead tr th:nth-child(4)");
   }
 
+  async searchClientInSENAITE() {
+    await this.page.locator("//i[contains(@class, 'sidebar-toggle-icon')]").click();
+    await this.page.getByRole('link', { name: 'Samples Samples' }).click();
+    await this.page.getByRole('textbox', { name: 'Search' }).type(`${patientName.firstName + ' ' + patientName.givenName}`);
+    await this.page.locator('div.col-sm-3.text-right button:nth-child(2) i').click();
+  }
 }
