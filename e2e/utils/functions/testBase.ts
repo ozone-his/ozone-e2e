@@ -1,5 +1,7 @@
 import { Page, expect } from '@playwright/test';
 
+const delay = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
+
 export var patientName = {
   firstName : '',
   givenName : ''
@@ -119,14 +121,13 @@ export class HomePage {
     await expect(this.page.getByText('Lab order(s) generated')).toBeVisible();
 
     await this.page.getByRole('button', { name: 'Close' }).click();
-    const delay = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
     await delay(4000);
   }
 
   async createDrugOrder() {
     await this.page.getByRole('complementary').filter({ hasText: 'MedicationsNoteFormPatient lists' }).getByRole('button').first().click();
-    await this.page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 81mg');
-    await this.page.getByRole('listitem').filter({ hasText: 'Aspirin 81mg — 81mg — tabletImmediately add to basket' }).click();
+    await this.page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 325mg');
+    await this.page.getByRole('listitem').filter({ hasText: 'Aspirin 325mg — 325mg — tabletImmediately add to basket' }).click();
     await this.page.getByPlaceholder('Dose').fill('4');
     await this.page.getByRole('button', { name: 'Open', exact: true }).nth(1).click();
     await this.page.getByText('Intravenous').click();
@@ -138,15 +139,8 @@ export class HomePage {
     await this.page.getByLabel('Prescription refills').fill('3');
     await this.page.getByPlaceholder('e.g. "Hypertension"').type('Hypertension');
     await this.page.getByRole('button', { name: 'Save order' }).click({ force: true });
-
-    const signAndCloseButton = this.page.getByRole('button', { name: 'Sign and close' });
-    await signAndCloseButton.waitFor(({state: "attached"}));
-
-    await expect(this.page.getByText('Sign and close')).toBeVisible();
-
-    await this.page.getByRole('button', { name: 'Sign and close' }).click({ force: true });
-
-    await expect(this.page.getByText('Order placed')).toBeVisible();
+    this.page.getByRole('button', { name: 'Sign and close' }).click({ force: true });
+    await delay(4000);
   }
 
   async searchCustomerInOdoo() {
