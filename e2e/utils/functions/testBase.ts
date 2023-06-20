@@ -124,8 +124,8 @@ export class HomePage {
 
   async createDrugOrder() {
     await this.page.getByRole('complementary').filter({ hasText: 'MedicationsNoteFormPatient lists' }).getByRole('button').first().click();
-    await this.page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 325mg');
-    await this.page.getByRole('listitem').filter({ hasText: 'Aspirin 325mg — 325mg — tabletImmediately add to basket' }).click();
+    await this.page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Amoxicillin 500mg');
+    await this.page.getByRole('listitem').filter({ hasText: 'Amoxicillin 500mg — 500mg — tabletImmediately add to basket' }).click();
     await this.page.getByPlaceholder('Dose').fill('4');
     await this.page.getByRole('button', { name: 'Open', exact: true }).nth(1).click();
     await this.page.getByText('Intravenous').click();
@@ -147,6 +147,8 @@ export class HomePage {
     await this.page.getByRole('img', { name: 'Remove' }).click();
     await this.page.getByPlaceholder('Search...').type(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.getByPlaceholder('Search...').press('Enter');
+    const customerTable = this.page.locator('table thead tr th:nth-child(4)');
+    await customerTable.waitFor();
   }
 
   async searchClientInSENAITE() {
