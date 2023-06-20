@@ -7,6 +7,14 @@ export var patientName = {
 
 var patientFullName = '';
 
+const delay = (mills) => {
+  let datetime1 = new Date().getTime();
+  let datetime2 = datetime1 + mills;
+  while(datetime1 < datetime2) {
+     datetime1 = new Date().getTime();
+    }
+}
+
 export class HomePage {
   constructor(readonly page: Page) {}
 
@@ -119,13 +127,13 @@ export class HomePage {
     await expect(this.page.getByText('Lab order(s) generated')).toBeVisible();
 
     await this.page.getByRole('button', { name: 'Close' }).click();
-    await this.page.waitForTimeout(4000);
+    await delay(5000);
   }
 
   async createDrugOrder() {
     await this.page.getByRole('complementary').filter({ hasText: 'MedicationsNoteFormPatient lists' }).getByRole('button').first().click();
-    await this.page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Amoxicillin 500mg');
-    await this.page.getByRole('listitem').filter({ hasText: 'Amoxicillin 500mg — 500mg — tabletImmediately add to basket' }).click();
+    await this.page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 325mg');
+    await this.page.getByRole('listitem').filter({ hasText: 'Aspirin 325mg — 325mg — tabletImmediately add to basket' }).click();
     await this.page.getByPlaceholder('Dose').fill('4');
     await this.page.getByRole('button', { name: 'Open', exact: true }).nth(1).click();
     await this.page.getByText('Intravenous').click();
@@ -138,7 +146,7 @@ export class HomePage {
     await this.page.getByPlaceholder('e.g. "Hypertension"').type('Hypertension');
     await this.page.getByRole('button', { name: 'Save order' }).click({ force: true });
     this.page.getByRole('button', { name: 'Sign and close' }).click({ force: true });
-    await this.page.waitForTimeout(4000);
+    await delay(5000);
   }
 
   async searchCustomerInOdoo() {
@@ -147,8 +155,6 @@ export class HomePage {
     await this.page.getByRole('img', { name: 'Remove' }).click();
     await this.page.getByPlaceholder('Search...').type(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.getByPlaceholder('Search...').press('Enter');
-    const customerTable = this.page.locator('table thead tr th:nth-child(4)');
-    await customerTable.waitFor();
   }
 
   async searchClientInSENAITE() {
