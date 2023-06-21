@@ -116,7 +116,7 @@ export class HomePage {
   async createLabOrder() {
     await this.page.waitForSelector('div.-esm-patient-chart__action-menu__chartExtensions___Pqgr8 div:nth-child(3) button');
     await this.page.locator('div').filter({ hasText: /^Form$/ }).getByRole('button').click();
-
+    delay(2000);
     await expect(this.page.getByText('Laboratory Tests')).toBeVisible();
 
     await this.page.getByText('Laboratory Tests').click();
