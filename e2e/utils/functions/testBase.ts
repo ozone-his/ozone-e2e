@@ -134,7 +134,7 @@ export class HomePage {
     await this.page.getByRole('complementary').filter({ hasText: 'MedicationsNoteFormPatient lists' }).getByRole('button').first().click();
     await this.page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 325mg');
     await this.page.getByRole('listitem').filter({ hasText: 'Aspirin 325mg — 325mg — tabletImmediately add to basket' }).click();
-    delay(8000)
+    delay(4000)
     await this.page.getByPlaceholder('Dose').fill('4');
     await this.page.getByRole('button', { name: 'Open', exact: true }).nth(1).click();
     await this.page.getByText('Intravenous').click();
@@ -145,10 +145,10 @@ export class HomePage {
     await this.page.getByLabel('Quantity to dispense').fill('15');
     await this.page.getByLabel('Prescription refills').fill('3');
     await this.page.getByPlaceholder('e.g. "Hypertension"').type('Hypertension');
-    await this.page.getByRole('button', { name: 'Save order' }).scrollIntoViewIfNeeded();
+    await this.page.getByRole('button', { name: 'Save order' }).focus();
     await expect(this.page.getByText('Save order')).toBeVisible();
     await this.page.getByRole('button', { name: 'Save order' }).click();
-    await this.page.getByRole('button', { name: 'Sign and close' }).scrollIntoViewIfNeeded();
+    await this.page.getByRole('button', { name: 'Sign and close' }).focus();
     await expect(this.page.getByText('Sign and close')).toBeVisible();
     await this.page.getByRole('button', { name: 'Sign and close' }).click();
     await delay(4000);
