@@ -155,8 +155,10 @@ export class HomePage {
     await this.page.locator("//a[contains(@class, 'full')]").click();
     await this.page.getByRole('menuitem', { name: 'Sales' }).click();
     await this.page.getByRole('img', { name: 'Remove' }).click();
+    delay(1500);
     await this.page.getByPlaceholder('Search...').type(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.getByPlaceholder('Search...').press('Enter');
+    delay(2000);
   }
 
   async searchClientInSENAITE() {
