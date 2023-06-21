@@ -145,6 +145,10 @@ export class HomePage {
     await this.page.getByLabel('Prescription refills').fill('3');
     await this.page.getByPlaceholder('e.g. "Hypertension"').type('Hypertension');
     await this.page.getByRole('button', { name: 'Save order' }).click({ force: true });
+    await this.page.waitForTimeout(5000);
+
+    await expect(this.page.getByText('Sign and close')).toBeVisible();
+
     this.page.getByRole('button', { name: 'Sign and close' }).click({ force: true });
     await delay(5000);
   }
