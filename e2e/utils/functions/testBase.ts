@@ -127,7 +127,7 @@ export class HomePage {
     await expect(this.page.getByText('Lab order(s) generated')).toBeVisible();
 
     await this.page.getByRole('button', { name: 'Close' }).click();
-    await delay(5000);
+    await delay(4000);
   }
 
   async createDrugOrder() {
@@ -144,11 +144,13 @@ export class HomePage {
     await this.page.getByLabel('Quantity to dispense').fill('15');
     await this.page.getByLabel('Prescription refills').fill('3');
     await this.page.getByPlaceholder('e.g. "Hypertension"').type('Hypertension');
+    await this.page.getByRole('button', { name: 'Save order' }).scrollIntoViewIfNeeded();
+    await expect(this.page.getByText('Save order')).toBeVisible();
     await this.page.getByRole('button', { name: 'Save order' }).click();
-    // await expect(this.page.getByText('Sign and close')).toBeVisible();
-
+    await this.page.getByRole('button', { name: 'Sign and close' }).scrollIntoViewIfNeeded();
+    await expect(this.page.getByText('Sign and close')).toBeVisible();
     await this.page.getByRole('button', { name: 'Sign and close' }).click();
-    await delay(5000);
+    await delay(4000);
   }
 
   async searchCustomerInOdoo() {
