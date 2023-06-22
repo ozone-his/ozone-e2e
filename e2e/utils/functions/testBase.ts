@@ -7,6 +7,14 @@ export var patientName = {
 
 var patientFullName = '';
 
+const delay = (mills) => {
+  let datetime1 = new Date().getTime();
+  let datetime2 = datetime1 + mills;
+  while(datetime1 < datetime2) {
+     datetime1 = new Date().getTime();
+    }
+}
+
 export class HomePage {
   constructor(readonly page: Page) {}
 
@@ -52,9 +60,10 @@ export class HomePage {
     await this.page.getByLabel('Estimated age in years').type('24');
     await this.page.getByLabel('Estimated age in months').clear();
     await this.page.getByLabel('Estimated age in months').type('8');
-
     await expect(this.page.getByText('Register Patient')).toBeVisible();
-
+    if (this.page.getByTitle('close notification')) {
+      await this.page.getByTitle('close notification').click();
+    }
     await this.page.getByRole('button', { name: 'Register Patient' }).click();
 
     await expect(this.page.getByText('New Patient Created')).toBeVisible();
@@ -108,7 +117,7 @@ export class HomePage {
   async createLabOrder() {
     await this.page.waitForSelector('div.-esm-patient-chart__action-menu__chartExtensions___Pqgr8 div:nth-child(3) button');
     await this.page.locator('div').filter({ hasText: /^Form$/ }).getByRole('button').click();
-
+    delay(2000);
     await expect(this.page.getByText('Laboratory Tests')).toBeVisible();
 
     await this.page.getByText('Laboratory Tests').click();
@@ -119,13 +128,14 @@ export class HomePage {
     await expect(this.page.getByText('Lab order(s) generated')).toBeVisible();
 
     await this.page.getByRole('button', { name: 'Close' }).click();
-    await this.page.waitForTimeout(4000);
+    await delay(4000);
   }
 
   async createDrugOrder() {
     await this.page.getByRole('complementary').filter({ hasText: 'MedicationsNoteFormPatient lists' }).getByRole('button').first().click();
     await this.page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 325mg');
     await this.page.getByRole('listitem').filter({ hasText: 'Aspirin 325mg — 325mg — tabletImmediately add to basket' }).click();
+    delay(4000)
     await this.page.getByPlaceholder('Dose').fill('4');
     await this.page.getByRole('button', { name: 'Open', exact: true }).nth(1).click();
     await this.page.getByText('Intravenous').click();
@@ -136,17 +146,23 @@ export class HomePage {
     await this.page.getByLabel('Quantity to dispense').fill('15');
     await this.page.getByLabel('Prescription refills').fill('3');
     await this.page.getByPlaceholder('e.g. "Hypertension"').type('Hypertension');
-    await this.page.getByRole('button', { name: 'Save order' }).click({ force: true });
-    this.page.getByRole('button', { name: 'Sign and close' }).click({ force: true });
-    await this.page.waitForTimeout(4000);
+    await this.page.getByRole('button', { name: 'Save order' }).focus();
+    await expect(this.page.getByText('Save order')).toBeVisible();
+    await this.page.getByRole('button', { name: 'Save order' }).click();
+    await this.page.getByRole('button', { name: 'Sign and close' }).focus();
+    await expect(this.page.getByText('Sign and close')).toBeVisible();
+    await this.page.getByRole('button', { name: 'Sign and close' }).click();
+    delay(4000);
   }
 
   async searchCustomerInOdoo() {
     await this.page.locator("//a[contains(@class, 'full')]").click();
     await this.page.getByRole('menuitem', { name: 'Sales' }).click();
     await this.page.getByRole('img', { name: 'Remove' }).click();
+    delay(1500);
     await this.page.getByPlaceholder('Search...').type(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.getByPlaceholder('Search...').press('Enter');
+    delay(2000);
   }
 
   async searchClientInSENAITE() {
