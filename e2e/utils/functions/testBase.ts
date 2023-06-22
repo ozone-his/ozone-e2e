@@ -60,9 +60,10 @@ export class HomePage {
     await this.page.getByLabel('Estimated age in years').type('24');
     await this.page.getByLabel('Estimated age in months').clear();
     await this.page.getByLabel('Estimated age in months').type('8');
-
     await expect(this.page.getByText('Register Patient')).toBeVisible();
-
+    if (this.page.getByTitle('close notification')) {
+      await this.page.getByTitle('close notification').click();
+    }
     await this.page.getByRole('button', { name: 'Register Patient' }).click();
 
     await expect(this.page.getByText('New Patient Created')).toBeVisible();
@@ -151,7 +152,7 @@ export class HomePage {
     await this.page.getByRole('button', { name: 'Sign and close' }).focus();
     await expect(this.page.getByText('Sign and close')).toBeVisible();
     await this.page.getByRole('button', { name: 'Sign and close' }).click();
-    await delay(4000);
+    delay(4000);
   }
 
   async searchCustomerInOdoo() {
