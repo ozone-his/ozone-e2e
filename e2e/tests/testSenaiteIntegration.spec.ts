@@ -11,10 +11,12 @@ test.beforeEach(async ({ page }) =>  {
     await expect(page).toHaveURL(/.*home/);
 
     await homePage.createPatient();
+    await homePage.startPatientVisit();
 });
 
 test('patient with lab order becomes client in SENAITE', async ({ page }) => {
   const homePage = new HomePage(page);
+  await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.createLabOrder();
   await homePage.goToSENAITE();
 

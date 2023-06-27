@@ -55,24 +55,14 @@ export class HomePage {
     await this.page.getByLabel('Family Name').clear();
     await this.page.getByLabel('Family Name').fill(`${patientName.givenName}`);
     await this.page.locator('label').filter({ hasText: /^Male$/ }).locator('span').first().click();
-    await this.page.locator('div').filter({ hasText: /^Date of Birth Known\?YesNo$/ }).getByRole('tab', { name: 'No' }).click();
-    await this.page.getByLabel('Estimated age in years').clear();
-    await this.page.getByLabel('Estimated age in years').type('24');
-    await this.page.getByLabel('Estimated age in months').clear();
-    await this.page.getByLabel('Estimated age in months').type('8');
+    await this.page.getByPlaceholder('dd/mm/YYYY').fill('14/06/2023');
     await expect(this.page.getByText('Register Patient')).toBeVisible();
-    if (this.page.getByTitle('close notification')) {
-      await this.page.getByTitle('close notification').click();
-    }
     await this.page.getByRole('button', { name: 'Register Patient' }).click();
-
     await expect(this.page.getByText('New Patient Created')).toBeVisible();
-
-    await this.page.getByRole('button', { name: 'Start a visit' }).click();
-    await this.page.locator('label').filter({ hasText: 'Facility Visit' }).locator('span').first().click();
-    await this.page.locator('form').getByRole('button', { name: 'Start a visit' }).click();
-
-    await expect(this.page.getByText('Facility Visit started successfully')).toBeVisible();
+    if (this.page.getByTitle('close notification')) {
+      await this.page.getByTitle('close notification').first().click();
+    }
+    await this.page.getByRole('button', { name: 'Close' }).click();
   }
 
   async searchPatient(searchText: string) {
@@ -86,8 +76,11 @@ export class HomePage {
     await this.page.getByRole('button', { name: 'Start a visit' }).click();
     await this.page.locator('label').filter({ hasText: 'Facility Visit' }).locator('span').first().click();
     await this.page.locator('form').getByRole('button', { name: 'Start a visit' }).click();
-
     await expect(this.page.getByText('Facility Visit started successfully')).toBeVisible();
+    if (this.page.getByTitle('close notification')) {
+      await this.page.getByTitle('close notification').first().click();
+    }
+    await this.page.getByRole('button', { name: 'Close' }).click();
   }
 
   async endPatientVisit() {
@@ -135,7 +128,7 @@ export class HomePage {
     await this.page.getByRole('complementary').filter({ hasText: 'MedicationsNoteFormPatient lists' }).getByRole('button').first().click();
     await this.page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 325mg');
     await this.page.getByRole('listitem').filter({ hasText: 'Aspirin 325mg — 325mg — tabletImmediately add to basket' }).click();
-    delay(4000)
+    delay(5000)
     await this.page.getByPlaceholder('Dose').fill('4');
     await this.page.getByRole('button', { name: 'Open', exact: true }).nth(1).click();
     await this.page.getByText('Intravenous').click();
@@ -146,12 +139,12 @@ export class HomePage {
     await this.page.getByLabel('Quantity to dispense').fill('15');
     await this.page.getByLabel('Prescription refills').fill('3');
     await this.page.getByPlaceholder('e.g. "Hypertension"').type('Hypertension');
-    await this.page.getByRole('button', { name: 'Save order' }).focus();
     await expect(this.page.getByText('Save order')).toBeVisible();
-    await this.page.getByRole('button', { name: 'Save order' }).click();
-    await this.page.getByRole('button', { name: 'Sign and close' }).focus();
+    await this.page.getByRole('button', { name: 'Save order' }).focus();
+    await this.page.getByRole('button', { name: 'Save order' }).dispatchEvent('click');
     await expect(this.page.getByText('Sign and close')).toBeVisible();
-    await this.page.getByRole('button', { name: 'Sign and close' }).click();
+    await this.page.getByRole('button', { name: 'Sign and close' }).focus();
+    await this.page.getByRole('button', { name: 'Sign and close' }).dispatchEvent('click');
     delay(4000);
   }
 

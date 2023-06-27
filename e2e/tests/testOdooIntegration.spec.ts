@@ -11,10 +11,12 @@ test.beforeEach(async ({ page }) =>  {
     await expect(page).toHaveURL(/.*home/);
 
     await homePage.createPatient();
+    await homePage.startPatientVisit();
 });
 
 test('patient with lab order becomes customer in Odoo', async ({ page }) => {
   const homePage = new HomePage(page);
+  await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.createLabOrder();
   await homePage.goToOdoo();
   await homePage.searchCustomerInOdoo();
@@ -32,6 +34,7 @@ test('patient with lab order becomes customer in Odoo', async ({ page }) => {
 
 test('patient with drug order becomes customer in Odoo', async ({ page }) => {
   const homePage = new HomePage(page);
+  await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.createDrugOrder();
   await homePage.goToOdoo();
   await homePage.searchCustomerInOdoo();
