@@ -61,7 +61,7 @@ export class HomePage {
     await this.page.getByLabel('Estimated age in months').clear();
     await this.page.getByLabel('Estimated age in months').type('8');
     await expect(this.page.getByText('Register Patient')).toBeVisible();
-    if (this.page.getByTitle('close notification')) {
+    if (await this.page.getByTitle('close notification').isVisible()) {
       await this.page.getByTitle('close notification').click();
     }
     await this.page.getByRole('button', { name: 'Register Patient' }).click();
