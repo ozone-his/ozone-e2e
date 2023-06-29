@@ -143,7 +143,7 @@ export class HomePage {
     await this.page.getByText('Twice daily').click();
     await this.page.getByPlaceholder('Additional dosing instructions (e.g. "Take after eating")').fill('Take after eating');
     await this.page.getByLabel('Duration', { exact: true }).fill('5');
-    await this.page.getByLabel('Quantity to dispense').fill('15');
+    await this.page.getByLabel('Quantity to dispense').fill('12');
     await this.page.getByLabel('Prescription refills').fill('3');
     await this.page.getByPlaceholder('e.g. "Hypertension"').type('Hypertension');
     await this.page.getByRole('button', { name: 'Save order' }).focus();
@@ -152,6 +152,25 @@ export class HomePage {
     await this.page.getByRole('button', { name: 'Sign and close' }).focus();
     await expect(this.page.getByText('Sign and close')).toBeVisible();
     await this.page.getByRole('button', { name: 'Sign and close' }).click();
+    delay(4000);
+  }
+
+  async editDrugOrder() {
+    await this.page.getByRole('button', { name: 'Actions menu' }).click();
+    await this.page.getByRole('menuitem', { name: 'Modify' }).click();
+    await this.page.getByRole('listitem').filter({ hasText: 'Modify' }).click();
+    delay(4000);
+    await this.page.getByPlaceholder('Dose').clear();
+    await this.page.getByPlaceholder('Dose').fill('8');
+    await this.page.getByPlaceholder('Frequency').click();
+    await this.page.getByText('Thrice daily').click();
+    await this.page.getByLabel('Duration', { exact: true }).clear();
+    await this.page.getByLabel('Duration', { exact: true }).fill('6');
+    await this.page.getByRole('button', { name: 'Save order' }).focus();
+    await this.page.getByRole('button', { name: 'Save order' }).dispatchEvent('click');
+    await expect(this.page.getByText('Sign and close')).toBeVisible();
+    await this.page.getByRole('button', { name: 'Sign and close' }).focus();
+    await this.page.getByRole('button', { name: 'Sign and close' }).dispatchEvent('click');
     delay(4000);
   }
 
