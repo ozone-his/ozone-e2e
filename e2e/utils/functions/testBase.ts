@@ -102,7 +102,7 @@ export class HomePage {
   }
 
   async deletePatient(){
-    await this.page.goto(`${process.env.E2E_BASE_URL}` + '/openmrs/admin/patients/index.htm');
+    await this.page.goto(`${process.env.E2E_BASE_URL}/openmrs/admin/patients/index.htm`);
     await this.page.getByPlaceholder(' ').type(`${patientFullName}`);
     await this.page.locator('#openmrsSearchTable tbody tr.odd td:nth-child(1)').click();
     await this.page.locator('input[name="voidReason"]').fill('Delete patient created by smoke tests');
@@ -165,6 +165,16 @@ export class HomePage {
     delay(2000);
   }
 
+  async searchUpdatedCustomerInOdoo() {
+    await this.page.locator("//a[contains(@class, 'full')]").click();
+    await this.page.getByRole('menuitem', { name: 'Sales' }).click();
+    await this.page.getByRole('img', { name: 'Remove' }).click();
+    delay(1500);
+    await this.page.getByPlaceholder('Search...').type(`${patientName.firstName + ' ' + 'Winniefred'}`);
+    await this.page.getByPlaceholder('Search...').press('Enter');
+    delay(2000);
+  }
+
   async searchClientInSENAITE() {
     await this.page.locator("//i[contains(@class, 'sidebar-toggle-icon')]").click();
     await this.page.getByRole('link', { name: 'Samples Samples' }).click();
@@ -175,6 +185,7 @@ export class HomePage {
   async updatePatientDetails() {
     await this.page.getByRole('button', { name: 'Actions', exact: true }).click();
     await this.page.getByRole('menuitem', { name: 'Edit patient details' }).click();
+    await this.page.getByLabel('Family Name').click();
     await this.page.getByLabel('Family Name').clear();
     await this.page.getByLabel('Family Name').type('Winniefred');
     await this.page.locator('label').filter({ hasText: 'Female' }).locator('span').first().click();

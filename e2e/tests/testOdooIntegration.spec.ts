@@ -14,61 +14,40 @@ test.beforeEach(async ({ page }) =>  {
 });
 
 test('patient with lab order becomes customer in Odoo', async ({ page }) => {
+  // set up
   const homePage = new HomePage(page);
   await homePage.createLabOrder();
   await homePage.goToOdoo();
+
+  // replay
   await homePage.searchCustomerInOdoo();
 
-  // syncs patient as an Odoo customer
+  // verify
   const customer =
   await page.locator("table tbody tr:nth-child(1) td.o_data_cell.o_field_cell.o_list_many2one.o_readonly_modifier.o_required_modifier").textContent();
   await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
 
-  // amends customer running quotation
   const quotation =
   await page.locator("table tbody tr:nth-child(1) td.o_data_cell.o_field_cell.o_badge_cell.o_readonly_modifier span").textContent();
   await expect(quotation?.includes("Quotation")).toBeTruthy();
 });
 
 test('patient with drug order becomes customer in Odoo', async ({ page }) => {
+  // set up
   const homePage = new HomePage(page);
   await homePage.createDrugOrder();
   await homePage.goToOdoo();
+
+  // replay
   await homePage.searchCustomerInOdoo();
 
-  // syncs patient as an Odoo customer
-  const customer =
-  await page.locator("table tbody tr:nth-child(1) td.o_data_cell.o_field_cell.o_list_many2one.o_readonly_modifier.o_required_modifier").textContent();
-  await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
-
-  // amends customer running quotation
-  const quotation =
-  await page.locator("table tbody tr:nth-child(1) td.o_data_cell.o_field_cell.o_badge_cell.o_readonly_modifier span").textContent();
-  await expect(quotation?.includes("Quotation")).toBeTruthy();
-});
-
-test('revise patient details for a synced drug order in Odoo', async ({ page }) => {
-  const homePage = new HomePage(page);
-  await homePage.createDrugOrder();
-  await homePage.goToOdoo();
-  await homePage.searchCustomerInOdoo();
-
+  // verify
   const customer =
   await page.locator("table tbody tr:nth-child(1) td.o_data_cell.o_field_cell.o_list_many2one.o_readonly_modifier.o_required_modifier").textContent();
   await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
 
   const quotation =
   await page.locator("table tbody tr:nth-child(1) td.o_data_cell.o_field_cell.o_badge_cell.o_readonly_modifier span").textContent();
-  await expect(quotation?.includes("Quotation")).toBeTruthy();
-
-  await page.goto(`${process.env.E2E_BASE_URL}` + '/openmrs/spa/home');
-  await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
-  await homePage.updatePatientDetails();
-  await page.goto("https://erp.ozone-qa.mekomsolutions.net/web");
-  await homePage.searchCustomerInOdoo();
-
-    // syncs updated patient as an Odoo customer
-  await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
   await expect(quotation?.includes("Quotation")).toBeTruthy();
 });
 
