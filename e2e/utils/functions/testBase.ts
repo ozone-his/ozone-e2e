@@ -102,7 +102,7 @@ export class HomePage {
   }
 
   async deletePatient(){
-    await this.page.goto('https://ozone-qa.mekomsolutions.net/openmrs/admin/patients/index.htm');
+    await this.page.goto(`${process.env.E2E_BASE_URL}` + '/openmrs/admin/patients/index.htm');
     await this.page.getByPlaceholder(' ').type(`${patientFullName}`);
     await this.page.locator('#openmrsSearchTable tbody tr.odd td:nth-child(1)').click();
     await this.page.locator('input[name="voidReason"]').fill('Delete patient created by smoke tests');
@@ -170,5 +170,16 @@ export class HomePage {
     await this.page.getByRole('link', { name: 'Samples Samples' }).click();
     await this.page.getByRole('textbox', { name: 'Search' }).type(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.locator('div.col-sm-3.text-right button:nth-child(2) i').click();
+  }
+
+  async updatePatientDetails() {
+    await this.page.getByRole('button', { name: 'Actions', exact: true }).click();
+    await this.page.getByRole('menuitem', { name: 'Edit patient details' }).click();
+    await this.page.getByLabel('Family Name').clear();
+    await this.page.getByLabel('Family Name').type('Winniefred');
+    await this.page.locator('label').filter({ hasText: 'Female' }).locator('span').first().click();
+    await this.page.getByRole('button', { name: 'Update Patient' }).click();
+    await expect(this.page.getByText('Patient Details Updated')).toBeVisible();
+    delay(4000);
   }
 }
