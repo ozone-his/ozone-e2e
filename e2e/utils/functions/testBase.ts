@@ -170,7 +170,7 @@ export class HomePage {
     await this.page.getByRole('menuitem', { name: 'Sales' }).click();
     await this.page.getByRole('img', { name: 'Remove' }).click();
     delay(1500);
-    await this.page.getByPlaceholder('Search...').type(`${patientName.firstName + ' ' + 'Winniefred'}`);
+    await this.page.getByPlaceholder('Search...').type('Winniefred'+ ' ' + `${patientName.givenName }`);
     await this.page.getByPlaceholder('Search...').press('Enter');
     delay(2000);
   }
@@ -185,9 +185,9 @@ export class HomePage {
   async updatePatientDetails() {
     await this.page.getByRole('button', { name: 'Actions', exact: true }).click();
     await this.page.getByRole('menuitem', { name: 'Edit patient details' }).click();
-    await this.page.getByLabel('Family Name').click();
-    await this.page.getByLabel('Family Name').clear();
-    await this.page.getByLabel('Family Name').type('Winniefred');
+    await this.page.getByLabel('First Name').click();
+    await this.page.getByLabel('First Name').clear();
+    await this.page.getByLabel('First Name').type('Winniefred');
     await this.page.locator('label').filter({ hasText: 'Female' }).locator('span').first().click();
     await this.page.getByRole('button', { name: 'Update Patient' }).click();
     await expect(this.page.getByText('Patient Details Updated')).toBeVisible();
