@@ -76,7 +76,7 @@ test('Revising a synced drug order edits corresponding quotation line in Odoo', 
   await expect(drugOrderItem).toContainText('Thrice daily - 6 Days');
 });
 
-test('Discontinuing a synced drug order voids corresponding quotation line in Odoo', async ({ page }) => {
+test('Discontinuing a synced drug order cancels corresponding quotation line in Odoo', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
   await homePage.createDrugOrder();
