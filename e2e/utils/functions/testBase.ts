@@ -174,6 +174,15 @@ export class HomePage {
     delay(4000);
   }
 
+  async discontinueADrugOrder() {
+    await this.page.getByRole('button', { name: 'Actions menu' }).click();
+    await this.page.getByRole('menuitem', { name: 'Discontinue' }).click();
+    await expect(this.page.getByText('Sign and close')).toBeVisible();
+    await this.page.getByRole('button', { name: 'Sign and close' }).focus();
+    await this.page.getByRole('button', { name: 'Sign and close' }).dispatchEvent('click');
+    delay(3000);
+  }
+
   async searchCustomerInOdoo() {
     await this.page.locator("//a[contains(@class, 'full')]").click();
     await this.page.getByRole('menuitem', { name: 'Sales' }).click();
