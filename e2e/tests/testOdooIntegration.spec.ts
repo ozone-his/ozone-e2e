@@ -76,6 +76,35 @@ test('Revising a synced drug order edits corresponding quotation line in Odoo', 
   await expect(drugOrderItem).toContainText('Thrice daily - 6 Days');
 });
 
+test('Discontinuing a synced drug order voids corresponding quotation line in Odoo', async ({ page }) => {
+  // setup
+  const homePage = new HomePage(page);
+  await homePage.createDrugOrder();
+  await homePage.goToOdoo();
+  await homePage.searchCustomerInOdoo();
+
+  const customer =
+  await page.locator("table tbody tr:nth-child(1) td.o_data_cell.o_field_cell.o_list_many2one.o_readonly_modifier.o_required_modifier").textContent();
+  await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
+  const quotation =
+  await page.locator("table tbody tr:nth-child(1) td.o_data_cell.o_field_cell.o_badge_cell.o_readonly_modifier span");
+  await expect(quotation).toHaveText('Quotation');
+  await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
+  const drugOrderItem =   await page.locator("table tbody tr:nth-child(1) td.o_data_cell.o_field_cell.o_list_many2one.o_product_configurator_cell.o_required_modifier span span");
+  await expect(drugOrderItem).toHaveText('Aspirin 325mg');
+
+  // replay
+  await page.goto(`${process.env.E2E_BASE_URL}/openmrs/spa/home`);
+  await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
+  await homePage.discontinueADrugOrder();
+
+  // verify
+  await page.goto('https://erp.ozone-qa.mekomsolutions.net/web');
+  await homePage.searchCustomerInOdoo();
+  await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
+  await expect(quotation).toHaveText('Cancelled');
+});
+
 test.afterEach(async ( {page}) =>  {
   const homePage = new HomePage(page);
   await homePage.deletePatient();
