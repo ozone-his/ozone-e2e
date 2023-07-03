@@ -67,10 +67,10 @@ test('Revising a synced drug order edits corresponding quotation line in Odoo', 
   await page.goto('https://ozone-qa.mekomsolutions.net/openmrs/spa/home');
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.editDrugOrder();
-  await page.goto('https://erp.ozone-qa.mekomsolutions.net/web');
-  await homePage.searchCustomerInOdoo();
 
   // verify
+  await page.goto('https://erp.ozone-qa.mekomsolutions.net/web');
+  await homePage.searchCustomerInOdoo();
   await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
   await expect(drugOrderItem).toContainText('8.0 Tablet');
   await expect(drugOrderItem).toContainText('Thrice daily - 6 Days');
