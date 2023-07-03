@@ -77,7 +77,7 @@ test('Editing patient details for a synced drug order edits customer details in 
   const updatedCustomer =
   await page.locator("table tbody tr:nth-child(1) td.o_data_cell.o_field_cell.o_list_many2one.o_readonly_modifier.o_required_modifier");
 
-  await expect(updatedCustomer).toHaveText('Winniefred'+ ' ' + `${patientName.givenName }`);
+  await expect(updatedCustomer).toHaveText('Winniefreds'+ ' ' + `${patientName.givenName }`);
   await expect(quotation?.includes("Quotation")).toBeTruthy();
 });
 
