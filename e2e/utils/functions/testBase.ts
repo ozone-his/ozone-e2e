@@ -185,9 +185,11 @@ export class HomePage {
   async updatePatientDetails() {
     await this.page.getByRole('button', { name: 'Actions', exact: true }).click();
     await this.page.getByRole('menuitem', { name: 'Edit patient details' }).click();
+    delay(4000);
     await this.page.getByLabel('First Name').click();
     await this.page.getByLabel('First Name').clear();
     await this.page.getByLabel('First Name').type('Winniefred');
+    delay(4000);
     await this.page.locator('label').filter({ hasText: 'Female' }).locator('span').first().click();
     await this.page.getByRole('button', { name: 'Update Patient' }).click();
     await expect(this.page.getByText('Patient Details Updated')).toBeVisible();

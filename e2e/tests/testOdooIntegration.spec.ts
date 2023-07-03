@@ -79,6 +79,7 @@ test('Editing patient details for a synced drug order edits customer details in 
 
   await expect(updatedCustomer).toHaveText('Winniefred'+ ' ' + `${patientName.givenName }`);
   await expect(quotation?.includes("Quotation")).toBeTruthy();
+  patientName.firstName = 'Winniefred';
 });
 
 test.afterEach(async ( {page}) =>  {
