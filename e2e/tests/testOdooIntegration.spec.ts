@@ -82,6 +82,36 @@ test('Editing patient details for a synced drug order edits customer details in 
   patientName.firstName = 'Winniefred';
 });
 
+test('Editing patient details for a synced lab order edits customer details in Odoo', async ({ page }) => {
+  // setup
+  const homePage = new HomePage(page);
+  await homePage.createLabOrder();
+  await homePage.goToOdoo();
+  await homePage.searchCustomerInOdoo();
+  const customer =
+  await page.locator("table tbody tr:nth-child(1) td.o_data_cell.o_field_cell.o_list_many2one.o_readonly_modifier.o_required_modifier").textContent();
+  await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
+
+  const quotation =
+  await page.locator("table tbody tr:nth-child(1) td.o_data_cell.o_field_cell.o_badge_cell.o_readonly_modifier span").textContent();
+  await expect(quotation?.includes("Quotation")).toBeTruthy();
+
+  // replay
+  await page.goto(`${process.env.E2E_BASE_URL}/openmrs/spa/home`);
+  await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
+  await homePage.updatePatientDetails();
+
+  // verify
+  await page.goto("https://erp.ozone-qa.mekomsolutions.net/web");
+  await homePage.searchUpdatedCustomerInOdoo();
+  const updatedCustomer =
+  await page.locator("table tbody tr:nth-child(1) td.o_data_cell.o_field_cell.o_list_many2one.o_readonly_modifier.o_required_modifier");
+
+  await expect(updatedCustomer).toHaveText('Winniefred' + ' ' + `${patientName.givenName }`);
+  await expect(quotation?.includes("Quotation")).toBeTruthy();
+  patientName.firstName = 'Winniefred';
+});
+
 test('Revising a synced drug order edits corresponding quotation line in Odoo', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
