@@ -14,7 +14,7 @@ test.beforeEach(async ({ page }) =>  {
 });
 
 test('patient with lab order becomes customer in Odoo', async ({ page }) => {
-  // set up
+  // setup
   const homePage = new HomePage(page);
   await homePage.createLabOrder();
   await homePage.goToOdoo();
@@ -33,7 +33,7 @@ test('patient with lab order becomes customer in Odoo', async ({ page }) => {
 });
 
 test('patient with drug order becomes customer in Odoo', async ({ page }) => {
-  // set up
+  // setup
   const homePage = new HomePage(page);
   await homePage.createDrugOrder();
   await homePage.goToOdoo();
@@ -52,7 +52,7 @@ test('patient with drug order becomes customer in Odoo', async ({ page }) => {
 });
 
 test('Editing patient details for a synced drug order edits customer details in Odoo', async ({ page }) => {
-  // set up
+  // setup
   const homePage = new HomePage(page);
   await homePage.createDrugOrder();
   await homePage.goToOdoo();

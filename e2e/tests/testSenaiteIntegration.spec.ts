@@ -14,7 +14,7 @@ test.beforeEach(async ({ page }) =>  {
 });
 
 test('patient with lab order becomes client in SENAITE', async ({ page }) => {
-  // set up
+  // setup
   const homePage = new HomePage(page);
   await homePage.createLabOrder();
   await homePage.goToSENAITE();
