@@ -14,15 +14,16 @@ test.beforeEach(async ({ page }) =>  {
 });
 
 test('patient with lab order becomes client in SENAITE', async ({ page }) => {
+  // setup
   const homePage = new HomePage(page);
   await homePage.createLabOrder();
   await homePage.goToSENAITE();
-
   await expect(page).toHaveURL(/.*senaite/);
 
+  // replay
   await homePage.searchClientInSENAITE();
 
-  // syncs patient as a SENAITE client
+  // verify
   const client =
   await page.locator('table tbody tr:nth-child(1) td.contentcell.Client div span span a').textContent();
   await expect(client?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
