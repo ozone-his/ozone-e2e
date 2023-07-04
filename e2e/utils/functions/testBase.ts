@@ -128,7 +128,30 @@ export class HomePage {
     await expect(this.page.getByText('Lab order(s) generated')).toBeVisible();
 
     await this.page.getByRole('button', { name: 'Close' }).click();
-    await delay(4000);
+    delay(4000);
+  }
+
+  async updateLabOrder() {
+    await this.page.getByRole('link', { name: 'Visits' }).click();
+    await this.page.getByRole('tab', { name: 'All encounters' }).click();
+    await this.page.getByRole('row', { name: 'Encounter table actions menu' }).getByRole('button', { name: 'Encounter table actions menu' }).click();
+    await this.page.getByRole('menuitem', { name: 'Edit this encounter' }).click();
+    await this.page.locator('#tab select').selectOption('160225AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+    await this.page.getByRole('button', { name: 'Save and close' }).click();
+    await expect(this.page.getByText('Lab order(s) generated')).toBeVisible();
+    delay(2000);
+  }
+
+  async discontinueLabOrder() {
+    await this.page.getByRole('link', { name: 'Visits' }).click();
+    await this.page.getByRole('tab', { name: 'All encounters' }).click();
+    await this.page.getByRole('row', { name: 'Encounter table actions menu' }).getByRole('button', { name: 'Encounter table actions menu' }).click();
+    await this.page.getByRole('menuitem', { name: 'Delete this encounter' }).click();
+    await this.page.getByRole('button', { name: 'danger Delete' }).click();
+
+    await expect(this.page.getByText('Encounter deleted')).toBeVisible();
+    await expect(this.page.getByText('Encounter successfully deleted')).toBeVisible();
+    delay(2000);
   }
 
   async createDrugOrder() {
@@ -155,7 +178,7 @@ export class HomePage {
     delay(4000);
   }
 
-  async editDrugOrder() {
+  async updateDrugOrder() {
     await this.page.getByRole('button', { name: 'Actions menu' }).click();
     await this.page.getByRole('menuitem', { name: 'Modify' }).click();
     await this.page.getByRole('listitem').filter({ hasText: 'Modify' }).click();
@@ -174,7 +197,7 @@ export class HomePage {
     delay(4000);
   }
 
-  async discontinueADrugOrder() {
+  async discontinueDrugOrder() {
     await this.page.getByRole('button', { name: 'Actions menu' }).click();
     await this.page.getByRole('menuitem', { name: 'Discontinue' }).click();
     await expect(this.page.getByText('Sign and close')).toBeVisible();
