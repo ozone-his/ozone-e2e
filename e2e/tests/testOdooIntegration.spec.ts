@@ -73,9 +73,9 @@ test('Revising a synced lab order edits corresponding quotation line in Odoo', a
   await page.locator("table tbody tr:nth-child(1) td.o_data_cell.o_field_cell.o_list_many2one.o_readonly_modifier.o_required_modifier").textContent();
   await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
   await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
-  const drugOrderItem =   await page.locator("table tbody tr:nth-child(1) td.o_data_cell.o_field_cell.o_list_many2one.o_product_configurator_cell.o_required_modifier span span");
+  const labOrderItem =   await page.locator("table tbody tr:nth-child(1) td.o_data_cell.o_field_cell.o_list_many2one.o_product_configurator_cell.o_required_modifier span span");
 
-  await expect(drugOrderItem).toContainText('Blood urea nitrogen');
+  await expect(labOrderItem).toContainText('Blood urea nitrogen');
 
   // replay
   await page.goto('https://ozone-qa.mekomsolutions.net/openmrs/spa/home');
@@ -86,10 +86,9 @@ test('Revising a synced lab order edits corresponding quotation line in Odoo', a
   await page.goto('https://erp.ozone-qa.mekomsolutions.net/web');
   await homePage.searchCustomerInOdoo();
   await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
+  const updatedlabOrderItem = await page.locator("table tbody tr:nth-child(2) td.o_data_cell.o_field_cell.o_list_many2one.o_product_configurator_cell.o_required_modifier span span");
 
-  const updatedDrugOrderItem =   await page.locator("table tbody tr:nth-child(2) td.o_data_cell.o_field_cell.o_list_many2one.o_product_configurator_cell.o_required_modifier span span");
-
-  await expect(updatedDrugOrderItem).toContainText('Sickle cell screening test');
+  await expect(updatedlabOrderItem).toContainText('Sickle cell screening test');
 });
 
 test('Discontinuing a synced lab order cancels corresponding quotation line in Odoo', async ({ page }) => {
@@ -120,8 +119,8 @@ test('Discontinuing a synced lab order cancels corresponding quotation line in O
   await homePage.searchCustomerInOdoo();
   await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
 
+  // This test will be enabled when OZ-250 is fixed.
   // await expect(quotation).toHaveText('Cancelled');
-  await expect(quotation).toHaveText('Quotation');
 });
 
 test('patient with drug order becomes customer in Odoo', async ({ page }) => {
