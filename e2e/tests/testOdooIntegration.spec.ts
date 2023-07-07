@@ -13,7 +13,7 @@ test.beforeEach(async ({ page }) =>  {
     await homePage.createPatient();
 });
 
-test('patient with lab order becomes customer in Odoo', async ({ page }) => {
+test('Patient with lab order becomes customer in Odoo', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
   await homePage.createLabOrder();
@@ -32,7 +32,7 @@ test('patient with lab order becomes customer in Odoo', async ({ page }) => {
   await expect(quotation?.includes("Quotation")).toBeTruthy();
 });
 
-test('patient with drug order becomes customer in Odoo', async ({ page }) => {
+test('Patient with drug order becomes customer in Odoo', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
   await homePage.createDrugOrder();

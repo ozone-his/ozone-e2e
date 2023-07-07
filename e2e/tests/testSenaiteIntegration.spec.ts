@@ -13,7 +13,7 @@ test.beforeEach(async ({ page }) =>  {
     await homePage.createPatient();
 });
 
-test('patient with lab order becomes client in SENAITE', async ({ page }) => {
+test('Patient with lab order syncs client with analysis request in SENAITE', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
   await homePage.createLabOrder();
