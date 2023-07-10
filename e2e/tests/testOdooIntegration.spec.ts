@@ -32,7 +32,7 @@ test('Patient with lab order becomes customer in Odoo', async ({ page }) => {
   await expect(quotation?.includes("Quotation")).toBeTruthy();
 });
 
-test('Editing patient with a synced lab order edits the corresponding customer details in Odoo', async ({ page }) => {
+test('Editing patient details with a synced lab order edits the corresponding customer details in Odoo', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
   await homePage.createLabOrder();
