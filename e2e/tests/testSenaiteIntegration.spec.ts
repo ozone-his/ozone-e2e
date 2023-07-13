@@ -43,7 +43,7 @@ test('Editing patient details with a synced lab test order edits client details 
   await homePage.updatePatientDetails();
 
   // verify
-  await homePage.returnToSENAITE();
+  await homePage.goToSENAITE();
   await homePage.searchUpdatedClientInSENAITE();
 
   await expect(client).toContainText('Winniefred' + ' ' + `${patientName.givenName }`);
