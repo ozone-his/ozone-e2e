@@ -41,10 +41,6 @@ export class HomePage {
     await this.page.goto('https://lims.ozone-qa.mekomsolutions.net/');
   }
 
-  async returnToSENAITE() {
-    await this.page.goto('https://lims.ozone-qa.mekomsolutions.net/senaite-dashboard');
-  }
-
   async createPatient() {
     patientName = {
       firstName : `e2e_test_${Math.floor(Math.random() * 10000)}`,
