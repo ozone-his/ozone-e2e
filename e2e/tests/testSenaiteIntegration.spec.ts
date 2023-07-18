@@ -50,7 +50,7 @@ test('Editing patient details with a synced lab test order edits client details 
   patientName.firstName = 'Winniefred';
 });
 
-test('Revising a synced lab order edits corresponding analysis request in SENAITE', async ({ page }) => {
+test('Editing a synced lab order edits corresponding analysis request in SENAITE', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
   await homePage.createLabOrder();
@@ -83,7 +83,7 @@ test('Revising a synced lab order edits corresponding analysis request in SENAIT
   await expect(analysisRequest).toHaveText('Sickle cell screening test Template');
 });
 
-test('Discontinuing a synced lab order cancels corresponding analysis request in SENAITE', async ({ page }) => {
+test('Voiding a synced lab order cancels corresponding analysis request in SENAITE', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
   await homePage.createLabOrder();
