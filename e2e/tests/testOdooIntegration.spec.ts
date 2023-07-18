@@ -5,12 +5,12 @@ import { patientName } from '../utils/functions/testBase';
 let homePage: HomePage;
 
 test.beforeEach(async ({ page }) =>  {
-    const homePage = new HomePage(page);
-    await homePage.initiateLogin();
+  const homePage = new HomePage(page);
+  await homePage.initiateLogin();
 
-    await expect(page).toHaveURL(/.*home/);
+  await expect(page).toHaveURL(/.*home/);
 
-    await homePage.createPatient();
+  await homePage.createPatient();
 });
 
 test('Patient with lab order becomes customer in Odoo', async ({ page }) => {
@@ -161,7 +161,7 @@ test('Discontinuing a synced drug order cancels corresponding quotation line in 
   // replay
   await page.goto(`${process.env.E2E_BASE_URL}/openmrs/spa/home`);
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
-  await homePage.discontinueADrugOrder();
+  await homePage.discontinueDrugOrder();
 
   // verify
   await page.goto('https://erp.ozone-qa.mekomsolutions.net/web');

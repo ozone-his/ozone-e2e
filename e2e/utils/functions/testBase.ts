@@ -58,8 +58,6 @@ export class HomePage {
     await this.page.locator('div').filter({ hasText: /^Date of Birth Known\?YesNo$/ }).getByRole('tab', { name: 'No' }).click();
     await this.page.getByLabel('Estimated age in years').clear();
     await this.page.getByLabel('Estimated age in years').type('24');
-    await this.page.getByLabel('Estimated age in months').clear();
-    await this.page.getByLabel('Estimated age in months').type('8');
     await expect(this.page.getByText('Register Patient')).toBeVisible();
     if (await this.page.getByTitle('close notification').isVisible()) {
       await this.page.getByTitle('close notification').click();
@@ -110,12 +108,10 @@ export class HomePage {
 
     const message = await this.page.locator('//*[@id="patientFormVoided"]').textContent();
     expect(message?.includes('This patient has been deleted')).toBeTruthy();
-
     await this.page.getByRole('link', { name: 'Log out' }).click();
   }
 
   async createLabOrder() {
-    await this.page.waitForSelector('div.-esm-patient-chart__action-menu__chartExtensions___Pqgr8 div:nth-child(3) button');
     await this.page.locator('div').filter({ hasText: /^Form$/ }).getByRole('button').click();
     delay(2000);
     await expect(this.page.getByText('Laboratory Tests')).toBeVisible();
@@ -127,6 +123,22 @@ export class HomePage {
 
     await expect(this.page.getByText('Lab order(s) generated')).toBeVisible();
 
+    await this.page.getByRole('button', { name: 'Close' }).click();
+    await delay(4000);
+  }
+
+  async createLabTestOrder() {
+    await this.page.locator('div').filter({ hasText: /^Form$/ }).getByRole('button').click();
+    delay(2000);
+    await expect(this.page.getByText('Laboratory Tests')).toBeVisible();
+
+    await this.page.getByText('Laboratory Tests').click();
+    await this.page.getByRole('button', { name: 'Add', exact: true }).click();
+  }
+
+  async saveLabTestOrder() {
+    await this.page.getByRole('button', { name: 'Save and close' }).click();
+    await expect(this.page.getByText('Lab order(s) generated')).toBeVisible();
     await this.page.getByRole('button', { name: 'Close' }).click();
     await delay(4000);
   }
@@ -152,6 +164,36 @@ export class HomePage {
     await expect(this.page.getByText('Encounter deleted')).toBeVisible();
     await expect(this.page.getByText('Encounter successfully deleted')).toBeVisible();
     delay(2000);
+  }
+
+  async createPartition() {
+    await this.page.locator('table tbody tr:nth-child(1) td.contentcell.title div').click();
+    await this.page.locator('input[type=checkbox]').first().click();
+    await this.page.locator('#receive_transition span:nth-child(1)').click();
+    await this.page.getByRole('button', { name: 'Create Partitions' }).click();
+    await this.page.locator('table tbody tr:nth-child(1) td.contentcell.getId div span a').click();
+    delay(3000);
+  }
+
+  async generateLabReport() {
+    await this.page.locator('#ajax_save_selection').click();
+    await this.page.getByRole('button', { name: 'Submit' }).click();
+    await this.page.locator('input[name="uids\\:list"]').first().check();
+    await this.page.getByRole('button', { name: 'Verify' }).click();
+    await this.page.getByRole('navigation', { name: 'breadcrumb' }).getByRole('link', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
+    await this.page.locator('input[name="uids\\:list"]').check();
+    await this.page.locator('#publish_transition span:nth-child(1)').click();
+    delay(5000)
+    await this.page.getByRole('button', { name: 'Email' }).click();
+    delay(5000)
+    await this.page.getByRole('button', { name: 'Send' }).click();
+    delay(5000)
+  }
+
+  async viewLabTestResult() {
+    await this.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
+    await this.page.getByRole('link', { name: 'Test Results' }).click();
+    await this.page.getByRole('tab', { name: 'Panel' }).click();
   }
 
   async createDrugOrder() {
@@ -197,7 +239,7 @@ export class HomePage {
     delay(4000);
   }
 
-  async discontinueADrugOrder() {
+  async discontinueDrugOrder() {
     await this.page.getByRole('button', { name: 'Actions menu' }).click();
     await this.page.getByRole('menuitem', { name: 'Discontinue' }).click();
     await expect(this.page.getByText('Sign and close')).toBeVisible();

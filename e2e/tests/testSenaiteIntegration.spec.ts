@@ -5,12 +5,12 @@ import { patientName } from '../utils/functions/testBase';
 let homePage: HomePage;
 
 test.beforeEach(async ({ page }) =>  {
-    const homePage = new HomePage(page);
-    await homePage.initiateLogin();
+  const homePage = new HomePage(page);
+  await homePage.initiateLogin();
 
-    await expect(page).toHaveURL(/.*home/);
+  await expect(page).toHaveURL(/.*home/);
 
-    await homePage.createPatient();
+  await homePage.createPatient();
 });
 
 test('Patient with lab order becomes client with analysis request in SENAITE', async ({ page }) => {
@@ -112,7 +112,88 @@ test('Voiding a synced lab order cancels corresponding analysis request in SENAI
   await expect(client).not.toHaveText(`${patientName.firstName + ' ' + patientName.givenName}`);
 });
 
-test.afterEach(async ( {page}) =>  {
+test('Publish coded lab results from SENAITE to be viewable in O3', async ({ page }) => {
+  // setup
+  const homePage = new HomePage(page);
+  await homePage.createLabTestOrder();
+  await page.locator('#tab select').selectOption('1325AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  await homePage.saveLabTestOrder();
+  await homePage.goToSENAITE();
+  await expect(page).toHaveURL(/.*senaite/);
+
+  // replay
+  await homePage.searchClientInSENAITE();
+  await homePage.createPartition();
+  await page.getByRole('combobox', { name: 'Result' }).selectOption('664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  await homePage.generateLabReport();
+  const reviewState = await page.locator('table tbody tr.contentrow.state-published.parent td.contentcell.State span span').textContent();
+  await expect(reviewState?.includes('Published')).toBeTruthy();
+
+  // verify
+  await page.goto(`${process.env.E2E_BASE_URL}/openmrs/spa/home`);
+  await homePage.viewLabTestResult();
+  const testName = await page.locator('div:nth-child(2) >div> div.cds--data-table-container td:nth-child(1)').first();
+  await expect(testName).toContainText('Hepatitis C test - qualitative');
+
+  const labResult = await page.locator('div:nth-child(2) >div> div.cds--data-table-container table tbody tr td:nth-child(2) span').first();
+  await expect(labResult).toContainText('Negative');
+});
+
+test('Publish numeric lab results from SENAITE to be viewable in O3', async ({ page }) => {
+  // setup
+  const homePage = new HomePage(page);
+  await homePage.createLabTestOrder();
+  await page.locator('#tab select').selectOption('655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  await homePage.saveLabTestOrder();
+  await homePage.goToSENAITE();
+  await expect(page).toHaveURL(/.*senaite/);
+
+  // replay
+  await homePage.searchClientInSENAITE();
+  await homePage.createPartition();
+  await page.locator('tr:nth-child(1) td.contentcell.Result div span input').fill('64');
+  await homePage.generateLabReport();
+  const reviewState = await page.locator('table tbody tr.contentrow.state-published.parent td.contentcell.State span span').textContent();
+  await expect(reviewState?.includes('Published')).toBeTruthy();
+
+  // verify
+  await page.goto(`${process.env.E2E_BASE_URL}/openmrs/spa/home`);
+  await homePage.viewLabTestResult();
+  const testName = await page.locator('div:nth-child(2) >div> div.cds--data-table-container td:nth-child(1)').first();
+  await expect(testName).toContainText('Total bilirubin');
+
+  const labResult = await page.locator('div:nth-child(2) >div> div.cds--data-table-container table tbody tr td:nth-child(2) span').first();
+  await expect(labResult).toContainText('64');
+});
+
+test('Publish free text lab results from SENAITE to be viewable in O3', async ({ page }) => {
+  // setup
+  const homePage = new HomePage(page);
+  await homePage.createLabTestOrder();
+  await page.locator('#tab select').selectOption('161447AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  await homePage.saveLabTestOrder();
+  await homePage.goToSENAITE();
+  await expect(page).toHaveURL(/.*senaite/);
+
+  // replay
+  await homePage.searchClientInSENAITE();
+  await homePage.createPartition();
+  await page.locator('div:nth-child(4) div table tbody tr td.contentcell.Result div span input').fill('Test result: Normal');
+  await homePage.generateLabReport();
+  const reviewState = await page.locator('table tbody tr.contentrow.state-published.parent td.contentcell.State span span').textContent();
+  await expect(reviewState?.includes('Published')).toBeTruthy();
+
+  // verify
+  await page.goto(`${process.env.E2E_BASE_URL}/openmrs/spa/home`);
+  await homePage.viewLabTestResult();
+  const testName = await page.locator('div:nth-child(2) >div> div.cds--data-table-container td:nth-child(1)').first();
+  await expect(testName).toHaveText('Stool microscopy with concentration');
+
+  const labResult = await page.locator('div:nth-child(2) >div> div.cds--data-table-container table tbody tr td:nth-child(2) span').first();
+  await expect(labResult).toHaveText('Test result: Normal');
+});
+
+test.afterEach(async ({ page }) => {
   const homePage = new HomePage(page);
   await homePage.deletePatient();
   await page.close();
