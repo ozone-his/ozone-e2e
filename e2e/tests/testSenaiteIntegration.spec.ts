@@ -4,7 +4,7 @@ import { patientName } from '../utils/functions/testBase';
 
 let homePage: HomePage;
 
-test.beforeEach(async ({ page }) =>  {
+test.beforeEach(async ({ page }) => {
   const homePage = new HomePage(page);
   await homePage.initiateLogin();
 
@@ -124,7 +124,7 @@ test('Voiding a synced lab order cancels corresponding analysis request in SENAI
   await expect(client).not.toHaveText(`${patientName.firstName + ' ' + patientName.givenName}`);
 });
 
-test('Published coded lab results from SENAITE to be viewable in O3', async ({ page }) => {
+test('Published coded lab results from SENAITE are viewable in O3', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
   await homePage.goToLabOrderForm();
@@ -138,7 +138,7 @@ test('Published coded lab results from SENAITE to be viewable in O3', async ({ p
   await homePage.searchClientInSENAITE();
   await homePage.createPartition();
   await page.getByRole('combobox', { name: 'Result' }).selectOption('664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
-  await homePage.publishLabReport();
+  await homePage.publishLabResults();
   const reviewState = await page.locator('table tbody tr.contentrow.state-published.parent td.contentcell.State span span').textContent();
   await expect(reviewState?.includes('Published')).toBeTruthy();
 
@@ -152,7 +152,7 @@ test('Published coded lab results from SENAITE to be viewable in O3', async ({ p
   await expect(labResult).toContainText('Negative');
 });
 
-test('Published numeric lab results from SENAITE to be viewable in O3', async ({ page }) => {
+test('Published numeric lab results from SENAITE are viewable in O3', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
   await homePage.goToLabOrderForm();
@@ -166,7 +166,7 @@ test('Published numeric lab results from SENAITE to be viewable in O3', async ({
   await homePage.searchClientInSENAITE();
   await homePage.createPartition();
   await page.locator('tr:nth-child(1) td.contentcell.Result div span input').fill('64');
-  await homePage.publishLabReport();
+  await homePage.publishLabResults();
   const reviewState = await page.locator('table tbody tr.contentrow.state-published.parent td.contentcell.State span span').textContent();
   await expect(reviewState?.includes('Published')).toBeTruthy();
 
@@ -180,7 +180,7 @@ test('Published numeric lab results from SENAITE to be viewable in O3', async ({
   await expect(labResult).toContainText('64');
 });
 
-test('Published free text lab results from SENAITE to be viewable in O3', async ({ page }) => {
+test('Published free text lab results from SENAITE are viewable in O3', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
   await homePage.goToLabOrderForm();
@@ -194,7 +194,7 @@ test('Published free text lab results from SENAITE to be viewable in O3', async 
   await homePage.searchClientInSENAITE();
   await homePage.createPartition();
   await page.locator('div:nth-child(4) div table tbody tr td.contentcell.Result div span input').fill('Test result: Normal');
-  await homePage.publishLabReport();
+  await homePage.publishLabResults();
   const reviewState = await page.locator('table tbody tr.contentrow.state-published.parent td.contentcell.State span span').textContent();
   await expect(reviewState?.includes('Published')).toBeTruthy();
 

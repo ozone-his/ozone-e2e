@@ -4,7 +4,7 @@ import { patientName } from '../utils/functions/testBase';
 
 let homePage: HomePage;
 
-test.beforeEach(async ({ page }) =>  {
+test.beforeEach(async ({ page }) => {
   const homePage = new HomePage(page);
   await homePage.initiateLogin();
 
@@ -176,7 +176,7 @@ test('Discontinuing a synced drug order cancels corresponding quotation line in 
   await expect(quotation).toHaveText('Cancelled');
 });
 
-test.afterEach(async ( {page}) =>  {
+test.afterEach(async ({ page }) => {
   const homePage = new HomePage(page);
   await homePage.deletePatient();
   await page.close();

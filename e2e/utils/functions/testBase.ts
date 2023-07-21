@@ -158,7 +158,7 @@ export class HomePage {
     delay(3000);
   }
 
-  async publishLabReport() {
+  async publishLabResults() {
     await this.page.locator('#ajax_save_selection').click();
     await this.page.getByRole('button', { name: 'Submit' }).click();
     await this.page.locator('input[name="uids\\:list"]').first().check();
