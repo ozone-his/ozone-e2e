@@ -111,32 +111,15 @@ export class HomePage {
     await this.page.getByRole('link', { name: 'Log out' }).click();
   }
 
-  async createLabOrder() {
+  async goToLabOrderForm() {
     await this.page.locator('div').filter({ hasText: /^Form$/ }).getByRole('button').click();
     delay(2000);
     await expect(this.page.getByText('Laboratory Tests')).toBeVisible();
 
     await this.page.getByText('Laboratory Tests').click();
-    await this.page.getByRole('button', { name: 'Add', exact: true }).click();
-    await this.page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
-    await this.page.getByRole('button', { name: 'Save and close' }).click();
-
-    await expect(this.page.getByText('Lab order(s) generated')).toBeVisible();
-
-    await this.page.getByRole('button', { name: 'Close' }).click();
-    await delay(4000);
   }
 
-  async createLabTestOrder() {
-    await this.page.locator('div').filter({ hasText: /^Form$/ }).getByRole('button').click();
-    delay(2000);
-    await expect(this.page.getByText('Laboratory Tests')).toBeVisible();
-
-    await this.page.getByText('Laboratory Tests').click();
-    await this.page.getByRole('button', { name: 'Add', exact: true }).click();
-  }
-
-  async saveLabTestOrder() {
+  async saveLabOrder() {
     await this.page.getByRole('button', { name: 'Save and close' }).click();
     await expect(this.page.getByText('Lab order(s) generated')).toBeVisible();
     await this.page.getByRole('button', { name: 'Close' }).click();
@@ -175,7 +158,7 @@ export class HomePage {
     delay(3000);
   }
 
-  async generateLabReport() {
+  async publishLabReport() {
     await this.page.locator('#ajax_save_selection').click();
     await this.page.getByRole('button', { name: 'Submit' }).click();
     await this.page.locator('input[name="uids\\:list"]').first().check();

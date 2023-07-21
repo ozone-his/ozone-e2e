@@ -16,7 +16,10 @@ test.beforeEach(async ({ page }) =>  {
 test('Patient with lab order becomes customer in Odoo', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
-  await homePage.createLabOrder();
+  await homePage.goToLabOrderForm();
+  await page.getByRole('button', { name: 'Add', exact: true }).click();
+  await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  await homePage.saveLabOrder();
   await homePage.goToOdoo();
 
   // replay
@@ -35,7 +38,10 @@ test('Patient with lab order becomes customer in Odoo', async ({ page }) => {
 test('Editing patient details with a synced lab order edits the corresponding customer details in Odoo', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
-  await homePage.createLabOrder();
+  await homePage.goToLabOrderForm();
+  await page.getByRole('button', { name: 'Add', exact: true }).click();
+  await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  await homePage.saveLabOrder();
   await homePage.goToOdoo();
   await homePage.searchCustomerInOdoo();
   const customer =

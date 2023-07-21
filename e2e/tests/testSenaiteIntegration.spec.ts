@@ -16,7 +16,10 @@ test.beforeEach(async ({ page }) =>  {
 test('Patient with lab order becomes client with analysis request in SENAITE', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
-  await homePage.createLabOrder();
+  await homePage.goToLabOrderForm();
+  await page.getByRole('button', { name: 'Add', exact: true }).click();
+  await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  await homePage.saveLabOrder();
   await homePage.goToSENAITE();
   await expect(page).toHaveURL(/.*senaite/);
 
@@ -31,7 +34,10 @@ test('Patient with lab order becomes client with analysis request in SENAITE', a
 test('Editing patient details with a synced lab test order edits client details in SENAITE', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
-  await homePage.createLabOrder();
+  await homePage.goToLabOrderForm();
+  await page.getByRole('button', { name: 'Add', exact: true }).click();
+  await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  await homePage.saveLabOrder();
   await homePage.goToSENAITE();
   await homePage.searchClientInSENAITE();
   const client = await page.locator('table tbody tr:nth-child(1) td.contentcell.title div span a');
@@ -53,7 +59,10 @@ test('Editing patient details with a synced lab test order edits client details 
 test('Editing a synced lab order edits corresponding analysis request in SENAITE', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
-  await homePage.createLabOrder();
+  await homePage.goToLabOrderForm();
+  await page.getByRole('button', { name: 'Add', exact: true }).click();
+  await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  await homePage.saveLabOrder();
   await homePage.goToSENAITE();
   await expect(page).toHaveURL(/.*senaite/);
 
@@ -86,7 +95,10 @@ test('Editing a synced lab order edits corresponding analysis request in SENAITE
 test('Voiding a synced lab order cancels corresponding analysis request in SENAITE', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
-  await homePage.createLabOrder();
+  await homePage.goToLabOrderForm();
+  await page.getByRole('button', { name: 'Add', exact: true }).click();
+  await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  await homePage.saveLabOrder();
   await homePage.goToSENAITE();
   await expect(page).toHaveURL(/.*senaite/);
 
@@ -112,12 +124,13 @@ test('Voiding a synced lab order cancels corresponding analysis request in SENAI
   await expect(client).not.toHaveText(`${patientName.firstName + ' ' + patientName.givenName}`);
 });
 
-test('Publish coded lab results from SENAITE to be viewable in O3', async ({ page }) => {
+test('Published coded lab results from SENAITE to be viewable in O3', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
-  await homePage.createLabTestOrder();
+  await homePage.goToLabOrderForm();
+  await page.getByRole('button', { name: 'Add', exact: true }).click();
   await page.locator('#tab select').selectOption('1325AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
-  await homePage.saveLabTestOrder();
+  await homePage.saveLabOrder();
   await homePage.goToSENAITE();
   await expect(page).toHaveURL(/.*senaite/);
 
@@ -125,7 +138,7 @@ test('Publish coded lab results from SENAITE to be viewable in O3', async ({ pag
   await homePage.searchClientInSENAITE();
   await homePage.createPartition();
   await page.getByRole('combobox', { name: 'Result' }).selectOption('664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
-  await homePage.generateLabReport();
+  await homePage.publishLabReport();
   const reviewState = await page.locator('table tbody tr.contentrow.state-published.parent td.contentcell.State span span').textContent();
   await expect(reviewState?.includes('Published')).toBeTruthy();
 
@@ -139,12 +152,13 @@ test('Publish coded lab results from SENAITE to be viewable in O3', async ({ pag
   await expect(labResult).toContainText('Negative');
 });
 
-test('Publish numeric lab results from SENAITE to be viewable in O3', async ({ page }) => {
+test('Published numeric lab results from SENAITE to be viewable in O3', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
-  await homePage.createLabTestOrder();
+  await homePage.goToLabOrderForm();
+  await page.getByRole('button', { name: 'Add', exact: true }).click();
   await page.locator('#tab select').selectOption('655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
-  await homePage.saveLabTestOrder();
+  await homePage.saveLabOrder();
   await homePage.goToSENAITE();
   await expect(page).toHaveURL(/.*senaite/);
 
@@ -152,7 +166,7 @@ test('Publish numeric lab results from SENAITE to be viewable in O3', async ({ p
   await homePage.searchClientInSENAITE();
   await homePage.createPartition();
   await page.locator('tr:nth-child(1) td.contentcell.Result div span input').fill('64');
-  await homePage.generateLabReport();
+  await homePage.publishLabReport();
   const reviewState = await page.locator('table tbody tr.contentrow.state-published.parent td.contentcell.State span span').textContent();
   await expect(reviewState?.includes('Published')).toBeTruthy();
 
@@ -166,12 +180,13 @@ test('Publish numeric lab results from SENAITE to be viewable in O3', async ({ p
   await expect(labResult).toContainText('64');
 });
 
-test('Publish free text lab results from SENAITE to be viewable in O3', async ({ page }) => {
+test('Published free text lab results from SENAITE to be viewable in O3', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
-  await homePage.createLabTestOrder();
+  await homePage.goToLabOrderForm();
+  await page.getByRole('button', { name: 'Add', exact: true }).click();
   await page.locator('#tab select').selectOption('161447AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
-  await homePage.saveLabTestOrder();
+  await homePage.saveLabOrder();
   await homePage.goToSENAITE();
   await expect(page).toHaveURL(/.*senaite/);
 
@@ -179,7 +194,7 @@ test('Publish free text lab results from SENAITE to be viewable in O3', async ({
   await homePage.searchClientInSENAITE();
   await homePage.createPartition();
   await page.locator('div:nth-child(4) div table tbody tr td.contentcell.Result div span input').fill('Test result: Normal');
-  await homePage.generateLabReport();
+  await homePage.publishLabReport();
   const reviewState = await page.locator('table tbody tr.contentrow.state-published.parent td.contentcell.State span span').textContent();
   await expect(reviewState?.includes('Published')).toBeTruthy();
 
