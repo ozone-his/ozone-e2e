@@ -144,7 +144,7 @@ test('Published coded lab results from SENAITE are viewable in O3', async ({ pag
 
   // verify
   await page.goto(`${process.env.E2E_BASE_URL}/openmrs/spa/home`);
-  await homePage.viewLabTestResult();
+  await homePage.viewTestResults();
   const testName = await page.locator('div:nth-child(2) >div> div.cds--data-table-container td:nth-child(1)').first();
   await expect(testName).toContainText('Hepatitis C test - qualitative');
 
@@ -172,7 +172,7 @@ test('Published numeric lab results from SENAITE are viewable in O3', async ({ p
 
   // verify
   await page.goto(`${process.env.E2E_BASE_URL}/openmrs/spa/home`);
-  await homePage.viewLabTestResult();
+  await homePage.viewTestResults();
   const testName = await page.locator('div:nth-child(2) >div> div.cds--data-table-container td:nth-child(1)').first();
   await expect(testName).toContainText('Total bilirubin');
 
@@ -200,7 +200,7 @@ test('Published free text lab results from SENAITE are viewable in O3', async ({
 
   // verify
   await page.goto(`${process.env.E2E_BASE_URL}/openmrs/spa/home`);
-  await homePage.viewLabTestResult();
+  await homePage.viewTestResults();
   const testName = await page.locator('div:nth-child(2) >div> div.cds--data-table-container td:nth-child(1)').first();
   await expect(testName).toHaveText('Stool microscopy with concentration');
 

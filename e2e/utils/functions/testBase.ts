@@ -173,7 +173,7 @@ export class HomePage {
     delay(5000)
   }
 
-  async viewLabTestResult() {
+  async viewTestResults() {
     await this.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.getByRole('link', { name: 'Test Results' }).click();
     await this.page.getByRole('tab', { name: 'Panel' }).click();
