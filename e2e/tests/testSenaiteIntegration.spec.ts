@@ -4,19 +4,22 @@ import { patientName } from '../utils/functions/testBase';
 
 let homePage: HomePage;
 
-test.beforeEach(async ({ page }) =>  {
-    const homePage = new HomePage(page);
-    await homePage.initiateLogin();
+test.beforeEach(async ({ page }) => {
+  const homePage = new HomePage(page);
+  await homePage.initiateLogin();
 
-    await expect(page).toHaveURL(/.*home/);
+  await expect(page).toHaveURL(/.*home/);
 
-    await homePage.createPatient();
+  await homePage.createPatient();
 });
 
 test('Patient with lab order becomes client with analysis request in SENAITE', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
-  await homePage.createLabOrder();
+  await homePage.goToLabOrderForm();
+  await page.getByRole('button', { name: 'Add', exact: true }).click();
+  await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  await homePage.saveLabOrder();
   await homePage.goToSENAITE();
   await expect(page).toHaveURL(/.*senaite/);
 
@@ -31,7 +34,10 @@ test('Patient with lab order becomes client with analysis request in SENAITE', a
 test('Editing patient details with a synced lab test order edits client details in SENAITE', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
-  await homePage.createLabOrder();
+  await homePage.goToLabOrderForm();
+  await page.getByRole('button', { name: 'Add', exact: true }).click();
+  await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  await homePage.saveLabOrder();
   await homePage.goToSENAITE();
   await homePage.searchClientInSENAITE();
   const client = await page.locator('table tbody tr:nth-child(1) td.contentcell.title div span a');
@@ -53,7 +59,10 @@ test('Editing patient details with a synced lab test order edits client details 
 test('Editing a synced lab order edits corresponding analysis request in SENAITE', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
-  await homePage.createLabOrder();
+  await homePage.goToLabOrderForm();
+  await page.getByRole('button', { name: 'Add', exact: true }).click();
+  await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  await homePage.saveLabOrder();
   await homePage.goToSENAITE();
   await expect(page).toHaveURL(/.*senaite/);
 
@@ -86,7 +95,10 @@ test('Editing a synced lab order edits corresponding analysis request in SENAITE
 test('Voiding a synced lab order cancels corresponding analysis request in SENAITE', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
-  await homePage.createLabOrder();
+  await homePage.goToLabOrderForm();
+  await page.getByRole('button', { name: 'Add', exact: true }).click();
+  await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  await homePage.saveLabOrder();
   await homePage.goToSENAITE();
   await expect(page).toHaveURL(/.*senaite/);
 
@@ -112,7 +124,91 @@ test('Voiding a synced lab order cancels corresponding analysis request in SENAI
   await expect(client).not.toHaveText(`${patientName.firstName + ' ' + patientName.givenName}`);
 });
 
-test.afterEach(async ( {page}) =>  {
+test('Published coded lab results from SENAITE are viewable in O3', async ({ page }) => {
+  // setup
+  const homePage = new HomePage(page);
+  await homePage.goToLabOrderForm();
+  await page.getByRole('button', { name: 'Add', exact: true }).click();
+  await page.locator('#tab select').selectOption('1325AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  await homePage.saveLabOrder();
+  await homePage.goToSENAITE();
+  await expect(page).toHaveURL(/.*senaite/);
+
+  // replay
+  await homePage.searchClientInSENAITE();
+  await homePage.createPartition();
+  await page.getByRole('combobox', { name: 'Result' }).selectOption('664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  await homePage.publishLabResults();
+  const reviewState = await page.locator('table tbody tr.contentrow.state-published.parent td.contentcell.State span span').textContent();
+  await expect(reviewState?.includes('Published')).toBeTruthy();
+
+  // verify
+  await page.goto(`${process.env.E2E_BASE_URL}/openmrs/spa/home`);
+  await homePage.viewTestResults();
+  const testName = await page.locator('div:nth-child(2) >div> div.cds--data-table-container td:nth-child(1)').first();
+  await expect(testName).toContainText('Hepatitis C test - qualitative');
+
+  const labResult = await page.locator('div:nth-child(2) >div> div.cds--data-table-container table tbody tr td:nth-child(2) span').first();
+  await expect(labResult).toContainText('Negative');
+});
+
+test('Published numeric lab results from SENAITE are viewable in O3', async ({ page }) => {
+  // setup
+  const homePage = new HomePage(page);
+  await homePage.goToLabOrderForm();
+  await page.getByRole('button', { name: 'Add', exact: true }).click();
+  await page.locator('#tab select').selectOption('655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  await homePage.saveLabOrder();
+  await homePage.goToSENAITE();
+  await expect(page).toHaveURL(/.*senaite/);
+
+  // replay
+  await homePage.searchClientInSENAITE();
+  await homePage.createPartition();
+  await page.locator('tr:nth-child(1) td.contentcell.Result div span input').fill('64');
+  await homePage.publishLabResults();
+  const reviewState = await page.locator('table tbody tr.contentrow.state-published.parent td.contentcell.State span span').textContent();
+  await expect(reviewState?.includes('Published')).toBeTruthy();
+
+  // verify
+  await page.goto(`${process.env.E2E_BASE_URL}/openmrs/spa/home`);
+  await homePage.viewTestResults();
+  const testName = await page.locator('div:nth-child(2) >div> div.cds--data-table-container td:nth-child(1)').first();
+  await expect(testName).toContainText('Total bilirubin');
+
+  const labResult = await page.locator('div:nth-child(2) >div> div.cds--data-table-container table tbody tr td:nth-child(2) span').first();
+  await expect(labResult).toContainText('64');
+});
+
+test('Published free text lab results from SENAITE are viewable in O3', async ({ page }) => {
+  // setup
+  const homePage = new HomePage(page);
+  await homePage.goToLabOrderForm();
+  await page.getByRole('button', { name: 'Add', exact: true }).click();
+  await page.locator('#tab select').selectOption('161447AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  await homePage.saveLabOrder();
+  await homePage.goToSENAITE();
+  await expect(page).toHaveURL(/.*senaite/);
+
+  // replay
+  await homePage.searchClientInSENAITE();
+  await homePage.createPartition();
+  await page.locator('div:nth-child(4) div table tbody tr td.contentcell.Result div span input').fill('Test result: Normal');
+  await homePage.publishLabResults();
+  const reviewState = await page.locator('table tbody tr.contentrow.state-published.parent td.contentcell.State span span').textContent();
+  await expect(reviewState?.includes('Published')).toBeTruthy();
+
+  // verify
+  await page.goto(`${process.env.E2E_BASE_URL}/openmrs/spa/home`);
+  await homePage.viewTestResults();
+  const testName = await page.locator('div:nth-child(2) >div> div.cds--data-table-container td:nth-child(1)').first();
+  await expect(testName).toHaveText('Stool microscopy with concentration');
+
+  const labResult = await page.locator('div:nth-child(2) >div> div.cds--data-table-container table tbody tr td:nth-child(2) span').first();
+  await expect(labResult).toHaveText('Test result: Normal');
+});
+
+test.afterEach(async ({ page }) => {
   const homePage = new HomePage(page);
   await homePage.deletePatient();
   await page.close();

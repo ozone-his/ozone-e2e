@@ -4,19 +4,22 @@ import { patientName } from '../utils/functions/testBase';
 
 let homePage: HomePage;
 
-test.beforeEach(async ({ page }) =>  {
-    const homePage = new HomePage(page);
-    await homePage.initiateLogin();
+test.beforeEach(async ({ page }) => {
+  const homePage = new HomePage(page);
+  await homePage.initiateLogin();
 
-    await expect(page).toHaveURL(/.*home/);
+  await expect(page).toHaveURL(/.*home/);
 
-    await homePage.createPatient();
+  await homePage.createPatient();
 });
 
 test('Patient with lab order becomes customer in Odoo', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
-  await homePage.createLabOrder();
+  await homePage.goToLabOrderForm();
+  await page.getByRole('button', { name: 'Add', exact: true }).click();
+  await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  await homePage.saveLabOrder();
   await homePage.goToOdoo();
 
   // replay
@@ -35,7 +38,10 @@ test('Patient with lab order becomes customer in Odoo', async ({ page }) => {
 test('Editing patient details with a synced lab order edits the corresponding customer details in Odoo', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
-  await homePage.createLabOrder();
+  await homePage.goToLabOrderForm();
+  await page.getByRole('button', { name: 'Add', exact: true }).click();
+  await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  await homePage.saveLabOrder();
   await homePage.goToOdoo();
   await homePage.searchCustomerInOdoo();
   const customer =
@@ -161,7 +167,7 @@ test('Discontinuing a synced drug order cancels corresponding quotation line in 
   // replay
   await page.goto(`${process.env.E2E_BASE_URL}/openmrs/spa/home`);
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
-  await homePage.discontinueADrugOrder();
+  await homePage.discontinueDrugOrder();
 
   // verify
   await page.goto('https://erp.ozone-qa.mekomsolutions.net/web');
@@ -170,7 +176,7 @@ test('Discontinuing a synced drug order cancels corresponding quotation line in 
   await expect(quotation).toHaveText('Cancelled');
 });
 
-test.afterEach(async ( {page}) =>  {
+test.afterEach(async ({ page }) => {
   const homePage = new HomePage(page);
   await homePage.deletePatient();
   await page.close();
