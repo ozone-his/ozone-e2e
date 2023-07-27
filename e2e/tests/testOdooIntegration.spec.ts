@@ -137,7 +137,7 @@ test('Revising a synced drug order edits corresponding quotation line in Odoo', 
   // replay
   await page.goto('https://ozone-qa.mekomsolutions.net/openmrs/spa/home');
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
-  await homePage.editDrugOrder();
+  await homePage.reviseDrugOrder();
 
   // verify
   await page.goto('https://erp.ozone-qa.mekomsolutions.net/web');
