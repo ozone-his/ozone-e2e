@@ -19,10 +19,16 @@ test('Making an order updates orders table in Analytics', async ({ page }) => {
   await homePage.goToAnalytics();
   await expect(page).toHaveURL(/.*superset/);
   await homePage.selectDBSchema();
-  await page.getByRole('textbox').fill('SELECT COUNT(*) FROM _orders;');
+  await page.getByRole('textbox').fill('SELECT * FROM _orders;');
   await homePage.runSQLQuery();
-  let numberOfItems =   (await page.getByRole('gridcell', { name: ' ' }).innerText()).toString();
-  let initialCount = parseInt(numberOfItems.trim());
+  // let numberOfItems =   (await page.getByRole('gridcell', { name: ' ' }).innerText()).toString();
+  // let initialCount = parseInt(numberOfItems.trim());
+
+  //await page.locator('tr').first().waitFor();
+  await page.getByRole('gridcell', { name: ' ' }).first().waitFor();
+  let initialCount = await page.getByRole('gridcell', { name: ' ' }).count();
+  //let initialCount = parseInt(num);
+  // console.log(await page.locator('tr').count());
 
   // replay
   await page.goto(`${process.env.E2E_BASE_URL}/openmrs/spa/home`);
@@ -35,10 +41,13 @@ test('Making an order updates orders table in Analytics', async ({ page }) => {
   // verify
   await homePage.goToAnalytics();
   await homePage.clearQueryHistory();
-  await page.getByRole('textbox').first().fill('SELECT COUNT(*) FROM _orders;');
+  await page.getByRole('textbox').first().fill('SELECT * FROM _orders;');
   await homePage.runSQLQuery();
-  let updatedNumberOfItems =   (await page.getByRole('gridcell', { name: ' ' }).innerText()).toString();
-  let updatedCount = parseInt(updatedNumberOfItems.trim());
+  //let updatedNumberOfItems =   (await page.getByRole('gridcell', { name: ' ' }).innerText()).toString();
+  //let updatedCount = parseInt(updatedNumberOfItems.trim());
+
+  await page.getByRole('gridcell', { name: ' ' }).first().waitFor();
+  let updatedCount = await page.getByRole('gridcell', { name: ' ' }).count();
 
   await expect(updatedCount).toBeGreaterThan(initialCount);
 });
