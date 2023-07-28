@@ -21,8 +21,8 @@ test('Making an order updates orders table in Analytics', async ({ page }) => {
   await homePage.selectDBSchema();
   await page.getByRole('textbox').fill('SELECT COUNT(*) FROM _orders;');
   await homePage.runSQLQuery();
-  const initialNumberOfItems =   await page.getByRole('gridcell', { name: ' ' }).innerText();
-  let initialCount = parseInt(initialNumberOfItems.trim());
+  let numberOfItems =   (await page.getByRole('gridcell', { name: ' ' }).innerText()).toString();
+  let initialCount = parseInt(numberOfItems.trim());
 
   // replay
   await page.goto(`${process.env.E2E_BASE_URL}/openmrs/spa/home`);
@@ -35,9 +35,9 @@ test('Making an order updates orders table in Analytics', async ({ page }) => {
   // verify
   await homePage.goToAnalytics();
   await homePage.clearQueryHistory();
-  await page.getByRole('textbox').fill('SELECT COUNT(*) FROM _orders;');
+  await page.getByRole('textbox').first().fill('SELECT COUNT(*) FROM _orders;');
   await homePage.runSQLQuery();
-  const updatedNumberOfItems =   await page.getByRole('gridcell', { name: ' ' }).innerText();
+  let updatedNumberOfItems =   (await page.getByRole('gridcell', { name: ' ' }).innerText()).toString();
   let updatedCount = parseInt(updatedNumberOfItems.trim());
 
   await expect(updatedCount).toBeGreaterThan(initialCount);

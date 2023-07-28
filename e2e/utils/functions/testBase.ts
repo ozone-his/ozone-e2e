@@ -290,6 +290,7 @@ export class HomePage {
   async selectDBSchema() {
     await this.page.getByRole('button', { name: 'triangle-down SQL Lab' }).click();
     await this.page.getByRole('link', { name: 'SQL Editor' }).click();
+    delay(6000);
     await this.page.locator('div').filter({ hasText: /^Select schema or type schema name$/ }).nth(1).click();
     await this.page.getByTitle('public').getByText('public').click();
     await delay(3000);
@@ -298,14 +299,16 @@ export class HomePage {
 
   async runSQLQuery() {
     await this.page.getByRole('button', { name: 'Run' }).click();
-    delay(10000);
+    delay(4000);
   }
 
   async clearQueryHistory() {
     await this.page.getByRole('button', { name: 'triangle-down SQL Lab' }).click();
     await this.page.getByRole('link', { name: 'SQL Editor' }).click();
     await this.page.getByRole('tab', { name: 'Query history' }).click();
-    await this.page.getByRole('textbox').clear();
+    delay(2000);
+    await this.page.getByRole('textbox').first().clear();
+    delay(2000);
   }
 
   async searchCustomerInOdoo() {
