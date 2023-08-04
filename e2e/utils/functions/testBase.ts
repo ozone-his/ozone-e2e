@@ -50,6 +50,7 @@ export class HomePage {
     patientFullName = patientName.firstName + ' ' + patientName.givenName;
 
     await this.page.getByRole('button', { name: 'Add Patient' }).click();
+    await delay(5000);
     await this.page.getByLabel('First Name').clear();
     await this.page.getByLabel('First Name').fill(`${patientName.firstName}`);
     await this.page.getByLabel('Family Name').clear();
