@@ -56,8 +56,7 @@ test('Editing patient details with a synced lab test order edits client details 
   patientName.firstName = 'Winniefred';
 });
 
-test('Editing a synced lab order edits corresponding analysis request in SENAITE', async ({ page }) => {
-  // setup
+test('Editing a synced lab order edits corresponding analysis request in SENAITE', async ({ page }) => {// setup
   const homePage = new HomePage(page);
   await homePage.goToLabOrderForm();
   await page.getByRole('button', { name: 'Add', exact: true }).click();
