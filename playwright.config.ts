@@ -17,8 +17,6 @@ const config: PlaywrightTestConfig = {
   use: {
     baseURL: `${process.env.E2E_BASE_URL}/spa/`,
     storageState: 'e2e/storageState.json',
-    trace: 'retain-on-failure',
-    video: 'retain-on-failure',
   },
   projects: [
     {
@@ -26,6 +24,9 @@ const config: PlaywrightTestConfig = {
       use: {
         ...devices['Desktop Chromium'],
         viewport: {width: 1920, height: 1080},
+        screenshot: 'only-on-failure',
+        video: 'on',
+        trace: 'retain-on-failure',
       },
     },
   ],

@@ -50,6 +50,7 @@ export class HomePage {
     patientFullName = patientName.firstName + ' ' + patientName.givenName;
 
     await this.page.getByRole('button', { name: 'Add Patient' }).click();
+    delay(10000);
     await this.page.getByLabel('First Name').clear();
     await this.page.getByLabel('First Name').fill(`${patientName.firstName}`);
     await this.page.getByLabel('Family Name').clear();
@@ -76,7 +77,7 @@ export class HomePage {
   async searchPatient(searchText: string) {
     await this.patientSearchIcon().click();
     await this.patientSearchBar().type(searchText);
-    await this.page.getByRole('link', { name: `${patientFullName}`}).click();
+    await this.page.getByRole('link', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).first().click();
   }
 
   async startPatientVisit() {
@@ -123,7 +124,7 @@ export class HomePage {
     await this.page.getByRole('button', { name: 'Save and close' }).click();
     await expect(this.page.getByText('Lab order(s) generated')).toBeVisible();
     await this.page.getByRole('button', { name: 'Close' }).click();
-    await delay(4000);
+    delay(5000);
   }
 
   async updateLabOrder() {
@@ -134,7 +135,7 @@ export class HomePage {
     await this.page.locator('#tab select').selectOption('160225AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
     await this.page.getByRole('button', { name: 'Save and close' }).click();
     await expect(this.page.getByText('Lab order(s) generated')).toBeVisible();
-    delay(2000);
+    delay(5000);
   }
 
   async discontinueLabOrder() {
@@ -146,7 +147,7 @@ export class HomePage {
 
     await expect(this.page.getByText('Encounter deleted')).toBeVisible();
     await expect(this.page.getByText('Encounter successfully deleted')).toBeVisible();
-    delay(2000);
+    delay(5000);
   }
 
   async createPartition() {
@@ -181,9 +182,12 @@ export class HomePage {
 
   async createDrugOrder() {
     await this.page.getByRole('complementary').filter({ hasText: 'MedicationsNoteFormPatient lists' }).getByRole('button').first().click();
+    if (await this.page.getByTitle('close notification').first().isVisible()) {
+      await this.page.getByTitle('close notification').first().click();
+    }
     await this.page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 325mg');
     await this.page.getByRole('listitem').filter({ hasText: 'Aspirin 325mg — 325mg — tabletImmediately add to basket' }).click();
-    delay(4000)
+    delay(4000);
     await this.page.getByPlaceholder('Dose').fill('4');
     await this.page.getByRole('button', { name: 'Open', exact: true }).nth(1).click();
     await this.page.getByText('Intravenous').click();
@@ -200,10 +204,10 @@ export class HomePage {
     await this.page.getByRole('button', { name: 'Sign and close' }).focus();
     await expect(this.page.getByText('Sign and close')).toBeVisible();
     await this.page.getByRole('button', { name: 'Sign and close' }).click();
-    delay(4000);
+    delay(5000);
   }
 
-  async editDrugOrder() {
+  async reviseDrugOrder() {
     await this.page.getByRole('button', { name: 'Actions menu' }).click();
     await this.page.getByRole('menuitem', { name: 'Modify' }).click();
     await this.page.getByRole('listitem').filter({ hasText: 'Modify' }).click();
@@ -219,7 +223,7 @@ export class HomePage {
     await expect(this.page.getByText('Sign and close')).toBeVisible();
     await this.page.getByRole('button', { name: 'Sign and close' }).focus();
     await this.page.getByRole('button', { name: 'Sign and close' }).dispatchEvent('click');
-    delay(4000);
+    delay(5000);
   }
 
   async discontinueDrugOrder() {
@@ -228,27 +232,25 @@ export class HomePage {
     await expect(this.page.getByText('Sign and close')).toBeVisible();
     await this.page.getByRole('button', { name: 'Sign and close' }).focus();
     await this.page.getByRole('button', { name: 'Sign and close' }).dispatchEvent('click');
-    delay(3000);
+    delay(5000);
   }
 
   async searchCustomerInOdoo() {
     await this.page.locator("//a[contains(@class, 'full')]").click();
     await this.page.getByRole('menuitem', { name: 'Sales' }).click();
     await this.page.getByRole('img', { name: 'Remove' }).click();
-    delay(1500);
+    delay(3000);
     await this.page.getByPlaceholder('Search...').type(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.getByPlaceholder('Search...').press('Enter');
-    delay(2000);
   }
 
   async searchUpdatedCustomerInOdoo() {
     await this.page.locator("//a[contains(@class, 'full')]").click();
     await this.page.getByRole('menuitem', { name: 'Sales' }).click();
     await this.page.getByRole('img', { name: 'Remove' }).click();
-    delay(1500);
-    await this.page.getByPlaceholder('Search...').type('Winniefred'+ ' ' + `${patientName.givenName }`);
+    delay(3000);
+    await this.page.getByPlaceholder('Search...').type('Winniefred' + ' ' + `${patientName.givenName }`);
     await this.page.getByPlaceholder('Search...').press('Enter');
-    delay(2000);
   }
 
   async searchClientInSENAITE() {
@@ -277,6 +279,6 @@ export class HomePage {
     await this.page.getByRole('button', { name: 'Update Patient' }).click();
     await expect(this.page.getByText('Patient Details Updated')).toBeVisible();
     await this.page.getByRole('button', { name: 'Close' }).click();
-    delay(4000);
+    delay(8000);
   }
 }
