@@ -12,7 +12,7 @@ test.beforeEach(async ({ page }) => {
 
   await homePage.createPatient();
 });
-/*
+
 test('Patient with lab order becomes client with analysis request in SENAITE', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
@@ -123,7 +123,7 @@ test('Voiding a synced lab order cancels corresponding analysis request in SENAI
   await page.locator('div.col-sm-3.text-right button:nth-child(2) i').click();
   await expect(client).not.toHaveText(`${patientName.firstName + ' ' + patientName.givenName}`);
 });
-
+/*
 test('Published coded lab results from SENAITE are viewable in O3', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
