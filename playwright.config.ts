@@ -19,6 +19,9 @@ const config: PlaywrightTestConfig = {
     storageState: 'e2e/storageState.json',
     trace: 'retain-on-failure',
     video: 'retain-on-failure',
+    launchOptions: {
+      slowMo: 1000
+    }
   },
   projects: [
     {

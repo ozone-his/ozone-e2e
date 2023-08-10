@@ -50,6 +50,7 @@ export class HomePage {
     patientFullName = patientName.firstName + ' ' + patientName.givenName;
 
     await this.page.getByRole('button', { name: 'Add Patient' }).click();
+    await expect(this.page.getByRole('button', { name: 'Register Patient' })).toBeEnabled()
     await this.page.getByLabel('First Name').clear();
     await this.page.getByLabel('First Name').fill(`${patientName.firstName}`);
     await this.page.getByLabel('Family Name').clear();
@@ -76,7 +77,7 @@ export class HomePage {
   async searchPatient(searchText: string) {
     await this.patientSearchIcon().click();
     await this.patientSearchBar().type(searchText);
-    await this.page.getByRole('link', { name: `${patientFullName}`}).click();
+    await this.page.getByRole('link', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).first().click();
   }
 
   async startPatientVisit() {
