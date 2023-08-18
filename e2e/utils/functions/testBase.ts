@@ -32,6 +32,10 @@ export class HomePage {
     await this.page.getByRole('button', { name: 'Confirm' }).click();
   }
 
+  async goToSuperset() {
+    await this.page.goto('https://analytics.ozone-qa.mekomsolutions.net/');
+  }
+
   async goToOdoo() {
     await this.page.goto('https://erp.ozone-qa.mekomsolutions.net/');
     await this.page.getByRole('link', { name: 'Login with Single Sign-On' }).click();
@@ -46,7 +50,6 @@ export class HomePage {
       firstName : `e2e_test_${Math.floor(Math.random() * 10000)}`,
       givenName : `${(Math.random() + 1).toString(36).substring(2)}`
     }
-
     patientFullName = patientName.firstName + ' ' + patientName.givenName;
 
     await this.page.getByRole('button', { name: 'Add Patient' }).click();
@@ -72,11 +75,7 @@ export class HomePage {
     if (await this.page.getByTitle('close notification').isVisible()) {
       await this.page.getByTitle('close notification').click();
     }
-    await this.page.getByRole('button', { name: 'Start a visit' }).click();
-    await this.page.locator('label').filter({ hasText: 'Facility Visit' }).locator('span').first().click();
-    await this.page.locator('form').getByRole('button', { name: 'Start a visit' }).click();
-
-    await expect(this.page.getByText('Facility Visit started successfully')).toBeVisible();
+    await this.page.getByRole('button', { name: 'Close' }).click();
   }
 
   async searchPatient(searchText: string) {
@@ -86,7 +85,7 @@ export class HomePage {
   }
 
   async startPatientVisit() {
-    await this.searchPatient(`${patientFullName}`)
+    await this.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.getByRole('button', { name: 'Start a visit' }).click();
     await this.page.locator('label').filter({ hasText: 'Facility Visit' }).locator('span').first().click();
     await this.page.locator('form').getByRole('button', { name: 'Start a visit' }).click();
@@ -115,6 +114,76 @@ export class HomePage {
     const message = await this.page.locator('//*[@id="patientFormVoided"]').textContent();
     expect(message?.includes('This patient has been deleted')).toBeTruthy();
     await this.page.getByRole('link', { name: 'Log out' }).click();
+  }
+
+  async addPatientCondition() {
+    await this.page.getByRole('link', { name: 'Conditions' }).click();
+    await this.page.getByText('Record conditions').click();
+    await this.page.getByPlaceholder('Search conditions').fill('Typhoid fever');
+    await this.page.getByRole('menuitem', { name: 'Typhoid fever' }).click();
+    await this.page.getByLabel('Onset date').fill('27/07/2023');
+    await this.page.getByRole('button', { name: 'Save & close' }).click();
+
+    await expect(this.page.getByText('Condition saved successfully')).toBeVisible();
+    await delay(2000);
+    const patientCondition = await this.page.locator('table tbody tr:nth-child(1) td:nth-child(1)');
+    await expect(patientCondition).toHaveText('Typhoid fever');
+    await this.page.getByRole('button', { name: 'Close' }).click();
+  }
+
+  async addPatientBiometrics() {
+    await this.page.getByRole('link', { name: 'Vitals & Biometrics' }).click();
+    await this.page.getByText('Record biometrics').click();
+    await this.page.getByRole('spinbutton', { name: 'Weight' }).fill('78');
+    await this.page.getByRole('spinbutton', { name: 'Height' }).fill('165');
+    await this.page.getByRole('spinbutton', { name: 'MUAC' }).fill('34');
+    await this.page.getByRole('button', { name: 'Save and close' }).click();
+
+    await expect(this.page.getByText('Biometrics saved')).toBeVisible();
+    await this.page.getByRole('button', { name: 'Close' }).click();
+  }
+
+  async addPatientAppointment() {
+    await this.page.getByRole('link', { name: 'Appointments' }).click();
+    await this.page.getByRole('button', { name: 'Add', exact: true }).click();
+    await this.page.getByRole('combobox', { name: 'Select service' }).selectOption('General Medicine service');
+    await this.page.getByRole('combobox', { name: 'Select the type of appointment' }).selectOption('WalkIn');
+    await this.page.getByPlaceholder('Write any additional points here').clear();
+    await this.page.getByPlaceholder('Write any additional points here').fill('This is an appointment.');
+    await this.page.getByRole('button', { name: 'Save and close' }).click();
+    await expect(this.page.getByText('Appointment scheduled')).toBeVisible();
+
+    await this.page.getByRole('tab', { name: 'Today' }).click();
+    const serviceType = await this.page.locator('table tbody tr:nth-child(1) td:nth-child(3)');
+    await expect(serviceType).toHaveText('General Medicine service');
+
+    const appointmentType = await this.page.locator('table tbody tr:nth-child(1) td:nth-child(5)');
+    await expect(appointmentType).toHaveText('WalkIn');
+
+    const appointmentStatus = await this.page.locator('table tbody tr:nth-child(1) td:nth-child(4)');
+    await expect(appointmentStatus).toHaveText('Scheduled');
+  }
+
+  async selectDBSchema() {
+    await this.page.getByRole('button', { name: 'triangle-down SQL Lab' }).click();
+    await this.page.getByRole('link', { name: 'SQL Editor' }).click();
+    await this.page.locator('div').filter({ hasText: /^Select schema or type schema name$/ }).nth(1).click();
+    await this.page.getByTitle('public').getByText('public').click();
+    await this.page.getByRole('textbox').first().clear();
+    await delay(5000);
+  }
+
+  async runSQLQuery() {
+    await this.page.getByRole('button', { name: 'Run' }).click();
+    await delay(5000);
+  }
+
+  async returnToSQLEditor() {
+    await this.page.getByRole('button', { name: 'triangle-down SQL Lab' }).click();
+    await this.page.getByRole('link', { name: 'SQL Editor' }).click();
+    await this.page.getByRole('textbox').first().clear();
+    await this.page.getByRole('tab', { name: 'Query history' }).click();
+    await delay(5000);
   }
 
   async goToLabOrderForm() {

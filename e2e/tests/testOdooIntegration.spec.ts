@@ -11,6 +11,7 @@ test.beforeEach(async ({ page }) => {
   await expect(page).toHaveURL(/.*home/);
 
   await homePage.createPatient();
+  await homePage.startPatientVisit();
 });
 
 test('Patient with lab order becomes customer in Odoo', async ({ page }) => {
