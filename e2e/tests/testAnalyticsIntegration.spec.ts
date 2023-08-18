@@ -13,10 +13,10 @@ test.beforeEach(async ({ page }) =>  {
    await homePage.createPatient();
 });
 
-test('Starting a visit increases visits table count in Analytics', async ({ page }) => {
+test('Starting an OpenMRS visit increases visits count in Superset', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
-  await homePage.goToAnalytics();
+  await homePage.goToSuperset();
   await expect(page).toHaveURL(/.*superset/);
   await homePage.selectDBSchema();
   await page.getByRole('textbox').first().clear();
@@ -30,7 +30,7 @@ test('Starting a visit increases visits table count in Analytics', async ({ page
   await homePage.startPatientVisit();
 
   // verify
-  await homePage.goToAnalytics();
+  await homePage.goToSuperset();
   await homePage.returnToSQLEditor();
   await page.getByRole('textbox').first().clear();
   await page.getByRole('textbox').fill('SELECT COUNT (*) FROM  visits;');
@@ -41,11 +41,11 @@ test('Starting a visit increases visits table count in Analytics', async ({ page
   await expect(updatedCount).toBeGreaterThan(initialCount);
 });
 
-test('Creating an order increases orders table count in Analytics', async ({ page }) => {
+test('Creating an OpenMRS order increases orders count in Superset', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
   await homePage.startPatientVisit();
-  await homePage.goToAnalytics();
+  await homePage.goToSuperset();
   await expect(page).toHaveURL(/.*superset/);
   await homePage.selectDBSchema();
   await page.getByRole('textbox').first().clear();
@@ -63,7 +63,7 @@ test('Creating an order increases orders table count in Analytics', async ({ pag
   await homePage.saveLabOrder();
 
   // verify
-  await homePage.goToAnalytics();
+  await homePage.goToSuperset();
   await homePage.returnToSQLEditor();
   await page.getByRole('textbox').first().clear();
   await page.getByRole('textbox').fill('SELECT COUNT(*) FROM _orders;');
@@ -74,11 +74,11 @@ test('Creating an order increases orders table count in Analytics', async ({ pag
   await expect(updatedCount).toBeGreaterThan(initialCount);
 });
 
-test('Creating an order increases encounters table count in Analytics', async ({ page }) => {
+test('Creating an OpenMRS order increases encounters count in Superset', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
   await homePage.startPatientVisit();
-  await homePage.goToAnalytics();
+  await homePage.goToSuperset();
   await expect(page).toHaveURL(/.*superset/);
   await homePage.selectDBSchema();
   await page.getByRole('textbox').first().clear();
@@ -96,7 +96,7 @@ test('Creating an order increases encounters table count in Analytics', async ({
   await homePage.saveLabOrder();
 
   // verify
-  await homePage.goToAnalytics();
+  await homePage.goToSuperset();
   await homePage.returnToSQLEditor();
   await page.getByRole('textbox').first().clear();
   await page.getByRole('textbox').fill('SELECT COUNT(*) FROM encounters;');
@@ -107,11 +107,11 @@ test('Creating an order increases encounters table count in Analytics', async ({
   await expect(updatedCount).toBeGreaterThan(initialCount);
 });
 
-test('Adding patient condition increases conditions table count in Analytics', async ({ page }) => {
+test('Adding an OpenMRS patient condition increases conditions count in Superset', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
   await homePage.startPatientVisit();
-  await homePage.goToAnalytics();
+  await homePage.goToSuperset();
   await expect(page).toHaveURL(/.*superset/);
   await homePage.selectDBSchema();
   await page.getByRole('textbox').first().clear();
@@ -126,7 +126,7 @@ test('Adding patient condition increases conditions table count in Analytics', a
   await homePage.addPatientCondition();
 
   // verify
-  await homePage.goToAnalytics();
+  await homePage.goToSuperset();
   await homePage.returnToSQLEditor();
   await page.getByRole('textbox').first().clear();
   await page.getByRole('textbox').fill('SELECT COUNT (*) FROM _conditions;');
@@ -137,11 +137,11 @@ test('Adding patient condition increases conditions table count in Analytics', a
   await expect(updatedCount).toBeGreaterThan(initialCount);
 });
 
-test('Adding patient biometrics increases observations table count in Analytics', async ({ page }) => {
+test('Adding OpenMRS patient biometrics increases observations count in Superset', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
   await homePage.startPatientVisit();
-  await homePage.goToAnalytics();
+  await homePage.goToSuperset();
   await expect(page).toHaveURL(/.*superset/);
   await homePage.selectDBSchema();
   await page.getByRole('textbox').first().clear();
@@ -156,7 +156,7 @@ test('Adding patient biometrics increases observations table count in Analytics'
   await homePage.addPatientBiometrics();
 
   // verify
-  await homePage.goToAnalytics();
+  await homePage.goToSuperset();
   await homePage.returnToSQLEditor();
   await page.getByRole('textbox').first().clear();
   await page.getByRole('textbox').fill('SELECT COUNT (*) FROM observations;');
@@ -167,11 +167,11 @@ test('Adding patient biometrics increases observations table count in Analytics'
   await expect(updatedCount).toBeGreaterThan(initialCount);
 });
 
-test('Adding patient appointment increases appointments table count in Analytics', async ({ page }) => {
+test('Adding OpenMRS patient appointment increases appointments count in Superset', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
   await homePage.startPatientVisit();
-  await homePage.goToAnalytics();
+  await homePage.goToSuperset();
   await expect(page).toHaveURL(/.*superset/);
   await homePage.selectDBSchema();
   await page.getByRole('textbox').first().clear();
@@ -187,7 +187,7 @@ test('Adding patient appointment increases appointments table count in Analytics
   await homePage.addPatientAppointment();
 
   // verify
-  await homePage.goToAnalytics();
+  await homePage.goToSuperset()
   await homePage.returnToSQLEditor();
   await page.getByRole('textbox').first().clear();
   await page.getByRole('textbox').fill('SELECT COUNT(*) FROM appointments;');

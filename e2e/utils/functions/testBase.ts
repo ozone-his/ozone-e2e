@@ -32,7 +32,7 @@ export class HomePage {
     await this.page.getByRole('button', { name: 'Confirm' }).click();
   }
 
-  async goToAnalytics() {
+  async goToSuperset() {
     await this.page.goto('https://analytics.ozone-qa.mekomsolutions.net/');
   }
 
