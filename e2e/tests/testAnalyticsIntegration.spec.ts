@@ -13,7 +13,7 @@ test.beforeEach(async ({ page }) =>  {
    await homePage.createPatient();
 });
 
-test('Starting a visit should increase visits table count in Analytics', async ({ page }) => {
+test('Starting a visit increases visits table count in Analytics', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
   await homePage.goToAnalytics();
@@ -41,7 +41,7 @@ test('Starting a visit should increase visits table count in Analytics', async (
   await expect(updatedCount).toBeGreaterThan(initialCount);
 });
 
-test('Creating an order should increase orders table count in Analytics', async ({ page }) => {
+test('Creating an order increases orders table count in Analytics', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
   await homePage.startPatientVisit();
@@ -74,7 +74,7 @@ test('Creating an order should increase orders table count in Analytics', async 
   await expect(updatedCount).toBeGreaterThan(initialCount);
 });
 
-test('Creating an order should increase encounters table count in Analytics', async ({ page }) => {
+test('Creating an order increases encounters table count in Analytics', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
   await homePage.startPatientVisit();
@@ -107,7 +107,7 @@ test('Creating an order should increase encounters table count in Analytics', as
   await expect(updatedCount).toBeGreaterThan(initialCount);
 });
 
-test('Adding patient condition should increase conditions table count in Analytics', async ({ page }) => {
+test('Adding patient condition increases conditions table count in Analytics', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
   await homePage.startPatientVisit();
@@ -137,7 +137,7 @@ test('Adding patient condition should increase conditions table count in Analyti
   await expect(updatedCount).toBeGreaterThan(initialCount);
 });
 
-test('Adding patient biometrics should increase observations table count in Analytics', async ({ page }) => {
+test('Adding patient biometrics increases observations table count in Analytics', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
   await homePage.startPatientVisit();
@@ -167,7 +167,7 @@ test('Adding patient biometrics should increase observations table count in Anal
   await expect(updatedCount).toBeGreaterThan(initialCount);
 });
 
-test('Adding patient appointment should increase appointments table count in Analytics', async ({ page }) => {
+test('Adding patient appointment increases appointments table count in Analytics', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
   await homePage.startPatientVisit();
