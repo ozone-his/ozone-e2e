@@ -24,6 +24,8 @@ const config: PlaywrightTestConfig = {
       use: {
         ...devices['Desktop Chromium'],
         viewport: {width: 1920, height: 1080},
+        screenshot: 'only-on-failure',
+        video: 'on',
       },
     },
   ],
