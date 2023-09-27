@@ -33,16 +33,16 @@ export class HomePage {
   }
 
   async goToSuperset() {
-    await this.page.goto('https://analytics.ozone-qa.mekomsolutions.net/');
+    await this.page.goto(`${process.env.E2E_SUPERSET_URL}`);
   }
 
   async goToOdoo() {
-    await this.page.goto('https://erp.ozone-qa.mekomsolutions.net/');
+    await this.page.goto(`${process.env.E2E_ODOO_URL}`);
     await this.page.getByRole('link', { name: 'Login with Single Sign-On' }).click();
   }
 
   async goToSENAITE() {
-    await this.page.goto('https://lims.ozone-qa.mekomsolutions.net/');
+    await this.page.goto(`${process.env.E2E_SENAITE_URL}`);
   }
 
   async createPatient() {
@@ -189,9 +189,9 @@ export class HomePage {
   async goToLabOrderForm() {
     await this.page.locator('div').filter({ hasText: /^Form$/ }).getByRole('button').click();
     delay(3000);
-    await expect(this.page.getByText('Laboratory Tests')).toBeVisible();
+    await expect(this.page.getByText('Laboratory Test Orders')).toBeVisible();
 
-    await this.page.getByText('Laboratory Tests').click();
+    await this.page.getByText('Laboratory Test Orders').click();
   }
 
   async saveLabOrder() {
