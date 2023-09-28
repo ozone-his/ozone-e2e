@@ -126,6 +126,7 @@ test('Revising a synced drug order edits corresponding quotation line in Odoo', 
   await homePage.goToOdoo();
   await homePage.searchCustomerInOdoo();
 
+  
   const customer =
   await page.locator("table tbody tr:nth-child(1) td.o_data_cell.o_field_cell.o_list_many2one.o_readonly_modifier.o_required_modifier").textContent();
   await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
