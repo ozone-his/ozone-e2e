@@ -44,3 +44,25 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
+
+     - name: Notify slack
+       id: slack
+       uses: slackapi/slack-github-action@v1.24.0
+       with:
+        channel-id: '?'
+        payload: |
+          {
+            "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.head_commit.url || github.event.schedule.html_url  }}",
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                          "type": "mrkdwn",
+                          "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.head_commit.url || github.event.schedule.html_url }}"
+                        }
+                }
+           ]
+          }
+      env:
+        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
