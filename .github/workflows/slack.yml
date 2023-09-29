@@ -12,16 +12,16 @@ jobs:
         id: slack
         uses: slackapi/slack-github-action@v1.24.0
         with:
-         channel-id: ''
+         channel-id: 'GSVHTJKM2'
          payload: |
            {
-             "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.head_commit.url || github.event.schedule.html_url  }}",
+             "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.schedule.html_url || github.event.head_commit.url  }}",
              "blocks": [
                {
                  "type": "section",
                  "text": {
                            "type": "mrkdwn",
-                           "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.head_commit.url || github.event.schedule.html_url }}"
+                           "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.schedule.html_url || github.event.head_commit.url }}"
                   }
                 }
               ]
