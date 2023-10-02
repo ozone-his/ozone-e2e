@@ -8,11 +8,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Notify slack
+      - name: Notify Slack
         id: slack
         uses: slackapi/slack-github-action@v1.24.0
         with:
-         channel-id: 'GSVHTJKM2'
          payload: |
            {
              "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.schedule.html_url || github.event.head_commit.url  }}",
