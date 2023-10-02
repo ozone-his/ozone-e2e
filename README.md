@@ -1,6 +1,6 @@
 # Ozone Pro E2E Tests
 
-[![Ozone E2E Tests](https://github.com/ozone-his/ozone-e2e-tests/actions/workflows/e2e.yml/badge.svg)](https://github.com/ozone-his/ozone-e2e-tests/actions/workflows/e2e.yml)
+[![Ozone E2E Tests](https://github.com/ozone-his/ozone-e2e-pro/actions/workflows/e2e.yml/badge.svg)](https://github.com/ozone-his/ozone-e2e-pro/actions/workflows/e2e.yml)
 
 Welcome to Ozone Pro test suite that uses [Playwright](https://playwright.dev)
 framework. 
@@ -22,12 +22,12 @@ framework.
 Clone the project
 
 ```sh
-git clone https://github.com/kdaud/ozone-e2e-tests
+git clone https://github.com/ozone-his/ozone-e2e-pro
 ```
 Navigate into the project
 
 ```sh
-cd ozone-e2e-tests
+cd ozone-e2e-pro
 ```
 
 Install dependencies
@@ -45,12 +45,12 @@ npx playwright test
 This is underdevelopement/WIP. At the moment, there exists a git-shared
 `.env` file which can be used for configuring certain test attributes.
 
-By default, the test suite will run against the Ozone demo server.
+By default, the test suite will run against the Ozone dev server.
 You can override this by changing the `E2E_BASE_URL` environment variables beforehand:
 
 ```sh
 # Ex: Set the server URL here
-export E2E_BASE_URL=https://demo.ozone-his.com
+export E2E_BASE_URL=https://auth.ozone-dev.mekomsolutions.net
 ```
 
 ## Project Structure 
