@@ -137,7 +137,7 @@ test('Adding an OpenMRS patient condition increases conditions count in Superset
   await expect(updatedCount).toBeGreaterThan(initialCount);
 });
 
-test('Adding OpenMRS patient biometrics increases observations count in Superset', async ({ page }) => {
+test('Adding an OpenMRS patient biometrics increases observations count in Superset', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
   await homePage.startPatientVisit();
@@ -167,7 +167,7 @@ test('Adding OpenMRS patient biometrics increases observations count in Superset
   await expect(updatedCount).toBeGreaterThan(initialCount);
 });
 
-test('Adding OpenMRS patient appointment increases appointments count in Superset', async ({ page }) => {
+test('Adding an OpenMRS patient appointment increases appointments count in Superset', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
   await homePage.startPatientVisit();

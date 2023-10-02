@@ -30,19 +30,24 @@ export class HomePage {
     await this.page.getByRole('button', { name: 'Sign In' }).click();
     await this.page.locator('label').filter({ hasText: 'Inpatient Ward' }).locator('span').first().click();
     await this.page.getByRole('button', { name: 'Confirm' }).click();
+    await expect(this.page.getByRole('button', { name: 'App Menu' })).toBeEnabled();
+    await expect(this.page.getByRole('button', { name: 'Users' })).toBeEnabled();
+    await expect(this.page.getByRole('button', { name: 'Add Patient' })).toBeEnabled();
+    await expect(this.page.getByRole('button', { name: 'Implementer Tools' })).toBeEnabled();
+    await expect(this.page.getByRole('button', { name: 'Search Patient' })).toBeEnabled();
   }
 
   async goToSuperset() {
-    await this.page.goto('https://analytics.ozone-qa.mekomsolutions.net/');
+    await this.page.goto(`${process.env.E2E_SUPERSET_URL}`);
   }
 
   async goToOdoo() {
-    await this.page.goto('https://erp.ozone-qa.mekomsolutions.net/');
+    await this.page.goto(`${process.env.E2E_ODOO_URL}`);
     await this.page.getByRole('link', { name: 'Login with Single Sign-On' }).click();
   }
 
   async goToSENAITE() {
-    await this.page.goto('https://lims.ozone-qa.mekomsolutions.net/');
+    await this.page.goto(`${process.env.E2E_SENAITE_URL}`);
   }
 
   async createPatient() {
@@ -100,7 +105,6 @@ export class HomePage {
     await this.page.getByRole('button', { name: 'danger End Visit' }).click();
 
     await expect(this.page.getByText('Visit ended')).toBeVisible();
-
     await this.page.getByRole('button', { name: 'Close' }).click();
   }
 
@@ -148,6 +152,8 @@ export class HomePage {
     await this.page.getByRole('button', { name: 'Add', exact: true }).click();
     await this.page.getByRole('combobox', { name: 'Select service' }).selectOption('General Medicine service');
     await this.page.getByRole('combobox', { name: 'Select the type of appointment' }).selectOption('WalkIn');
+    await this.page.locator('#duration').clear();
+    await this.page.locator('#duration').fill('40');
     await this.page.getByPlaceholder('Write any additional points here').clear();
     await this.page.getByPlaceholder('Write any additional points here').fill('This is an appointment.');
     await this.page.getByRole('button', { name: 'Save and close' }).click();
@@ -188,10 +194,9 @@ export class HomePage {
 
   async goToLabOrderForm() {
     await this.page.locator('div').filter({ hasText: /^Form$/ }).getByRole('button').click();
-    delay(3000);
-    await expect(this.page.getByText('Laboratory Tests')).toBeVisible();
-
-    await this.page.getByText('Laboratory Tests').click();
+    await delay(3000);
+    await expect(this.page.getByText('Laboratory Test Orders')).toBeVisible();
+    await this.page.getByText('Laboratory Test Orders').click();
   }
 
   async saveLabOrder() {
@@ -209,7 +214,7 @@ export class HomePage {
     await this.page.locator('#tab select').selectOption('160225AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
     await this.page.getByRole('button', { name: 'Save and close' }).click();
     await expect(this.page.getByText('Lab order(s) generated')).toBeVisible();
-    delay(5000);
+    await delay(5000);
   }
 
   async discontinueLabOrder() {
@@ -221,7 +226,7 @@ export class HomePage {
 
     await expect(this.page.getByText('Encounter deleted')).toBeVisible();
     await expect(this.page.getByText('Encounter successfully deleted')).toBeVisible();
-    delay(5000);
+    await delay(5000);
   }
 
   async createPartition() {
@@ -230,7 +235,7 @@ export class HomePage {
     await this.page.locator('#receive_transition span:nth-child(1)').click();
     await this.page.getByRole('button', { name: 'Create Partitions' }).click();
     await this.page.locator('table tbody tr:nth-child(1) td.contentcell.getId div span a').click();
-    delay(3000);
+    await delay(3000);
   }
 
   async publishLabResults() {
@@ -241,11 +246,11 @@ export class HomePage {
     await this.page.getByRole('navigation', { name: 'breadcrumb' }).getByRole('link', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
     await this.page.locator('input[name="uids\\:list"]').check();
     await this.page.locator('#publish_transition span:nth-child(1)').click();
-    delay(5000)
+    await delay(5000)
     await this.page.getByRole('button', { name: 'Email' }).click();
-    delay(5000)
+    await delay(5000)
     await this.page.getByRole('button', { name: 'Send' }).click();
-    delay(8000)
+    await delay(8000)
   }
 
   async viewTestResults() {
@@ -254,11 +259,14 @@ export class HomePage {
     await this.page.getByRole('tab', { name: 'Panel' }).click();
   }
 
-  async createDrugOrder() {
+  async makeDrugOrder() {
     await this.page.getByRole('complementary').filter({ hasText: 'MedicationsNoteFormPatient lists' }).getByRole('button').first().click();
+    await delay(3000);
+    await this.page.getByRole('button', { name: 'Add', exact: true }).nth(1).click();
+    await delay(2000);
     await this.page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 325mg');
     await this.page.getByRole('listitem').filter({ hasText: 'Aspirin 325mg — 325mg — tabletImmediately add to basket' }).click();
-    delay(4000)
+    await delay(4000)
     await this.page.getByPlaceholder('Dose').fill('4');
     await this.page.getByRole('button', { name: 'Open', exact: true }).nth(1).click();
     await this.page.getByText('Intravenous').click();
@@ -275,14 +283,13 @@ export class HomePage {
     await this.page.getByRole('button', { name: 'Sign and close' }).focus();
     await expect(this.page.getByText('Sign and close')).toBeVisible();
     await this.page.getByRole('button', { name: 'Sign and close' }).click();
-    delay(5000);
+    await delay(5000);
   }
 
   async editDrugOrder() {
     await this.page.getByRole('button', { name: 'Actions menu' }).click();
     await this.page.getByRole('menuitem', { name: 'Modify' }).click();
-    await this.page.getByRole('listitem').filter({ hasText: 'Modify' }).click();
-    delay(4000);
+    await delay(4000);
     await this.page.getByPlaceholder('Dose').clear();
     await this.page.getByPlaceholder('Dose').fill('8');
     await this.page.getByPlaceholder('Frequency').click();
@@ -294,7 +301,7 @@ export class HomePage {
     await expect(this.page.getByText('Sign and close')).toBeVisible();
     await this.page.getByRole('button', { name: 'Sign and close' }).focus();
     await this.page.getByRole('button', { name: 'Sign and close' }).dispatchEvent('click');
-    delay(5000);
+    await delay(5000);
   }
 
   async discontinueDrugOrder() {
@@ -303,27 +310,27 @@ export class HomePage {
     await expect(this.page.getByText('Sign and close')).toBeVisible();
     await this.page.getByRole('button', { name: 'Sign and close' }).focus();
     await this.page.getByRole('button', { name: 'Sign and close' }).dispatchEvent('click');
-    delay(3000);
+    await delay(3000);
   }
 
   async searchCustomerInOdoo() {
     await this.page.locator("//a[contains(@class, 'full')]").click();
     await this.page.getByRole('menuitem', { name: 'Sales' }).click();
     await this.page.getByRole('img', { name: 'Remove' }).click();
-    delay(1500);
+    await delay(1500);
     await this.page.getByPlaceholder('Search...').type(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.getByPlaceholder('Search...').press('Enter');
-    delay(2000);
+    await delay(2000);
   }
 
   async searchUpdatedCustomerInOdoo() {
     await this.page.locator("//a[contains(@class, 'full')]").click();
     await this.page.getByRole('menuitem', { name: 'Sales' }).click();
     await this.page.getByRole('img', { name: 'Remove' }).click();
-    delay(1500);
+    await delay(1500);
     await this.page.getByPlaceholder('Search...').type('Winniefred'+ ' ' + `${patientName.givenName }`);
     await this.page.getByPlaceholder('Search...').press('Enter');
-    delay(2000);
+    await delay(2000);
   }
 
   async searchClientInSENAITE() {
@@ -343,15 +350,16 @@ export class HomePage {
   async updatePatientDetails() {
     await this.page.getByRole('button', { name: 'Actions', exact: true }).click();
     await this.page.getByRole('menuitem', { name: 'Edit patient details' }).click();
-    delay(4000);
+    await delay(4000);
     await this.page.getByLabel('First Name').click();
     await this.page.getByLabel('First Name').clear();
     await this.page.getByLabel('First Name').type('Winniefred');
-    delay(4000);
+    await delay(4000);
     await this.page.locator('label').filter({ hasText: 'Female' }).locator('span').first().click();
     await this.page.getByRole('button', { name: 'Update Patient' }).click();
     await expect(this.page.getByText('Patient Details Updated')).toBeVisible();
     await this.page.getByRole('button', { name: 'Close' }).click();
-    delay(5000);
+    await delay(5000);
   }
+
 }
