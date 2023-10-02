@@ -89,7 +89,8 @@ test('Creating an OpenMRS role syncs the role into Keycloak', async ({ page }) =
     // verify
     await page.goto(`${process.env.E2E_KEYCLOAK_URL}/admin/master/console/`);
     await homePage.goToRoles();
-    // await expect(page.getByText(`${randomRoleName.roleName}`)).toBeFalsy();
+    const roleName = await page.locator('table tbody tr td:nth-child(1) a');
+    await expect(roleName).not.toHaveText(`${randomRoleName.roleName}`);
     await page.goto(`${process.env.E2E_BASE_URL}/openmrs/admin/users/role.list`);
     await homePage.addRole();
   });

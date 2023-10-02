@@ -13,7 +13,7 @@ test.beforeEach(async ({ page }) => {
   await homePage.createPatient();
   await homePage.startPatientVisit();
 });
-/*
+
 test('Patient with lab order becomes client with analysis request in SENAITE', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
@@ -208,7 +208,7 @@ test('Published free text lab results from SENAITE are viewable in O3', async ({
   const labResult = await page.locator('div:nth-child(2) >div> div.cds--data-table-container table tbody tr td:nth-child(2) span').first();
   await expect(labResult).toHaveText('Test result: Normal');
 });
-*/
+
 test.afterEach(async ({ page }) => {
   const homePage = new HomePage(page);
   await homePage.deletePatient();

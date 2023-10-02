@@ -257,11 +257,11 @@ export class HomePage {
     await this.page.getByRole('navigation', { name: 'breadcrumb' }).getByRole('link', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
     await this.page.locator('input[name="uids\\:list"]').check();
     await this.page.locator('#publish_transition span:nth-child(1)').click();
-    await delay(5000)
+    await delay(5000);
     await this.page.getByRole('button', { name: 'Email' }).click();
-    await delay(5000)
+    await delay(5000);
     await this.page.getByRole('button', { name: 'Send' }).click();
-    await delay(8000)
+    await delay(8000);
   }
 
   async viewTestResults() {
@@ -277,7 +277,7 @@ export class HomePage {
     await delay(2000);
     await this.page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 325mg');
     await this.page.getByRole('listitem').filter({ hasText: 'Aspirin 325mg — 325mg — tabletImmediately add to basket' }).click();
-    await delay(4000)
+    await delay(4000);
     await this.page.getByPlaceholder('Dose').fill('4');
     await this.page.getByRole('button', { name: 'Open', exact: true }).nth(1).click();
     await this.page.getByText('Intravenous').click();
@@ -339,7 +339,7 @@ export class HomePage {
     await this.page.getByRole('menuitem', { name: 'Sales' }).click();
     await this.page.getByRole('img', { name: 'Remove' }).click();
     await delay(1500);
-    await this.page.getByPlaceholder('Search...').type('Winniefred'+ ' ' + `${patientName.givenName }`);
+    await this.page.getByPlaceholder('Search...').type('Winniefred' + ' ' + `${patientName.givenName}`);
     await this.page.getByPlaceholder('Search...').press('Enter');
     await delay(2000);
   }
