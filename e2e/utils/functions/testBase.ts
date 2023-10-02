@@ -7,6 +7,10 @@ export var patientName = {
 
 var patientFullName = '';
 
+export var randomRoleName = {
+  roleName : `${(Math.random() + 1).toString(36).substring(2)}`
+}
+
 const delay = (mills) => {
   let datetime1 = new Date().getTime();
   let datetime2 = datetime1 + mills;
@@ -39,6 +43,13 @@ export class HomePage {
 
   async goToSuperset() {
     await this.page.goto(`${process.env.E2E_SUPERSET_URL}`);
+  }
+
+  async goToKeycloak() {
+    await this.page.goto(`${process.env.E2E_KEYCLOAK_URL}/admin/master/console/`);
+    await this.page.getByLabel('Username or email').fill('admin');
+    await this.page.getByLabel('Password').fill('password');
+    await this.page.getByRole('button', { name: 'Sign In' }).click();
   }
 
   async goToOdoo() {
@@ -246,11 +257,11 @@ export class HomePage {
     await this.page.getByRole('navigation', { name: 'breadcrumb' }).getByRole('link', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
     await this.page.locator('input[name="uids\\:list"]').check();
     await this.page.locator('#publish_transition span:nth-child(1)').click();
-    await delay(5000)
+    await delay(5000);
     await this.page.getByRole('button', { name: 'Email' }).click();
-    await delay(5000)
+    await delay(5000);
     await this.page.getByRole('button', { name: 'Send' }).click();
-    await delay(8000)
+    await delay(8000);
   }
 
   async viewTestResults() {
@@ -266,7 +277,7 @@ export class HomePage {
     await delay(2000);
     await this.page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 325mg');
     await this.page.getByRole('listitem').filter({ hasText: 'Aspirin 325mg — 325mg — tabletImmediately add to basket' }).click();
-    await delay(4000)
+    await delay(4000);
     await this.page.getByPlaceholder('Dose').fill('4');
     await this.page.getByRole('button', { name: 'Open', exact: true }).nth(1).click();
     await this.page.getByText('Intravenous').click();
@@ -328,7 +339,7 @@ export class HomePage {
     await this.page.getByRole('menuitem', { name: 'Sales' }).click();
     await this.page.getByRole('img', { name: 'Remove' }).click();
     await delay(1500);
-    await this.page.getByPlaceholder('Search...').type('Winniefred'+ ' ' + `${patientName.givenName }`);
+    await this.page.getByPlaceholder('Search...').type('Winniefred' + ' ' + `${patientName.givenName}`);
     await this.page.getByPlaceholder('Search...').press('Enter');
     await delay(2000);
   }
@@ -360,6 +371,44 @@ export class HomePage {
     await expect(this.page.getByText('Patient Details Updated')).toBeVisible();
     await this.page.getByRole('button', { name: 'Close' }).click();
     await delay(5000);
+  }
+
+  async addRole() {
+    await this.page.getByRole('link', { name: 'Add Role' }).click();
+    await this.page.locator('#role').fill(`${randomRoleName.roleName}`);
+    await this.page.locator('textarea[name="description"]').fill('Role for e2e test');
+    await this.page.getByLabel('Application: Edits Existing Encounters').check();
+    await this.page.getByLabel('Application: Enters Vitals').check();
+    await this.page.getByLabel('Application: Records Allergies').check();
+    await this.page.getByLabel('Application: Uses Patient Summary').check();
+    await this.page.getByLabel('Organizational: Registration Clerk').check();
+    await this.page.getByRole('button', { name: 'Save Role' }).click();
+    await expect(this.page.getByText('Role saved')).toBeVisible();
+  }
+
+  async updateRole() {
+    await this.page.getByRole('link', { name: `${randomRoleName.roleName}` }).click();
+    await this.page.locator('textarea[name="description"]').clear();
+    await this.page.locator('textarea[name="description"]').fill('Updated role description');
+    await this.page.getByLabel('Application: Registers Patients').check();
+    await this.page.getByLabel('Application: Writes Clinical Notes').check();
+    await this.page.getByRole('button', { name: 'Save Role' }).click();
+    await expect(this.page.getByText('Role saved')).toBeVisible();
+  }
+
+  async goToRoles() {
+    await this.page.getByTestId('realmSelectorToggle').click();
+    await this.page.getByRole('menuitem', { name: 'ozone' }).click();
+    await this.page.getByRole('link', { name: 'Clients' }).click();
+    await this.page.getByRole('link', { name: 'openmrs', exact: true }).click();
+    await this.page.getByTestId('rolesTab').click();
+  }
+
+  async deleteRole(){
+    await this.page.goto(`${process.env.E2E_BASE_URL}/openmrs/admin/users/role.list`);
+    await this.page.getByRole('row', { name: `${randomRoleName.roleName}` }).getByRole('checkbox').check();
+    await this.page.getByRole('button', { name: 'Delete Selected Roles' }).click();
+    await expect(this.page.getByText(`${randomRoleName.roleName} deleted`)).toBeVisible();
   }
 
 }
