@@ -404,6 +404,30 @@ export class HomePage {
     await this.page.getByTestId('rolesTab').click();
   }
 
+  async unlinkInheritedRoles () {
+    await this.page.getByRole('link', { name: `${randomRoleName.roleName}` }).click();
+    await this.page.getByLabel('Application: Edits Existing Encounters').uncheck();
+    await this.page.getByLabel('Application: Enters Vitals').uncheck();
+    await this.page.getByLabel('Application: Records Allergies').uncheck();
+    await this.page.getByLabel('Application: Uses Patient Summary').uncheck();
+    await this.page.getByLabel('Organizational: Registration Clerk').uncheck();
+    await this.page.getByRole('button', { name: 'Save Role' }).click();
+    await expect(this.page.getByText('Role saved')).toBeVisible();
+  }
+
+  async unlinkUpdatedInheritedRoles () {
+    await this.page.getByRole('link', { name: `${randomRoleName.roleName}` }).click();
+    await this.page.getByLabel('Application: Edits Existing Encounters').uncheck();
+    await this.page.getByLabel('Application: Enters Vitals').uncheck();
+    await this.page.getByLabel('Application: Records Allergies').uncheck();
+    await this.page.getByLabel('Application: Registers Patients').uncheck();
+    await this.page.getByLabel('Application: Writes Clinical Notes').uncheck();
+    await this.page.getByLabel('Application: Uses Patient Summary').uncheck();
+    await this.page.getByLabel('Organizational: Registration Clerk').uncheck();
+    await this.page.getByRole('button', { name: 'Save Role' }).click();
+    await expect(this.page.getByText('Role saved')).toBeVisible();
+  }
+
   async deleteRole(){
     await this.page.goto(`${process.env.E2E_BASE_URL}/openmrs/admin/users/role.list`);
     await this.page.getByRole('row', { name: `${randomRoleName.roleName}` }).getByRole('checkbox').check();
