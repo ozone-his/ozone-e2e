@@ -273,7 +273,7 @@ export class HomePage {
   async makeDrugOrder() {
     await this.page.getByRole('complementary').filter({ hasText: 'MedicationsNoteFormPatient lists' }).getByRole('button').first().click();
     await delay(3000);
-    await this.page.getByRole('button', { name: 'Add', exact: true }).nth(1).click();
+    await this.page.getByRole('button', { name: 'Add', exact: true }).nth(0).click();
     await delay(2000);
     await this.page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 325mg');
     await this.page.getByRole('listitem').filter({ hasText: 'Aspirin 325mg — 325mg — tabletImmediately add to basket' }).click();
