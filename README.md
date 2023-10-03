@@ -50,7 +50,7 @@ You can override this by changing the `E2E_BASE_URL` environment variables befor
 
 ```sh
 # Ex: Set the server URL here
-export E2E_BASE_URL=https://auth.ozone-dev.mekomsolutions.net
+export E2E_BASE_URL=https://ozone-dev.mekomsolutions.net
 ```
 
 ## Project Structure 
