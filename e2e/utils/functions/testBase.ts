@@ -161,8 +161,8 @@ export class HomePage {
   async addPatientAppointment() {
     await this.page.getByRole('link', { name: 'Appointments' }).click();
     await this.page.getByRole('button', { name: 'Add', exact: true }).click();
-    await this.page.getByRole('combobox', { name: 'Select service' }).selectOption('General Medicine service');
-    await this.page.getByRole('combobox', { name: 'Select the type of appointment' }).selectOption('WalkIn');
+    await this.page.getByLabel('Select a service').selectOption('General Medicine service');
+    await this.page.getByLabel('Select the type of appointment').selectOption('WalkIn');
     await this.page.locator('#duration').clear();
     await this.page.locator('#duration').fill('40');
     await this.page.getByPlaceholder('Write any additional points here').clear();
