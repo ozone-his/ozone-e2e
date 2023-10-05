@@ -130,7 +130,7 @@ test('Revising a synced drug order edits corresponding quotation line in Odoo', 
   await page.locator("table tbody tr:nth-child(1) td.o_data_cell.o_field_cell.o_list_many2one.o_readonly_modifier.o_required_modifier").textContent();
   await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
   await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
-  const drugOrderItem =   await page.locator("table tbody tr:nth-child(1) td.o_data_cell.o_field_cell.o_list_text.o_section_and_note_text_cell.o_required_modifier span");
+  const drugOrderItem = await page.locator("table tbody tr:nth-child(1) td.o_data_cell.o_field_cell.o_list_text.o_section_and_note_text_cell.o_required_modifier span");
 
   await expect(drugOrderItem).toContainText('4.0 Tablet');
   await expect(drugOrderItem).toContainText('Twice daily - 5 Days');
@@ -162,7 +162,7 @@ test('Discontinuing a synced drug order cancels corresponding quotation line in 
   await page.locator("table tbody tr:nth-child(1) td.o_data_cell.o_field_cell.o_badge_cell.o_readonly_modifier span");
   await expect(quotation).toHaveText('Quotation');
   await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
-  const drugOrderItem =   await page.locator("table tbody tr:nth-child(1) td.o_data_cell.o_field_cell.o_list_many2one.o_product_configurator_cell.o_required_modifier span span");
+  const drugOrderItem = await page.locator("table tbody tr:nth-child(1) td.o_data_cell.o_field_cell.o_list_many2one.o_product_configurator_cell.o_required_modifier span span");
   await expect(drugOrderItem).toHaveText('Aspirin 325mg');
 
   // replay

@@ -4,13 +4,13 @@ import { patientName } from '../utils/functions/testBase';
 
 let homePage: HomePage;
 
-test.beforeEach(async ({ page }) =>  {
-   const homePage = new HomePage(page);
-   await homePage.initiateLogin();
+test.beforeEach(async ({ page }) => {
+  const homePage = new HomePage(page);
+  await homePage.initiateLogin();
 
-   await expect(page).toHaveURL(/.*home/);
+  await expect(page).toHaveURL(/.*home/);
 
-   await homePage.createPatient();
+  await homePage.createPatient();
 });
 
 test('Starting an OpenMRS visit increases visits count in Superset', async ({ page }) => {
@@ -199,8 +199,8 @@ test('Adding an OpenMRS patient appointment increases appointments count in Supe
   await expect(updatedCount).toBeGreaterThan(initialCount);
 });
 
-test.afterEach(async ({ page }) =>  {
-    const homePage = new HomePage(page);
-    await homePage.deletePatient();
-    await page.close();
-  });
+test.afterEach(async ({ page }) => {
+  const homePage = new HomePage(page);
+  await homePage.deletePatient();
+  await page.close();
+});
