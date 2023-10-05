@@ -276,7 +276,7 @@ export class HomePage {
     await this.page.getByRole('button', { name: 'Add', exact: true }).nth(0).click();
     await delay(2000);
     await this.page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 325mg');
-    await this.page.getByRole('listitem').filter({ hasText: 'Aspirin 325mg — 325mg — tabletImmediately add to basket' }).click();
+    await this.page.getByRole('button', { name: 'Order form' }).click();
     await delay(4000);
     await this.page.getByPlaceholder('Dose').fill('4');
     await this.page.getByRole('button', { name: 'Open', exact: true }).nth(1).click();
