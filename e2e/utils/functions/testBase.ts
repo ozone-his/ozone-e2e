@@ -271,7 +271,7 @@ export class HomePage {
   }
 
   async makeDrugOrder() {
-    await this.page.getByRole('complementary').filter({ hasText: 'MedicationsNoteFormPatient lists' }).getByRole('button').first().click();
+    await this.page.getByRole('complementary').filter({ hasText: 'Medications' }).getByRole('button').first().click();
     await delay(3000);
     await this.page.getByRole('button', { name: 'Add', exact: true }).nth(0).click();
     await delay(2000);
