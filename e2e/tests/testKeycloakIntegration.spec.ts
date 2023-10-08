@@ -31,6 +31,7 @@ test('Creating an OpenMRS role syncs the role into Keycloak', async ({ page }) =
   await expect(page.getByText('Application: Uses Patient Summary')).toBeTruthy();
   await expect(page.getByText('Application: Has Super User Privileges')).toBeTruthy();
   await expect(page.getByText('Application: Administers System')).toBeTruthy();
+  // await expect(page.getByText('New Patient Created')).toBeVisible();
   await page.goto(`${process.env.E2E_BASE_URL}/openmrs/admin/users/role.list`);
   await homePage.unlinkInheritedRoles();
 });

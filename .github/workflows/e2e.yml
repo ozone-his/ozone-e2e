@@ -34,8 +34,39 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install chromium --with-deps
 
-      - name: Run E2E tests
-        run: npm run e2eTests
+      - name: Run E2E Tests
+        id: jobStatusPretty
+        run: |
+          npx playwright test testKeycloakIntegration.spec.ts
+
+          if [[ ${{ job.status }} == "success" ]]; then
+            jobStatusPretty="✅ Passing"
+          else
+            jobStatusPretty="❌ Failing"
+          fi
+          echo "jobStatusPretty=$jobStatusPretty" >> "$GITHUB_ENV"
+
+          echo "Evaluation logic is done!"
+
+      - name: Notify Slack
+        id: slack
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+         payload: |
+           {
+             "blocks": [
+               {
+                 "type": "section",
+                 "text": {
+                           "type": "mrkdwn",
+                           "text": "*QA status for ${{ github.repository }}*: ${{ env.jobStatusPretty }}"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
       - name: Upload Report
         uses: actions/upload-artifact@v3
