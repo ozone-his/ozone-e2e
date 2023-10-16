@@ -37,6 +37,36 @@ jobs:
       - name: Run E2E tests
         run: npm run e2eTests
 
+      - name: Set the posted message
+        id: jobStatusPretty
+        run: |
+          if [[ ${{ job.status }} == "success" ]]; then
+            jobStatusPretty="✅ Success!"
+          else
+            jobStatusPretty="❌ Fail... 🤯"
+          fi
+          echo "jobStatusPretty=$jobStatusPretty" >> "$GITHUB_ENV"
+
+      - name: Notify Slack
+        id: slack
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+         payload: |
+           {
+             "blocks": [
+               {
+                 "type": "section",
+                 "text": {
+                           "type": "mrkdwn",
+                           "text": "*QA for ${{ github.repository }}*: ${{ env.jobStatusPretty }}"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
       - name: Upload Report
         uses: actions/upload-artifact@v3
         if: always()
