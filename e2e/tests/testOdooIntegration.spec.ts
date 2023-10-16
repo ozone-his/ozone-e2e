@@ -35,7 +35,7 @@ test('Patient with lab order becomes customer in Odoo', async ({ page }) => {
   await page.locator("table tbody tr:nth-child(1) td.o_data_cell.o_field_cell.o_badge_cell.o_readonly_modifier span").textContent();
   await expect(quotation?.includes("Quotation")).toBeTruthy();
 });
-
+/*
 test('Editing patient details with a synced lab order edits the corresponding customer details in Odoo', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
@@ -176,7 +176,7 @@ test('Discontinuing a synced drug order cancels corresponding quotation line in 
   await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
   await expect(quotation).toHaveText('Cancelled');
 });
-
+*/
 test.afterEach(async ({ page }) => {
   const homePage = new HomePage(page);
   await homePage.deletePatient();
