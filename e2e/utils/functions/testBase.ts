@@ -187,19 +187,17 @@ export class HomePage {
     await this.page.locator('div').filter({ hasText: /^Select schema or type schema name$/ }).nth(1).click();
     await this.page.getByTitle('public').getByText('public').click();
     await this.page.getByRole('textbox').first().clear();
-    await delay(5000);
+    await delay(4000);
+  }
+
+  async clearSQLEditor() {
+    await this.page.getByRole('textbox').first().clear();
+    await this.page.getByRole('textbox').first().fill('');
+    await delay(3000);
   }
 
   async runSQLQuery() {
     await this.page.getByRole('button', { name: 'Run' }).click();
-    await delay(5000);
-  }
-
-  async returnToSQLEditor() {
-    await this.page.getByRole('button', { name: 'triangle-down SQL Lab' }).click();
-    await this.page.getByRole('link', { name: 'SQL Editor' }).click();
-    await this.page.getByRole('textbox').first().clear();
-    await this.page.getByRole('tab', { name: 'Query history' }).click();
     await delay(5000);
   }
 
