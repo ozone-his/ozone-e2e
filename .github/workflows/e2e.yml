@@ -15,7 +15,7 @@ jobs:
     timeout-minutes: 45
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Setup node
@@ -33,13 +33,13 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Install Playwright Browsers
+      - name: Install Playwright browsers
         run: npx playwright install chromium --with-deps
 
       - name: Run E2E tests
         run: npm run e2eTests
 
-      - name: Upload Report
+      - name: Upload report
         uses: actions/upload-artifact@v3
         if: always()
         with:
@@ -52,7 +52,7 @@ jobs:
     timeout-minutes: 45
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Setup node
@@ -70,7 +70,7 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Install Playwright Browsers
+      - name: Install Playwright browsers
         run: npx playwright install chromium --with-deps
 
       - name: Run E2E tests
@@ -138,7 +138,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
-      - name: Upload Report
+      - name: Upload report
         uses: actions/upload-artifact@v3
         if: always()
         with:
