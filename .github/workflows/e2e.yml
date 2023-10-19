@@ -12,7 +12,7 @@ on:
 jobs:
   testOnPR:
     if: ${{ github.event_name == 'pull_request' }}
-    timeout-minutes: 40
+    timeout-minutes: 45
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -49,7 +49,7 @@ jobs:
 
   testOnPush:
     if: ${{ github.event_name == 'push' }}
-    timeout-minutes: 40
+    timeout-minutes: 45
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -89,15 +89,47 @@ jobs:
         id: slack
         uses: slackapi/slack-github-action@v1.24.0
         with:
-         payload: |
-           {
-             "blocks": [
-               {
-                 "type": "section",
-                 "text": {
-                           "type": "mrkdwn",
-                           "text": "*QA status for ${{ github.repository }}*: ${{ env.jobStatusPretty }}"
-                  }
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "rich_text",
+                  "elements": [
+                    {
+                      "type": "rich_text_section",
+                      "elements": [
+                        {
+                          "type": "text",
+                          "text": "GitHub Actions report from "
+                        },
+                        {
+                          "type": "text",
+                          "text": "${{ github.repository }}",
+                          "style": {
+                            "bold": true
+                          }
+                        },
+                        {
+                          "type": "text",
+                          "text": ":\n"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "rich_text_quote",
+                      "elements": [
+                        {
+                          "type": "link",
+                          "url": "https://ozone-dev.mekomsolutions.net",
+                          "text": "Ozone Dev"
+                        },
+                        {
+                          "type": "text",
+                          "text": " server QA status: ${{ env.jobStatusPretty }}"
+                        }
+                      ]
+                    }
+                  ]
                 }
               ]
             }
