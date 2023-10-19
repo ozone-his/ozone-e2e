@@ -103,10 +103,11 @@ jobs:
                           "text": "GitHub Actions report from "
                         },
                         {
-                          "type": "text",
+                          "type": "link",
+                          "url": "https://github.com/ozone-his/ozone-e2e-pro",
                           "text": "${{ github.repository }}",
                           "style": {
-                            "bold": true
+                            "bold": false
                           }
                         },
                         {
