@@ -10,7 +10,9 @@ on:
 
   workflow_dispatch:
 jobs:
-  build:
+  testOnPR:
+    if: ${{ github.event_name == 'pull_request' }}
+    timeout-minutes: 45
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -36,6 +38,105 @@ jobs:
 
       - name: Run E2E tests
         run: npm run e2eTests
+
+      - name: Upload Report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+  testOnPush:
+    if: ${{ github.event_name == 'push' }}
+    timeout-minutes: 45
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Install Playwright Browsers
+        run: npx playwright install chromium --with-deps
+
+      - name: Run E2E tests
+        id: jobStatusPretty
+        run: |
+          npm run e2eTests
+
+          if [[ ${{ job.status }} == "success" ]]; then
+            jobStatusPretty="✅ Passing"
+          else
+            jobStatusPretty="❌ Failing"
+          fi
+          echo "jobStatusPretty=$jobStatusPretty" >> "$GITHUB_ENV"
+
+      - name: Notify Slack
+        id: slack
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "rich_text",
+                  "elements": [
+                    {
+                      "type": "rich_text_section",
+                      "elements": [
+                        {
+                          "type": "text",
+                          "text": "GitHub Actions report from "
+                        },
+                        {
+                          "type": "link",
+                          "url": "https://github.com/ozone-his/ozone-e2e-pro",
+                          "text": "${{ github.repository }}",
+                          "style": {
+                            "bold": false
+                          }
+                        },
+                        {
+                          "type": "text",
+                          "text": ":\n"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "rich_text_quote",
+                      "elements": [
+                        {
+                          "type": "link",
+                          "url": "https://ozone-dev.mekomsolutions.net",
+                          "text": "Ozone Dev"
+                        },
+                        {
+                          "type": "text",
+                          "text": " server QA status: ${{ env.jobStatusPretty }}"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
       - name: Upload Report
         uses: actions/upload-artifact@v3
