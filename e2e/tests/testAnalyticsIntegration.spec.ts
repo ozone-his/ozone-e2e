@@ -18,8 +18,8 @@ test('Adding an OpenMRS patient syncs patient into patients table in Superset', 
   await expect(page).toHaveURL(/.*superset/);
   await homePage.selectDBSchema();
   await homePage.clearSQLEditor();
-  let sqlQuerry1 = `SELECT COUNT (*) FROM patients;`
-  await page.getByRole('textbox').fill(sqlQuerry1);
+  let patientCountsQuery = `SELECT COUNT (*) FROM patients;`
+  await page.getByRole('textbox').fill(patientCountsQuery);
   await homePage.runSQLQuery();
   const initialNumberOfPatients = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
   let initialPatientCount = Number(initialNumberOfPatients);
@@ -33,17 +33,17 @@ test('Adding an OpenMRS patient syncs patient into patients table in Superset', 
   // verify
   await page.goto(`${process.env.E2E_SUPERSET_URL}/superset/sqllab`);
   await homePage.clearSQLEditor();
-  await page.getByRole('textbox').first().fill(sqlQuerry1);
+  await page.getByRole('textbox').first().fill(patientCountsQuery);
   await homePage.runSQLQuery();
   const updatedNumberOfPatients = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
   let updatedPatientCount = Number(updatedNumberOfPatients);
 
-  await expect(updatedPatientCount).toBeGreaterThan(initialPatientCount);
+  await expect(updatedPatientCount).toBe(initialPatientCount + 1);
 
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
-  let sqlQuerry2 = `SELECT * FROM patients WHERE given_name like '${patientName.firstName}' AND family_name like '${patientName.givenName}';`;
-  await page.getByRole('textbox').fill(sqlQuerry2);
+  let patientQuery = `SELECT * FROM patients WHERE given_name like '${patientName.firstName}' AND family_name like '${patientName.givenName}';`;
+  await page.getByRole('textbox').fill(patientQuery);
   await homePage.runSQLQuery();
 
   let patientGivenName = await page.getByRole('gridcell', { name: `${patientName.firstName}` });
@@ -63,8 +63,8 @@ test('Starting an OpenMRS visit syncs visit into visits table in Superset', asyn
   await expect(page).toHaveURL(/.*superset/);
   await homePage.selectDBSchema();
   await homePage.clearSQLEditor();
-  let sqlQuery1 = `SELECT COUNT (*) FROM visits;`
-  await page.getByRole('textbox').fill(sqlQuery1);
+  let visitCountsQuery = `SELECT COUNT (*) FROM visits;`
+  await page.getByRole('textbox').fill(visitCountsQuery);
   await homePage.runSQLQuery();
   const initialNumberOfVisits = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
   let initialVisitCount = Number(initialNumberOfVisits);
@@ -78,24 +78,24 @@ test('Starting an OpenMRS visit syncs visit into visits table in Superset', asyn
   // verify
   await page.goto(`${process.env.E2E_SUPERSET_URL}/superset/sqllab`);
   await homePage.clearSQLEditor();
-  await page.getByRole('textbox').first().fill(sqlQuery1);
+  await page.getByRole('textbox').first().fill(visitCountsQuery);
   await homePage.runSQLQuery();
   const updatedNumberOfVisits = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
   let updatedVisitCount = Number(updatedNumberOfVisits);
 
-  await expect(updatedVisitCount).toBeGreaterThan(initialVisitCount);
+  await expect(updatedVisitCount).toBe(initialVisitCount + 1);
 
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
-  let sqlQuery2 = `SELECT patient_id FROM patients WHERE given_name like '${patientName.firstName}' AND family_name like '${patientName.givenName}';`;
-  await page.getByRole('textbox').fill(sqlQuery2);
+  let patientIdQuery = `SELECT patient_id FROM patients WHERE given_name like '${patientName.firstName}' AND family_name like '${patientName.givenName}';`;
+  await page.getByRole('textbox').fill(patientIdQuery);
   await homePage.runSQLQuery();
   let patientId = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
   const patientIdValue = Number(patientId);
   await page.getByRole('tab', { name: 'Results' }).click();
   await homePage.clearSQLEditor();
-  let sqlQuery3 = `SELECT * FROM visits WHERE patient_id=${patientIdValue};`;
-  await page.getByRole('textbox').first().fill(sqlQuery3);
+  let visitQuery = `SELECT * FROM visits WHERE patient_id=${patientIdValue};`;
+  await page.getByRole('textbox').first().fill(visitQuery);
   await homePage.runSQLQuery();
 
   patientId = await page.getByRole('gridcell', { name: `${patientIdValue}` }).first().textContent();
@@ -121,8 +121,8 @@ test('Creating an OpenMRS order syncs order into orders table in Superset', asyn
   await expect(page).toHaveURL(/.*superset/);
   await homePage.selectDBSchema();
   await homePage.clearSQLEditor();
-  let sqlQuery1 = `SELECT COUNT(*) FROM _orders;`
-  await page.getByRole('textbox').fill(sqlQuery1);
+  let orderCountsQuery = `SELECT COUNT(*) FROM _orders;`
+  await page.getByRole('textbox').fill(orderCountsQuery);
   await homePage.runSQLQuery();
   const initialNumberOfOrders = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
   let initialOrderCount = Number(initialNumberOfOrders);
@@ -140,24 +140,24 @@ test('Creating an OpenMRS order syncs order into orders table in Superset', asyn
   // verify
   await page.goto(`${process.env.E2E_SUPERSET_URL}/superset/sqllab`);
   await homePage.clearSQLEditor();
-  await page.getByRole('textbox').first().fill(sqlQuery1);
+  await page.getByRole('textbox').first().fill(orderCountsQuery);
   await homePage.runSQLQuery();
   const updatedNumberOfOrders = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
   let updatedOrderCount = Number(updatedNumberOfOrders);
 
-  await expect(updatedOrderCount).toBeGreaterThan(initialOrderCount);
+  await expect(updatedOrderCount).toBe(initialOrderCount + 1);
 
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
-  let sqlQuery2 = `SELECT patient_id FROM patients WHERE given_name like '${patientName.firstName}' AND family_name like '${patientName.givenName}';`;
-  await page.getByRole('textbox').fill(sqlQuery2);
+  let patientIdQuery = `SELECT patient_id FROM patients WHERE given_name like '${patientName.firstName}' AND family_name like '${patientName.givenName}';`;
+  await page.getByRole('textbox').fill(patientIdQuery);
   await homePage.runSQLQuery();
   let patientId = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
   const patientIdValue = Number(patientId);
   await page.getByRole('tab', { name: 'Results' }).click();
   await homePage.clearSQLEditor();
-  let sqlQuery3 = `SELECT * FROM _orders WHERE patient_id=${patientIdValue};`;
-  await page.getByRole('textbox').first().fill(sqlQuery3);
+  let orderQuery = `SELECT * FROM _orders WHERE patient_id=${patientIdValue};`;
+  await page.getByRole('textbox').first().fill(orderQuery);
   await homePage.runSQLQuery();
 
   patientId = await page.getByRole('gridcell', { name: `${patientIdValue}` }).first().textContent();
@@ -183,8 +183,8 @@ test('Adding an OpenMRS encounter syncs encounter into encounters table in Super
   await expect(page).toHaveURL(/.*superset/);
   await homePage.selectDBSchema();
   await homePage.clearSQLEditor();
-  let sqlQuery1 = `SELECT COUNT(*) FROM encounters;`
-  await page.getByRole('textbox').fill(sqlQuery1);
+  let encounterCountsQuery = `SELECT COUNT(*) FROM encounters;`
+  await page.getByRole('textbox').fill(encounterCountsQuery);
   await homePage.runSQLQuery();
   const initialNumberOfEncounters = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
   let initialEncounterCount = Number(initialNumberOfEncounters);
@@ -202,37 +202,37 @@ test('Adding an OpenMRS encounter syncs encounter into encounters table in Super
   // verify
   await page.goto(`${process.env.E2E_SUPERSET_URL}/superset/sqllab`);
   await homePage.clearSQLEditor();
-  await page.getByRole('textbox').first().fill(sqlQuery1);
+  await page.getByRole('textbox').first().fill(encounterCountsQuery);
   await homePage.runSQLQuery();
   const updatedNumberOfEncounters = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
   let updatedEncounterCount = Number(updatedNumberOfEncounters);
 
-  await expect(updatedEncounterCount).toBeGreaterThan(initialEncounterCount);
+  await expect(updatedEncounterCount).toBe(initialEncounterCount + 1);
 
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
-  let sqlQuery2 = `SELECT patient_id FROM patients WHERE given_name like '${patientName.firstName}' AND family_name like '${patientName.givenName}';`;
-  await page.getByRole('textbox').fill(sqlQuery2);
+  let patientIdQuery = `SELECT patient_id FROM patients WHERE given_name like '${patientName.firstName}' AND family_name like '${patientName.givenName}';`;
+  await page.getByRole('textbox').fill(patientIdQuery);
   await homePage.runSQLQuery();
   let patientId = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
   const patientIdValue = Number(patientId);
   await page.getByRole('tab', { name: 'Results' }).click();
   await homePage.clearSQLEditor();
-  let sqlQuery3 = `SELECT encounter_id FROM _orders WHERE patient_id=${patientIdValue};`;
-  await page.getByRole('textbox').first().fill(sqlQuery3);
+  let encounterIdQuery = `SELECT encounter_id FROM _orders WHERE patient_id=${patientIdValue};`;
+  await page.getByRole('textbox').first().fill(encounterIdQuery);
   await homePage.runSQLQuery();
   let encounterId = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
   const encounterIdValue = Number(encounterId);
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
-  let sqlQuery4 = `SELECT encounter_type_uuid FROM _orders WHERE patient_id=${patientIdValue};`;
-  await page.getByRole('textbox').fill(sqlQuery4);
+  let encounterTypeUuidQuery = `SELECT encounter_type_uuid FROM _orders WHERE patient_id=${patientIdValue};`;
+  await page.getByRole('textbox').fill(encounterTypeUuidQuery);
   await homePage.runSQLQuery();
   let encounterTypeUuidValue = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
   await page.getByRole('tab', { name: 'Results' }).click();
   await homePage.clearSQLEditor();
-  let sqlQuery5 = `SELECT * FROM encounters WHERE encounter_id=${encounterIdValue} AND encounter_type_uuid like '${encounterTypeUuidValue}';`;
-  await page.getByRole('textbox').first().fill(sqlQuery5);
+  let encounterQuery = `SELECT * FROM encounters WHERE encounter_id=${encounterIdValue} AND encounter_type_uuid like '${encounterTypeUuidValue}';`;
+  await page.getByRole('textbox').first().fill(encounterQuery);
   await homePage.runSQLQuery();
 
   encounterId = await page.getByRole('gridcell', { name: `${encounterIdValue}` }).first().textContent();
@@ -272,8 +272,8 @@ test('Adding an OpenMRS patient condition syncs condition into conditions table 
   await expect(page).toHaveURL(/.*superset/);
   await homePage.selectDBSchema();
   await homePage.clearSQLEditor();
-  let sqlQuery1 = `SELECT COUNT (*) FROM _conditions;`
-  await page.getByRole('textbox').fill(sqlQuery1);
+  let conditionCountsQuery = `SELECT COUNT (*) FROM _conditions;`
+  await page.getByRole('textbox').fill(conditionCountsQuery);
   await homePage.runSQLQuery();
   const initialNumberOfConditions = await page.getByRole('gridcell', { name: ' ' }).textContent();
   let initialConditionCount = Number(initialNumberOfConditions);
@@ -288,24 +288,24 @@ test('Adding an OpenMRS patient condition syncs condition into conditions table 
   // verify
   await page.goto(`${process.env.E2E_SUPERSET_URL}/superset/sqllab`);
   await homePage.clearSQLEditor();
-  await page.getByRole('textbox').first().fill(sqlQuery1);
+  await page.getByRole('textbox').first().fill(conditionCountsQuery);
   await homePage.runSQLQuery();
   const updatedNumberOfConditions = await page.getByRole('gridcell', { name: ' ' }).textContent();
   let updatedConditionCount = Number(updatedNumberOfConditions);
 
-  await expect(updatedConditionCount).toBeGreaterThan(initialConditionCount);
+  await expect(updatedConditionCount).toBe(initialConditionCount + 1);
 
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
-  let sqlQuery2 = `SELECT patient_id FROM patients WHERE given_name like '${patientName.firstName}' AND family_name like '${patientName.givenName}';`;
-  await page.getByRole('textbox').fill(sqlQuery2);
+  let patientIdQuery = `SELECT patient_id FROM patients WHERE given_name like '${patientName.firstName}' AND family_name like '${patientName.givenName}';`;
+  await page.getByRole('textbox').fill(patientIdQuery);
   await homePage.runSQLQuery();
   let patientId = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
   const patientIdValue = Number(patientId);
   await page.getByRole('tab', { name: 'Results' }).click();
   await homePage.clearSQLEditor();
-  let sqlQuery3 = `SELECT * FROM _conditions WHERE patient_id=${patientIdValue};`;
-  await page.getByRole('textbox').first().fill(sqlQuery3);
+  let conditionQuery = `SELECT * FROM _conditions WHERE patient_id=${patientIdValue};`;
+  await page.getByRole('textbox').first().fill(conditionQuery);
   await homePage.runSQLQuery();
 
   patientId = await page.getByRole('gridcell', { name: `${patientIdValue}` }).first().textContent();
@@ -327,8 +327,8 @@ test('Adding an OpenMRS observation syncs observation into observations table in
   await expect(page).toHaveURL(/.*superset/);
   await homePage.selectDBSchema();
   await homePage.clearSQLEditor();
-  let sqlQuery1 = `SELECT COUNT (*) FROM observations;`
-  await page.getByRole('textbox').fill(sqlQuery1);
+  let observationCountsQuery = `SELECT COUNT (*) FROM observations;`
+  await page.getByRole('textbox').fill(observationCountsQuery);
   await homePage.runSQLQuery();
   const initialNumberOfObservations = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
   let initialObservationCount = Number(initialNumberOfObservations);
@@ -343,31 +343,31 @@ test('Adding an OpenMRS observation syncs observation into observations table in
   // verify
   await page.goto(`${process.env.E2E_SUPERSET_URL}/superset/sqllab`);
   await homePage.clearSQLEditor();
-  await page.getByRole('textbox').first().fill(sqlQuery1);
+  await page.getByRole('textbox').first().fill(observationCountsQuery);
   await homePage.runSQLQuery();
   const updatedNumberOfObservations = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
   let updatedObservationCount = Number(updatedNumberOfObservations);
 
-  await expect(updatedObservationCount).toBeGreaterThan(initialObservationCount);
+  await expect(updatedObservationCount).toBe(initialObservationCount + 3);
 
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
-  let sqlQuery2 = `SELECT patient_id FROM patients WHERE given_name like '${patientName.firstName}' AND family_name like '${patientName.givenName}';`;
-  await page.getByRole('textbox').fill(sqlQuery2);
+  let patientIdQuery = `SELECT patient_id FROM patients WHERE given_name like '${patientName.firstName}' AND family_name like '${patientName.givenName}';`;
+  await page.getByRole('textbox').fill(patientIdQuery);
   await homePage.runSQLQuery();
   let patientId = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
   const patientIdValue = Number(patientId);
   await page.getByRole('tab', { name: 'Results' }).click();
   await homePage.clearSQLEditor();
-  let sqlQuery3 = `SELECT person_id FROM visits WHERE patient_id=${patientIdValue};`;
-  await page.getByRole('textbox').first().fill(sqlQuery3);
+  let personIdQuery = `SELECT person_id FROM visits WHERE patient_id=${patientIdValue};`;
+  await page.getByRole('textbox').first().fill(personIdQuery);
   await homePage.runSQLQuery();
   let personId = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
   const personIdValue = Number(personId);
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
-  let sqlQuery4 = `SELECT * FROM observations WHERE person_id=${personIdValue};`;
-  await page.getByRole('textbox').fill(sqlQuery4);
+  let observationsQuery = `SELECT * FROM observations WHERE person_id=${personIdValue};`;
+  await page.getByRole('textbox').fill(observationsQuery);
   await homePage.runSQLQuery();
 
   personId = await page.getByRole('gridcell', { name: `${personIdValue}` }).first().textContent();
@@ -412,8 +412,8 @@ test('Adding an OpenMRS patient appointment syncs appointment into appointments 
   await expect(page).toHaveURL(/.*superset/);
   await homePage.selectDBSchema();
   await homePage.clearSQLEditor();
-  let sqlQuery1 = `SELECT COUNT(*) FROM appointments;`
-  await page.getByRole('textbox').fill(sqlQuery1);
+  let appointmentCountsQuery = `SELECT COUNT(*) FROM appointments;`
+  await page.getByRole('textbox').fill(appointmentCountsQuery);
   await homePage.runSQLQuery();
 
   const initialNumberOfAppointments = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
@@ -429,24 +429,24 @@ test('Adding an OpenMRS patient appointment syncs appointment into appointments 
   // verify
   await page.goto(`${process.env.E2E_SUPERSET_URL}/superset/sqllab`);
   await homePage.clearSQLEditor();
-  await page.getByRole('textbox').first().fill(sqlQuery1);
+  await page.getByRole('textbox').first().fill(appointmentCountsQuery);
   await homePage.runSQLQuery();
   const updatedNumberOfAppointments = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
   let updatedAppointmentCount = Number(updatedNumberOfAppointments);
 
-  await expect(updatedAppointmentCount).toBeGreaterThan(initialAppointmentCount);
+  await expect(updatedAppointmentCount).toBe(initialAppointmentCount + 1);
 
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
-  let sqlQuery2 = `SELECT patient_id FROM patients WHERE given_name like '${patientName.firstName}' AND family_name like '${patientName.givenName}';`;
-  await page.getByRole('textbox').fill(sqlQuery2);
+  let patientIdQuery = `SELECT patient_id FROM patients WHERE given_name like '${patientName.firstName}' AND family_name like '${patientName.givenName}';`;
+  await page.getByRole('textbox').fill(patientIdQuery);
   await homePage.runSQLQuery();
   let patientId = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
   const patientIdValue = Number(patientId);
   await page.getByRole('tab', { name: 'Results' }).click();
   await homePage.clearSQLEditor();
-  let sqlQuery3 = `SELECT * FROM appointments WHERE patient_id=${patientIdValue};`;
-  await page.getByRole('textbox').first().fill(sqlQuery3);
+  let appointmentQuery = `SELECT * FROM appointments WHERE patient_id=${patientIdValue};`;
+  await page.getByRole('textbox').first().fill(appointmentQuery);
   await homePage.runSQLQuery();
 
   patientId = await page.getByRole('gridcell', { name: `${patientIdValue}` }).first().textContent();
