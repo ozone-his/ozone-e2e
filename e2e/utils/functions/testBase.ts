@@ -92,12 +92,20 @@ export class HomePage {
       await this.page.getByTitle('close notification').click();
     }
     await this.page.getByRole('button', { name: 'Close' }).click();
+    await delay(3000);
   }
 
   async searchPatient(searchText: string) {
     await this.patientSearchIcon().click();
     await this.patientSearchBar().type(searchText);
     await this.page.getByRole('link', { name: `${patientFullName}` }).first().click();
+  }
+
+  async searchPatientId(searchText: string) {
+    await this.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
+    await this.page.getByRole('button', { name: 'Actions', exact: true }).click();
+    await this.page.getByRole('menuitem', { name: 'Edit patient details' }).click();
+    await delay(4000);
   }
 
   async startPatientVisit() {

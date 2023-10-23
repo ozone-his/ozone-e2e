@@ -29,6 +29,8 @@ test('Adding an OpenMRS patient syncs patient into patients table in Superset', 
   // replay
   await page.goto(`${process.env.E2E_BASE_URL}/openmrs/spa/home`);
   await homePage.createPatient();
+  await homePage.searchPatientId();
+  const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
 
   // verify
   await page.goto(`${process.env.E2E_SUPERSET_URL}/superset/sqllab`);
@@ -42,7 +44,7 @@ test('Adding an OpenMRS patient syncs patient into patients table in Superset', 
 
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
-  let patientQuery = `SELECT * FROM patients WHERE given_name like '${patientName.firstName}' AND family_name like '${patientName.givenName}';`;
+  let patientQuery = `SELECT * FROM patients WHERE identifier like '${patientIdentifier}';`;
   await page.getByRole('textbox').fill(patientQuery);
   await homePage.runSQLQuery();
 
@@ -59,6 +61,8 @@ test('Starting an OpenMRS visit syncs visit into visits table in Superset', asyn
   // setup
   const homePage = new HomePage(page);
   await homePage.createPatient();
+  await homePage.searchPatientId();
+  const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
   await homePage.goToSuperset();
   await expect(page).toHaveURL(/.*superset/);
   await homePage.selectDBSchema();
@@ -87,7 +91,7 @@ test('Starting an OpenMRS visit syncs visit into visits table in Superset', asyn
 
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
-  let patientIdQuery = `SELECT patient_id FROM patients WHERE given_name like '${patientName.firstName}' AND family_name like '${patientName.givenName}';`;
+  let patientIdQuery = `SELECT patient_id FROM patients WHERE identifier like '${patientIdentifier}';`;
   await page.getByRole('textbox').fill(patientIdQuery);
   await homePage.runSQLQuery();
   let patientId = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
@@ -116,6 +120,8 @@ test('Creating an OpenMRS order syncs order into orders table in Superset', asyn
   // setup
   const homePage = new HomePage(page);
   await homePage.createPatient();
+  await homePage.searchPatientId();
+  const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
   await homePage.startPatientVisit();
   await homePage.goToSuperset();
   await expect(page).toHaveURL(/.*superset/);
@@ -149,7 +155,7 @@ test('Creating an OpenMRS order syncs order into orders table in Superset', asyn
 
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
-  let patientIdQuery = `SELECT patient_id FROM patients WHERE given_name like '${patientName.firstName}' AND family_name like '${patientName.givenName}';`;
+  let patientIdQuery = `SELECT patient_id FROM patients WHERE identifier like '${patientIdentifier}';`;
   await page.getByRole('textbox').fill(patientIdQuery);
   await homePage.runSQLQuery();
   let patientId = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
@@ -178,6 +184,8 @@ test('Adding an OpenMRS encounter syncs encounter into encounters table in Super
   // setup
   const homePage = new HomePage(page);
   await homePage.createPatient();
+  await homePage.searchPatientId();
+  const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
   await homePage.startPatientVisit();
   await homePage.goToSuperset();
   await expect(page).toHaveURL(/.*superset/);
@@ -211,7 +219,7 @@ test('Adding an OpenMRS encounter syncs encounter into encounters table in Super
 
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
-  let patientIdQuery = `SELECT patient_id FROM patients WHERE given_name like '${patientName.firstName}' AND family_name like '${patientName.givenName}';`;
+  let patientIdQuery = `SELECT patient_id FROM patients WHERE identifier like '${patientIdentifier}';`;
   await page.getByRole('textbox').fill(patientIdQuery);
   await homePage.runSQLQuery();
   let patientId = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
@@ -267,6 +275,8 @@ test('Adding an OpenMRS patient condition syncs condition into conditions table 
   // setup
   const homePage = new HomePage(page);
   await homePage.createPatient();
+  await homePage.searchPatientId();
+  const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
   await homePage.startPatientVisit();
   await homePage.goToSuperset();
   await expect(page).toHaveURL(/.*superset/);
@@ -297,7 +307,7 @@ test('Adding an OpenMRS patient condition syncs condition into conditions table 
 
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
-  let patientIdQuery = `SELECT patient_id FROM patients WHERE given_name like '${patientName.firstName}' AND family_name like '${patientName.givenName}';`;
+  let patientIdQuery = `SELECT patient_id FROM patients WHERE identifier like '${patientIdentifier}';`;
   await page.getByRole('textbox').fill(patientIdQuery);
   await homePage.runSQLQuery();
   let patientId = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
@@ -322,6 +332,8 @@ test('Adding an OpenMRS observation syncs observation into observations table in
   // setup
   const homePage = new HomePage(page);
   await homePage.createPatient();
+  await homePage.searchPatientId();
+  const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
   await homePage.startPatientVisit();
   await homePage.goToSuperset();
   await expect(page).toHaveURL(/.*superset/);
@@ -352,7 +364,7 @@ test('Adding an OpenMRS observation syncs observation into observations table in
 
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
-  let patientIdQuery = `SELECT patient_id FROM patients WHERE given_name like '${patientName.firstName}' AND family_name like '${patientName.givenName}';`;
+  let patientIdQuery = `SELECT patient_id FROM patients WHERE identifier like '${patientIdentifier}';`;
   await page.getByRole('textbox').fill(patientIdQuery);
   await homePage.runSQLQuery();
   let patientId = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
@@ -407,6 +419,8 @@ test('Adding an OpenMRS patient appointment syncs appointment into appointments 
   // setup
   const homePage = new HomePage(page);
   await homePage.createPatient();
+  await homePage.searchPatientId();
+  const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
   await homePage.startPatientVisit();
   await homePage.goToSuperset();
   await expect(page).toHaveURL(/.*superset/);
@@ -438,7 +452,7 @@ test('Adding an OpenMRS patient appointment syncs appointment into appointments 
 
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
-  let patientIdQuery = `SELECT patient_id FROM patients WHERE given_name like '${patientName.firstName}' AND family_name like '${patientName.givenName}';`;
+  let patientIdQuery = `SELECT patient_id FROM patients WHERE identifier like '${patientIdentifier}';`;
   await page.getByRole('textbox').fill(patientIdQuery);
   await homePage.runSQLQuery();
   let patientId = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
