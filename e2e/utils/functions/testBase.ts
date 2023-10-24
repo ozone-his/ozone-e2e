@@ -101,7 +101,7 @@ export class HomePage {
     await this.page.getByRole('link', { name: `${patientFullName}` }).first().click();
   }
 
-  async searchPatientId(searchText: string) {
+  async searchPatientId() {
     await this.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.getByRole('button', { name: 'Actions', exact: true }).click();
     await this.page.getByRole('menuitem', { name: 'Edit patient details' }).click();

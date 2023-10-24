@@ -18,11 +18,11 @@ test('Adding an OpenMRS patient syncs patient into patients table in Superset', 
   await expect(page).toHaveURL(/.*superset/);
   await homePage.selectDBSchema();
   await homePage.clearSQLEditor();
-  let patientCountsQuery = `SELECT COUNT (*) FROM patients;`
-  await page.getByRole('textbox').fill(patientCountsQuery);
+  let patientsCountQuery = `SELECT COUNT (*) FROM patients;`
+  await page.getByRole('textbox').fill(patientsCountQuery);
   await homePage.runSQLQuery();
   const initialNumberOfPatients = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
-  let initialPatientCount = Number(initialNumberOfPatients);
+  let initialPatientsCount = Number(initialNumberOfPatients);
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
 
@@ -35,12 +35,12 @@ test('Adding an OpenMRS patient syncs patient into patients table in Superset', 
   // verify
   await page.goto(`${process.env.E2E_SUPERSET_URL}/superset/sqllab`);
   await homePage.clearSQLEditor();
-  await page.getByRole('textbox').first().fill(patientCountsQuery);
+  await page.getByRole('textbox').first().fill(patientsCountQuery);
   await homePage.runSQLQuery();
   const updatedNumberOfPatients = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
-  let updatedPatientCount = Number(updatedNumberOfPatients);
+  let updatedPatientsCount = Number(updatedNumberOfPatients);
 
-  await expect(updatedPatientCount).toBe(initialPatientCount + 1);
+  await expect(updatedPatientsCount).toBe(initialPatientsCount + 1);
 
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
@@ -67,11 +67,11 @@ test('Starting an OpenMRS visit syncs visit into visits table in Superset', asyn
   await expect(page).toHaveURL(/.*superset/);
   await homePage.selectDBSchema();
   await homePage.clearSQLEditor();
-  let visitCountsQuery = `SELECT COUNT (*) FROM visits;`
-  await page.getByRole('textbox').fill(visitCountsQuery);
+  let visitsCountQuery = `SELECT COUNT (*) FROM visits;`
+  await page.getByRole('textbox').fill(visitsCountQuery);
   await homePage.runSQLQuery();
   const initialNumberOfVisits = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
-  let initialVisitCount = Number(initialNumberOfVisits);
+  let initialVisitsCount = Number(initialNumberOfVisits);
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
 
@@ -82,12 +82,12 @@ test('Starting an OpenMRS visit syncs visit into visits table in Superset', asyn
   // verify
   await page.goto(`${process.env.E2E_SUPERSET_URL}/superset/sqllab`);
   await homePage.clearSQLEditor();
-  await page.getByRole('textbox').first().fill(visitCountsQuery);
+  await page.getByRole('textbox').first().fill(visitsCountQuery);
   await homePage.runSQLQuery();
   const updatedNumberOfVisits = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
-  let updatedVisitCount = Number(updatedNumberOfVisits);
+  let updatedVisitsCount = Number(updatedNumberOfVisits);
 
-  await expect(updatedVisitCount).toBe(initialVisitCount + 1);
+  await expect(updatedVisitsCount).toBe(initialVisitsCount + 1);
 
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
@@ -98,8 +98,8 @@ test('Starting an OpenMRS visit syncs visit into visits table in Superset', asyn
   const patientIdValue = Number(patientId);
   await page.getByRole('tab', { name: 'Results' }).click();
   await homePage.clearSQLEditor();
-  let visitQuery = `SELECT * FROM visits WHERE patient_id=${patientIdValue};`;
-  await page.getByRole('textbox').first().fill(visitQuery);
+  let patientVisitQuery = `SELECT * FROM visits WHERE patient_id=${patientIdValue};`;
+  await page.getByRole('textbox').first().fill(patientVisitQuery);
   await homePage.runSQLQuery();
 
   patientId = await page.getByRole('gridcell', { name: `${patientIdValue}` }).first().textContent();
@@ -127,11 +127,11 @@ test('Creating an OpenMRS order syncs order into orders table in Superset', asyn
   await expect(page).toHaveURL(/.*superset/);
   await homePage.selectDBSchema();
   await homePage.clearSQLEditor();
-  let orderCountsQuery = `SELECT COUNT(*) FROM _orders;`
-  await page.getByRole('textbox').fill(orderCountsQuery);
+  let ordersCountQuery = `SELECT COUNT(*) FROM _orders;`
+  await page.getByRole('textbox').fill(ordersCountQuery);
   await homePage.runSQLQuery();
   const initialNumberOfOrders = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
-  let initialOrderCount = Number(initialNumberOfOrders);
+  let initialOrdersCount = Number(initialNumberOfOrders);
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
 
@@ -146,12 +146,12 @@ test('Creating an OpenMRS order syncs order into orders table in Superset', asyn
   // verify
   await page.goto(`${process.env.E2E_SUPERSET_URL}/superset/sqllab`);
   await homePage.clearSQLEditor();
-  await page.getByRole('textbox').first().fill(orderCountsQuery);
+  await page.getByRole('textbox').first().fill(ordersCountQuery);
   await homePage.runSQLQuery();
   const updatedNumberOfOrders = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
-  let updatedOrderCount = Number(updatedNumberOfOrders);
+  let updatedOrdersCount = Number(updatedNumberOfOrders);
 
-  await expect(updatedOrderCount).toBe(initialOrderCount + 1);
+  await expect(updatedOrdersCount).toBe(initialOrdersCount + 1);
 
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
@@ -191,11 +191,11 @@ test('Adding an OpenMRS encounter syncs encounter into encounters table in Super
   await expect(page).toHaveURL(/.*superset/);
   await homePage.selectDBSchema();
   await homePage.clearSQLEditor();
-  let encounterCountsQuery = `SELECT COUNT(*) FROM encounters;`
-  await page.getByRole('textbox').fill(encounterCountsQuery);
+  let encountersCountQuery = `SELECT COUNT(*) FROM encounters;`
+  await page.getByRole('textbox').fill(encountersCountQuery);
   await homePage.runSQLQuery();
   const initialNumberOfEncounters = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
-  let initialEncounterCount = Number(initialNumberOfEncounters);
+  let initialEncountersCount = Number(initialNumberOfEncounters);
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
 
@@ -210,12 +210,12 @@ test('Adding an OpenMRS encounter syncs encounter into encounters table in Super
   // verify
   await page.goto(`${process.env.E2E_SUPERSET_URL}/superset/sqllab`);
   await homePage.clearSQLEditor();
-  await page.getByRole('textbox').first().fill(encounterCountsQuery);
+  await page.getByRole('textbox').first().fill(encountersCountQuery);
   await homePage.runSQLQuery();
   const updatedNumberOfEncounters = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
-  let updatedEncounterCount = Number(updatedNumberOfEncounters);
+  let updatedEncountersCount = Number(updatedNumberOfEncounters);
 
-  await expect(updatedEncounterCount).toBe(initialEncounterCount + 1);
+  await expect(updatedEncountersCount).toBe(initialEncountersCount + 1);
 
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
@@ -282,11 +282,11 @@ test('Adding an OpenMRS patient condition syncs condition into conditions table 
   await expect(page).toHaveURL(/.*superset/);
   await homePage.selectDBSchema();
   await homePage.clearSQLEditor();
-  let conditionCountsQuery = `SELECT COUNT (*) FROM _conditions;`
-  await page.getByRole('textbox').fill(conditionCountsQuery);
+  let conditionsCountQuery = `SELECT COUNT (*) FROM _conditions;`
+  await page.getByRole('textbox').fill(conditionsCountQuery);
   await homePage.runSQLQuery();
   const initialNumberOfConditions = await page.getByRole('gridcell', { name: ' ' }).textContent();
-  let initialConditionCount = Number(initialNumberOfConditions);
+  let initialConditionsCount = Number(initialNumberOfConditions);
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
 
@@ -298,12 +298,12 @@ test('Adding an OpenMRS patient condition syncs condition into conditions table 
   // verify
   await page.goto(`${process.env.E2E_SUPERSET_URL}/superset/sqllab`);
   await homePage.clearSQLEditor();
-  await page.getByRole('textbox').first().fill(conditionCountsQuery);
+  await page.getByRole('textbox').first().fill(conditionsCountQuery);
   await homePage.runSQLQuery();
   const updatedNumberOfConditions = await page.getByRole('gridcell', { name: ' ' }).textContent();
-  let updatedConditionCount = Number(updatedNumberOfConditions);
+  let updatedConditionsCount = Number(updatedNumberOfConditions);
 
-  await expect(updatedConditionCount).toBe(initialConditionCount + 1);
+  await expect(updatedConditionsCount).toBe(initialConditionsCount + 1);
 
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
@@ -314,8 +314,8 @@ test('Adding an OpenMRS patient condition syncs condition into conditions table 
   const patientIdValue = Number(patientId);
   await page.getByRole('tab', { name: 'Results' }).click();
   await homePage.clearSQLEditor();
-  let conditionQuery = `SELECT * FROM _conditions WHERE patient_id=${patientIdValue};`;
-  await page.getByRole('textbox').first().fill(conditionQuery);
+  let patientConditionQuery = `SELECT * FROM _conditions WHERE patient_id=${patientIdValue};`;
+  await page.getByRole('textbox').first().fill(patientConditionQuery);
   await homePage.runSQLQuery();
 
   patientId = await page.getByRole('gridcell', { name: `${patientIdValue}` }).first().textContent();
@@ -339,11 +339,11 @@ test('Adding an OpenMRS observation syncs observation into observations table in
   await expect(page).toHaveURL(/.*superset/);
   await homePage.selectDBSchema();
   await homePage.clearSQLEditor();
-  let observationCountsQuery = `SELECT COUNT (*) FROM observations;`
-  await page.getByRole('textbox').fill(observationCountsQuery);
+  let observationsCountQuery = `SELECT COUNT (*) FROM observations;`
+  await page.getByRole('textbox').fill(observationsCountQuery);
   await homePage.runSQLQuery();
   const initialNumberOfObservations = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
-  let initialObservationCount = Number(initialNumberOfObservations);
+  let initialObservationsCount = Number(initialNumberOfObservations);
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
 
@@ -355,12 +355,12 @@ test('Adding an OpenMRS observation syncs observation into observations table in
   // verify
   await page.goto(`${process.env.E2E_SUPERSET_URL}/superset/sqllab`);
   await homePage.clearSQLEditor();
-  await page.getByRole('textbox').first().fill(observationCountsQuery);
+  await page.getByRole('textbox').first().fill(observationsCountQuery);
   await homePage.runSQLQuery();
   const updatedNumberOfObservations = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
-  let updatedObservationCount = Number(updatedNumberOfObservations);
+  let updatedObservationsCount = Number(updatedNumberOfObservations);
 
-  await expect(updatedObservationCount).toBe(initialObservationCount + 3);
+  await expect(updatedObservationsCount).toBe(initialObservationsCount + 3);
 
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
@@ -426,12 +426,12 @@ test('Adding an OpenMRS patient appointment syncs appointment into appointments 
   await expect(page).toHaveURL(/.*superset/);
   await homePage.selectDBSchema();
   await homePage.clearSQLEditor();
-  let appointmentCountsQuery = `SELECT COUNT(*) FROM appointments;`
-  await page.getByRole('textbox').fill(appointmentCountsQuery);
+  let appointmentsCountQuery = `SELECT COUNT(*) FROM appointments;`
+  await page.getByRole('textbox').fill(appointmentsCountQuery);
   await homePage.runSQLQuery();
 
   const initialNumberOfAppointments = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
-  let initialAppointmentCount = Number(initialNumberOfAppointments);
+  let initialAppointmentsCount = Number(initialNumberOfAppointments);
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
 
@@ -443,12 +443,12 @@ test('Adding an OpenMRS patient appointment syncs appointment into appointments 
   // verify
   await page.goto(`${process.env.E2E_SUPERSET_URL}/superset/sqllab`);
   await homePage.clearSQLEditor();
-  await page.getByRole('textbox').first().fill(appointmentCountsQuery);
+  await page.getByRole('textbox').first().fill(appointmentsCountQuery);
   await homePage.runSQLQuery();
   const updatedNumberOfAppointments = await page.getByRole('gridcell', { name: ' ' }).nth(0).textContent();
-  let updatedAppointmentCount = Number(updatedNumberOfAppointments);
+  let updatedAppointmentsCount = Number(updatedNumberOfAppointments);
 
-  await expect(updatedAppointmentCount).toBe(initialAppointmentCount + 1);
+  await expect(updatedAppointmentsCount).toBe(initialAppointmentsCount + 1);
 
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
@@ -459,8 +459,8 @@ test('Adding an OpenMRS patient appointment syncs appointment into appointments 
   const patientIdValue = Number(patientId);
   await page.getByRole('tab', { name: 'Results' }).click();
   await homePage.clearSQLEditor();
-  let appointmentQuery = `SELECT * FROM appointments WHERE patient_id=${patientIdValue};`;
-  await page.getByRole('textbox').first().fill(appointmentQuery);
+  let patientAppointmentQuery = `SELECT * FROM appointments WHERE patient_id=${patientIdValue};`;
+  await page.getByRole('textbox').first().fill(patientAppointmentQuery);
   await homePage.runSQLQuery();
 
   patientId = await page.getByRole('gridcell', { name: `${patientIdValue}` }).first().textContent();
