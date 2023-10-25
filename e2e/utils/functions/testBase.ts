@@ -2,7 +2,8 @@ import { Page, expect } from '@playwright/test';
 
 export var patientName = {
   firstName : '',
-  givenName : ''
+  givenName : '',
+  updatedFirstName : ''
 }
 
 var patientFullName = '';
@@ -50,6 +51,7 @@ export class HomePage {
     await this.page.getByLabel('Username or email').fill('admin');
     await this.page.getByLabel('Password').fill('password');
     await this.page.getByRole('button', { name: 'Sign In' }).click();
+    await delay(8000);
   }
 
   async goToOdoo() {
@@ -64,7 +66,8 @@ export class HomePage {
   async createPatient() {
     patientName = {
       firstName : `e2e_test_${Math.floor(Math.random() * 10000)}`,
-      givenName : `${(Math.random() + 1).toString(36).substring(2)}`
+      givenName : `${(Math.random() + 1).toString(36).substring(2)}`,
+      updatedFirstName: `${(Math.random() + 1).toString(36).substring(2)}`
     }
     patientFullName = patientName.firstName + ' ' + patientName.givenName;
 
@@ -340,28 +343,11 @@ export class HomePage {
     await delay(2000);
   }
 
-  async searchUpdatedCustomerInOdoo() {
-    await this.page.locator("//a[contains(@class, 'full')]").click();
-    await this.page.getByRole('menuitem', { name: 'Sales' }).click();
-    await this.page.getByRole('img', { name: 'Remove' }).click();
-    await delay(1500);
-    await this.page.getByPlaceholder('Search...').type('Winniefred' + ' ' + `${patientName.givenName}`);
-    await this.page.getByPlaceholder('Search...').press('Enter');
-    await delay(2000);
-  }
-
   async searchClientInSENAITE() {
-    await this.page.locator("//i[contains(@class, 'sidebar-toggle-icon')]").click();
-    await this.page.getByRole('link', { name: 'Clients Clients' }).click();
-    await this.page.getByRole('textbox', { name: 'Search' }).click();
+    await this.page.getByRole('link', { name: 'Clients', exact: true }).click();
     await this.page.getByRole('textbox', { name: 'Search' }).type(`${patientName.givenName}`);
     await this.page.locator('div.col-sm-3.text-right button:nth-child(2) i').click();
-  }
-
-  async searchUpdatedClientInSENAITE() {
-    await this.page.getByRole('link', { name: 'Clients Clients' }).click();
-    await this.page.getByRole('textbox', { name: 'Search' }).type(`${patientName.givenName}`);
-    await this.page.locator('div.col-sm-3.text-right button:nth-child(2) i').click();
+    await delay(2000);
   }
 
   async updatePatientDetails() {
@@ -370,11 +356,12 @@ export class HomePage {
     await delay(4000);
     await this.page.getByLabel('First Name').click();
     await this.page.getByLabel('First Name').clear();
-    await this.page.getByLabel('First Name').type('Winniefred');
+    await this.page.getByLabel('First Name').type(`${patientName.updatedFirstName}`);
     await delay(4000);
     await this.page.locator('label').filter({ hasText: 'Female' }).locator('span').first().click();
     await this.page.getByRole('button', { name: 'Update Patient' }).click();
     await expect(this.page.getByText('Patient Details Updated')).toBeVisible();
+    patientName.firstName = `${patientName.updatedFirstName}`;
     await this.page.getByRole('button', { name: 'Close' }).click();
     await delay(5000);
   }

@@ -40,6 +40,7 @@ test('Editing patient details with a synced lab test order edits client details 
   await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
   await homePage.saveLabOrder();
   await homePage.goToSENAITE();
+  await expect(page).toHaveURL(/.*senaite/);
   await homePage.searchClientInSENAITE();
   const client = await page.locator('table tbody tr:nth-child(1) td.contentcell.title div span a');
   await expect(client).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
@@ -51,10 +52,9 @@ test('Editing patient details with a synced lab test order edits client details 
 
   // verify
   await homePage.goToSENAITE();
-  await homePage.searchUpdatedClientInSENAITE();
+  await homePage.searchClientInSENAITE();
 
-  await expect(client).toContainText('Winniefred' + ' ' + `${patientName.givenName }`);
-  patientName.firstName = 'Winniefred';
+  await expect(client).toContainText(`${patientName.updatedFirstName}` + ' ' + `${patientName.givenName }`);
 });
 
 test('Editing a synced lab order edits corresponding analysis request in SENAITE', async ({ page }) => {
@@ -83,9 +83,7 @@ test('Editing a synced lab order edits corresponding analysis request in SENAITE
 
   // verify
   await homePage.goToSENAITE();
-  await page.getByRole('link', { name: 'Clients Clients' }).click();
-  await page.getByRole('textbox', { name: 'Search' }).type(`${patientName.givenName}`);
-  await page.locator('div.col-sm-3.text-right button:nth-child(2) i').click();
+  await homePage.searchClientInSENAITE();
 
   await expect(client).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await page.locator('table tbody tr:nth-child(1) td.contentcell.title div').click();
@@ -119,9 +117,7 @@ test('Voiding a synced lab order cancels corresponding analysis request in SENAI
 
   // verify
   await homePage.goToSENAITE();
-  await page.getByRole('link', { name: 'Clients Clients' }).click();
-  await page.getByRole('textbox', { name: 'Search' }).type(`${patientName.givenName}`);
-  await page.locator('div.col-sm-3.text-right button:nth-child(2) i').click();
+  await homePage.searchClientInSENAITE();
   await expect(client).not.toHaveText(`${patientName.firstName + ' ' + patientName.givenName}`);
 });
 
