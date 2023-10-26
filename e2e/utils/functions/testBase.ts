@@ -42,7 +42,7 @@ export class HomePage {
   }
 
   async goToSuperset() {
-    await this.page.goto(`${process.env.E2E_SUPERSET_URL}`);
+    await this.page.goto(`${process.env.E2E_ANALYTICS_URL}`);
   }
 
   async goToKeycloak() {
@@ -103,9 +103,13 @@ export class HomePage {
 
   async searchPatientId() {
     await this.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
+    await expect(this.page.getByText('Actions')).toBeVisible();
     await this.page.getByRole('button', { name: 'Actions', exact: true }).click();
+    await expect(this.page.getByText('Edit patient details')).toBeVisible();
     await this.page.getByRole('menuitem', { name: 'Edit patient details' }).click();
     await delay(4000);
+    await expect(this.page.getByText('Identifiers')).toBeVisible();
+    await expect(this.page.getByText('OpenMRS ID')).toBeVisible();
   }
 
   async startPatientVisit() {
@@ -190,11 +194,9 @@ export class HomePage {
   }
 
   async selectDBSchema() {
-    await this.page.getByRole('button', { name: 'triangle-down SQL Lab' }).click();
-    await this.page.getByRole('link', { name: 'SQL Editor' }).click();
-    await this.page.locator('div').filter({ hasText: /^Select schema or type schema name$/ }).nth(1).click();
+    await this.page.getByRole('button', { name: 'triangle-down SQL', exact: true }).click();
+    await this.page.getByRole('link', { name: 'SQL Lab', exact: true }).click();
     await this.page.getByTitle('public').getByText('public').click();
-    await this.page.getByRole('textbox').first().clear();
     await delay(4000);
   }
 
