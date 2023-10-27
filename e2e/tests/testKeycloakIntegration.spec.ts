@@ -11,7 +11,7 @@ test.beforeEach(async ({ page }) => {
   await expect(page).toHaveURL(/.*home/);
 });
 
-test('Creating an OpenMRS role syncs the role into Keycloak', async ({ page }) => {
+test('Adding an OpenMRS role syncs the role into Keycloak', async ({ page }) => {
   // setup
   await page.goto(`${process.env.E2E_BASE_URL}/openmrs/admin/users/role.list`);
   const homePage = new HomePage(page);
@@ -19,6 +19,7 @@ test('Creating an OpenMRS role syncs the role into Keycloak', async ({ page }) =
 
   // replay
   await homePage.goToKeycloak();
+  await expect(page).toHaveURL(/.*console/);
   await homePage.goToRoles();
 
   // verify
@@ -43,6 +44,7 @@ test('Updating a synced OpenMRS role updates the corresponding role in Keycloak'
 
   // reply
   await homePage.goToKeycloak();
+  await expect(page).toHaveURL(/.*console/);
   await homePage.goToRoles();
   await expect(page.getByText(`${randomRoleName.roleName}`)).toBeVisible();
   await expect(page.getByText('Role for e2e test').first()).toBeVisible();
@@ -77,6 +79,7 @@ test('Deleting a synced OpenMRS role deletes the corresponding role in Keycloak'
 
   // reply
   await homePage.goToKeycloak();
+  await expect(page).toHaveURL(/.*console/);
   await homePage.goToRoles();
   await expect(page.getByText(`${randomRoleName.roleName}`)).toBeVisible();
   await expect(page.getByText('Role for e2e test').first()).toBeVisible();
