@@ -280,7 +280,7 @@ test('Adding an OpenMRS encounter syncs encounter into encounters table in Super
   await homePage.clearSQLEditor();
 });
 
-test('Adding an OpenMRS patient condition syncs condition into conditions table in Superset', async ({ page }) => {
+test('Adding an OpenMRS condition syncs condition into conditions table in Superset', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
   await homePage.createPatient();
@@ -323,8 +323,8 @@ test('Adding an OpenMRS patient condition syncs condition into conditions table 
   const patientIdValue = Number(patientId);
   await page.getByRole('tab', { name: 'Results' }).click();
   await homePage.clearSQLEditor();
-  let patientConditionQuery = `SELECT * FROM conditions WHERE patient_id=${patientIdValue};`;
-  await page.getByRole('textbox').first().fill(patientConditionQuery);
+  let conditionQuery = `SELECT * FROM conditions WHERE patient_id=${patientIdValue};`;
+  await page.getByRole('textbox').first().fill(conditionQuery);
   await homePage.runSQLQuery();
 
   patientId = await page.getByRole('gridcell', { name: `${patientIdValue}` }).first().textContent();
@@ -428,7 +428,7 @@ test('Adding an OpenMRS observation syncs observation into observations table in
   await homePage.clearSQLEditor();
 });
 
-test('Adding an OpenMRS patient appointment syncs appointment into appointments table in Superset', async ({ page }) => {
+test('Adding an OpenMRS appointment syncs appointment into appointments table in Superset', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
   await homePage.createPatient();
@@ -472,8 +472,8 @@ test('Adding an OpenMRS patient appointment syncs appointment into appointments 
   const patientIdValue = Number(patientId);
   await page.getByRole('tab', { name: 'Results' }).click();
   await homePage.clearSQLEditor();
-  let patientAppointmentQuery = `SELECT * FROM appointments WHERE patient_id=${patientIdValue};`;
-  await page.getByRole('textbox').first().fill(patientAppointmentQuery);
+  let appointmentQuery = `SELECT * FROM appointments WHERE patient_id=${patientIdValue};`;
+  await page.getByRole('textbox').first().fill(appointmentQuery);
   await homePage.runSQLQuery();
 
   patientId = await page.getByRole('gridcell', { name: `${patientIdValue}` }).first().textContent();
