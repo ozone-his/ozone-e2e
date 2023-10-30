@@ -22,7 +22,7 @@ test('Patient with lab order becomes customer in Odoo', async ({ page }) => {
   await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
   await homePage.saveLabOrder();
   await homePage.goToOdoo();
- await expect(page).toHaveURL(/.*web/);
+  await expect(page).toHaveURL(/.*web/);
 
   // replay
   await homePage.searchCustomerInOdoo();
