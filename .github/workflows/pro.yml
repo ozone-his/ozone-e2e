@@ -1,4 +1,4 @@
-name: Ozone E2E Tests
+name: Ozone PRO E2E Tests
 
 on:
   schedule:
@@ -12,11 +12,12 @@ on:
 jobs:
   testOnPR:
     if: ${{ github.event_name == 'pull_request' }}
-    timeout-minutes: 45
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          repository: ${{ github.repository }}
 
       - name: Setup node
         uses: actions/setup-node@v3
@@ -37,7 +38,7 @@ jobs:
         run: npx playwright install webkit --with-deps
 
       - name: Run E2E tests
-        run: npm run e2eTests
+        run: npm run proE2ETests
 
       - name: Upload report
         uses: actions/upload-artifact@v3
@@ -49,11 +50,12 @@ jobs:
 
   testOnPush:
     if: ${{ github.event_name == 'push' }}
-    timeout-minutes: 45
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          repository: ${{ github.repository }}
 
       - name: Setup node
         uses: actions/setup-node@v3
@@ -76,7 +78,7 @@ jobs:
       - name: Run E2E tests
         id: jobStatusPretty
         run: |
-          npm run e2eTests
+          npm run proE2ETests
 
           if [[ ${{ job.status }} == "success" ]]; then
             jobStatusPretty="✅ Passing"

@@ -25,16 +25,25 @@ export class HomePage {
 
   readonly patientSearchIcon = () => this.page.locator('[data-testid="searchPatientIcon"]');
   readonly patientSearchBar = () => this.page.locator('[data-testid="patientSearchBar"]');
-  readonly floatingSearchResultsContainer = () => this.page.locator('[data-testid="floatingSearchResultsContainer"]');
 
   async initiateLogin() {
     await this.page.goto(`${process.env.E2E_BASE_URL}`);
-    await this.page.getByPlaceholder('Username or email').fill(`${process.env.E2E_USER_ADMIN_USERNAME}`);
-    await this.page.getByRole('button', { name: 'Continue' }).click();
-    await this.page.getByLabel('Password').fill(`${process.env.E2E_USER_ADMIN_PASSWORD}`);
-    await this.page.getByRole('button', { name: 'Sign In' }).click();
+    if (`${process.env.E2E_RUNNING_ON_OZONE_PRO}` == 'true') {
+      await this.page.locator('#username').fill(`${process.env.E2E_USER_ADMIN_USERNAME}`);
+      await this.page.getByRole('button', { name: 'Continue' }).click();
+      await this.page.locator('#password').fill(`${process.env.E2E_USER_ADMIN_PASSWORD}`);
+      await this.page.getByRole('button', { name: 'Sign In' }).click();
+    } else {
+      await this.page.locator('#username').fill(`${process.env.FOSS_E2E_USER_ADMIN_USERNAME}`);
+      await this.page.waitForTimeout(1000);
+      await this.page.getByRole('button', { name: 'Continue' }).click();
+      await this.page.locator('#password').fill(`${process.env.FOSS_E2E_USER_ADMIN_PASSWORD}`);
+      await this.page.waitForTimeout(1000);
+      await this.page.locator('button[type="submit"]').click();
+    }
     await this.page.locator('label').filter({ hasText: 'Inpatient Ward' }).locator('span').first().click();
     await this.page.getByRole('button', { name: 'Confirm' }).click();
+
     await expect(this.page.getByRole('button', { name: 'App Menu' })).toBeEnabled();
     await expect(this.page.getByRole('button', { name: 'Users' })).toBeEnabled();
     await expect(this.page.getByRole('button', { name: 'Add Patient' })).toBeEnabled();
@@ -56,11 +65,28 @@ export class HomePage {
 
   async goToOdoo() {
     await this.page.goto(`${process.env.E2E_ODOO_URL}`);
-    await this.page.getByRole('link', { name: 'Login with Single Sign-On' }).click();
+    if (`${process.env.E2E_RUNNING_ON_OZONE_PRO}` == 'true') {
+      await this.page.getByRole('link', { name: 'Login with Single Sign-On' }).click();
+    } else {
+      await delay(3000);
+      await this.page.locator('#login').fill(`${process.env.FOSS_E2E_USER_ADMIN_USERNAME}`);
+      await delay(1000);
+      await this.page.locator('#password').fill('admin');
+      await delay(1000);
+      await this.page.locator('button[type="submit"]').click();
+    }
   }
 
   async goToSENAITE() {
     await this.page.goto(`${process.env.E2E_SENAITE_URL}`);
+    if (!(`${process.env.E2E_RUNNING_ON_OZONE_PRO}` == 'true')) {
+      await delay(3000);
+      await this.page.locator('#__ac_name').fill(`${process.env.FOSS_E2E_USER_ADMIN_USERNAME}`);
+      await delay(1000);
+      await this.page.locator('#__ac_password').fill('password');
+      await delay(1000);
+      await this.page.locator('#buttons-login').click();
+    }
   }
 
   async createPatient() {
@@ -142,7 +168,7 @@ export class HomePage {
     await this.page.getByRole('button', { name: 'Delete Patient', exact: true }).click();
 
     const message = await this.page.locator('//*[@id="patientFormVoided"]').textContent();
-    expect(message?.includes('This patient has been deleted')).toBeTruthy();
+    await expect(message?.includes('This patient has been deleted')).toBeTruthy();
     await this.page.getByRole('link', { name: 'Log out' }).click();
   }
 
@@ -338,7 +364,9 @@ export class HomePage {
   async searchCustomerInOdoo() {
     await this.page.locator("//a[contains(@class, 'full')]").click();
     await this.page.getByRole('menuitem', { name: 'Sales' }).click();
-    await this.page.getByRole('img', { name: 'Remove' }).click();
+    if (`${process.env.E2E_RUNNING_ON_OZONE_PRO}` == 'true') {
+      await this.page.getByRole('img', { name: 'Remove' }).click();
+    }
     await delay(1500);
     await this.page.getByPlaceholder('Search...').type(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.getByPlaceholder('Search...').press('Enter');
