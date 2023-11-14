@@ -70,5 +70,8 @@ e2e
 When writing a new test case, create a new spec in `./e2e/tests`
 
 ## GitHub Actions integration
-The pro.yml workflow is made up of two jobs of which one is triggered by PRs and another on a push.
-The foss.yml workflow is made up of one job that runs tests for Ozone FOSS. Note: You need to pass environment variables for O3, Odoo and SENAITE at runtime.
+The pro.yml workflow is split into two jobs, one that runs upon _Git pull requests_ and the other upon _Git push(es)_. The difference between the two is that, the later publishes results to the integrated slack channel.
+
+The foss.yml workflow contains one job that runs Ozone FOSS specific tests. Note: You need to provide O3, Odoo and SENAITE base URLs at runtime.
+
+<img src="readme/user_inputs.png" alt="User Inputs" width="1000"/>
