@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "e2eTests": "npx playwright test"
+    "proE2ETests": "npx playwright test",
+    "fossE2ETests": "npx playwright test Odoo Senaite"
   },
   "keywords": [],
   "author": "",
