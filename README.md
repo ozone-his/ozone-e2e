@@ -75,3 +75,7 @@ The pro.yml workflow is split into two jobs, one that runs upon _Git pull reques
 The foss.yml workflow contains one job that runs Ozone FOSS specific tests. Note: You need to provide O3, Odoo and SENAITE base URLs at runtime.
 
 <img src="readme/user_inputs.png" alt="User Inputs" width="1000"/>
+
+The runOzoneProTestsOnProvidedEnv.yml workflow contains one job that runs Ozone PRO tests. Note: You need to choose test environment at runtime.
+
+<img src="readme/select_test_environment.png" alt="Select Test Environment" width="1000"/>

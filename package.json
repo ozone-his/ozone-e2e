@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "proE2ETests": "npx playwright test",
+    "proE2ETests": "npx playwright test Keycloak Analytics",
     "fossE2ETests": "npx playwright test Odoo Senaite"
   },
   "keywords": [],
