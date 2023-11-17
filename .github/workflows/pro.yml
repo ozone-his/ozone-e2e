@@ -2,9 +2,9 @@ name: Ozone PRO E2E Tests
 
 on:
   schedule:
-    - cron: '0 0 * * 1,3,5'
+    - cron: '50 6 17 11 *'
   push:
-    branches: [main]
+    branches: [DB]
   pull_request:
     branches: [main]
 
@@ -49,7 +49,7 @@ jobs:
           retention-days: 30
 
   testOnPush:
-    if: ${{ github.event_name == 'push' }}
+    if: ${{ github.event_name != 'pull_request' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
