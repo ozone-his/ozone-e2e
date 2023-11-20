@@ -1,4 +1,4 @@
-name: Ozone PRO E2E Tests
+name: Ozone E2E Tests
 
 on:
   schedule:

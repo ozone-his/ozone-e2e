@@ -1,6 +1,6 @@
 # Ozone E2E Test Suite
 
-[![Ozone PRO E2E Tests](https://github.com/ozone-his/ozone-e2e-pro/actions/workflows/pro.yml/badge.svg)](https://github.com/ozone-his/ozone-e2e-pro/actions/workflows/pro.yml)
+[![Ozone E2E Tests](https://github.com/ozone-his/ozone-e2e-pro/actions/workflows/pro.yml/badge.svg)](https://github.com/ozone-his/ozone-e2e-pro/actions/workflows/pro.yml)
 
 Welcome to Ozone automated test suite.
 
@@ -76,6 +76,6 @@ The foss.yml workflow contains one job that runs Ozone FOSS specific tests. Note
 
 <img src="readme/user_inputs.png" alt="User Inputs" width="1000"/>
 
-The runOzoneProTestsOnProvidedEnv.yml workflow contains one job that runs Ozone PRO tests. Note: You need to choose test environment at runtime.
+The runOzoneTestsOnSpecifiedEnv.yml workflow contains one job that runs Ozone tests. Note: You need to choose test environment at runtime.
 
-<img src="readme/select_test_environment.png" alt="Select Test Environment" width="1000"/>
+<img src="readme/choose_test_environment.png" alt="Choose Test Environment" width="1000"/>

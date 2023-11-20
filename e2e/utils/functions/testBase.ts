@@ -305,7 +305,11 @@ export class HomePage {
   }
 
   async goToLabOrderForm() {
-    await this.page.locator('div').filter({ hasText: /^Form$/ }).getByRole('button').click();
+    if (`${process.env.E2E_TEST_ENVIRONMENT}` == 'dev') {
+      await this.page.getByLabel('Clinical forms').click();
+    } else {
+      await this.page.locator('div').filter({ hasText: /^Form$/ }).getByRole('button').click();
+    }
     await delay(3000);
     if (`${process.env.E2E_TEST_ENVIRONMENT}` == 'dev') {
       await expect(this.page.getByText('Laboratory Test Orders')).toBeVisible();
@@ -378,7 +382,11 @@ export class HomePage {
   }
 
   async makeDrugOrder() {
-    await this.page.getByRole('complementary').filter({ hasText: 'Medications' }).getByRole('button').first().click();
+    if (`${process.env.E2E_TEST_ENVIRONMENT}` == 'dev') {
+      await this.page.getByLabel('Order basket', { exact: true }).click();
+    } else {
+      await this.page.getByRole('complementary').filter({ hasText: 'Medications' }).getByRole('button').first().click();
+    }
     await delay(3000);
     if (`${process.env.E2E_TEST_ENVIRONMENT}` == 'dev') {
       await this.page.getByRole('button', { name: 'Add', exact: true }).nth(0).click();

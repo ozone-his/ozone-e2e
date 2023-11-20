@@ -8,7 +8,7 @@ on:
         description: 'O3 URL'
         required: true
       e2e_odoo_url_input:
-        description: 'ODOO URL'
+        description: 'Odoo URL'
         required: true
       e2e_senaite_url_input:
         description: 'SENAITE URL'
