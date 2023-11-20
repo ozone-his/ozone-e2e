@@ -42,9 +42,9 @@ jobs:
 
       - name: Run E2E tests
         env:
-          E2E_BASE_URL: '${{ github.event.inputs.e2e_base_url_input }}'
-          E2E_ODOO_URL: '${{ github.event.inputs.e2e_odoo_url_input }}'
-          E2E_SENAITE_URL: '${{ github.event.inputs.e2e_senaite_url_input }}'
+          E2E_BASE_URL_DEV: '${{ github.event.inputs.e2e_base_url_input }}'
+          E2E_ODOO_URL_DEV: '${{ github.event.inputs.e2e_odoo_url_input }}'
+          E2E_SENAITE_URL_DEV: '${{ github.event.inputs.e2e_senaite_url_input }}'
           E2E_RUNNING_ON_OZONE_PRO: 'false'
         run: npm run fossE2ETests
 

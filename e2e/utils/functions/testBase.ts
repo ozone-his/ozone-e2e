@@ -29,13 +29,13 @@ export class HomePage {
   async initiateLogin() {
     switch (true) {
       case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-        await this.page.goto(`${process.env.E2E_BASE_DEMO_URL}`);
+        await this.page.goto(`${process.env.E2E_BASE_URL_DEMO}`);
         break;
       case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-        await this.page.goto(`${process.env.E2E_BASE_QA_URL}`);
+        await this.page.goto(`${process.env.E2E_BASE_URL_QA}`);
         break;
       default:
-        await this.page.goto(`${process.env.E2E_BASE_URL}`);
+        await this.page.goto(`${process.env.E2E_BASE_URL_DEV}`);
     }
     if (`${process.env.E2E_RUNNING_ON_OZONE_PRO}` == 'true') {
       await this.page.locator('#username').fill(`${process.env.E2E_USER_ADMIN_USERNAME}`);
@@ -65,26 +65,26 @@ export class HomePage {
   async goToSuperset() {
     switch (true) {
       case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-        await this.page.goto(`${process.env.E2E_ANALYTICS_DEMO_URL}`);
+        await this.page.goto(`${process.env.E2E_ANALYTICS_URL_DEMO}`);
         break;
       case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-        await this.page.goto(`${process.env.E2E_ANALYTICS_QA_URL}`);
+        await this.page.goto(`${process.env.E2E_ANALYTICS_URL_QA}`);
         break;
       default:
-        await this.page.goto(`${process.env.E2E_ANALYTICS_URL}`);
+        await this.page.goto(`${process.env.E2E_ANALYTICS_URL_DEV}`);
     }
   }
 
   async goToKeycloak() {
     switch (true) {
       case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-        await this.page.goto(`${process.env.E2E_KEYCLOAK_DEMO_URL}/admin/master/console`);
+        await this.page.goto(`${process.env.E2E_KEYCLOAK_URL_DEMO}/admin/master/console`);
         break;
       case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-        await this.page.goto(`${process.env.E2E_KEYCLOAK_QA_URL}/admin/master/console`);
+        await this.page.goto(`${process.env.E2E_KEYCLOAK_URL_QA}/admin/master/console`);
         break;
       default:
-        await this.page.goto(`${process.env.E2E_KEYCLOAK_URL}/admin/master/console`);
+        await this.page.goto(`${process.env.E2E_KEYCLOAK_URL_DEV}/admin/master/console`);
     }
     await this.page.getByLabel('Username or email').fill('admin');
     await this.page.getByLabel('Password').fill('password');
@@ -95,13 +95,13 @@ export class HomePage {
   async goToOdoo() {
     switch (true) {
       case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-        await this.page.goto(`${process.env.E2E_ODOO_DEMO_URL}`);
+        await this.page.goto(`${process.env.E2E_ODOO_URL_DEMO}`);
         break;
       case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-        await this.page.goto(`${process.env.E2E_ODOO_QA_URL}`);
+        await this.page.goto(`${process.env.E2E_ODOO_URL_QA}`);
         break;
       default:
-        await this.page.goto(`${process.env.E2E_ODOO_URL}`);
+        await this.page.goto(`${process.env.E2E_ODOO_URL_DEV}`);
     }
     if (`${process.env.E2E_RUNNING_ON_OZONE_PRO}` == 'true') {
       await this.page.getByRole('link', { name: 'Login with Single Sign-On' }).click();
@@ -118,13 +118,13 @@ export class HomePage {
   async goToSENAITE() {
     switch (true) {
       case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-        await this.page.goto(`${process.env.E2E_SENAITE_DEMO_URL}`);
+        await this.page.goto(`${process.env.E2E_SENAITE_URL_DEMO}`);
         break;
       case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-        await this.page.goto(`${process.env.E2E_SENAITE_QA_URL}`);
+        await this.page.goto(`${process.env.E2E_SENAITE_URL_QA}`);
         break;
       default:
-        await this.page.goto(`${process.env.E2E_SENAITE_URL}`);
+        await this.page.goto(`${process.env.E2E_SENAITE_URL_DEV}`);
     }
     if (!(`${process.env.E2E_RUNNING_ON_OZONE_PRO}` == 'true')) {
       await delay(3000);
@@ -214,13 +214,13 @@ export class HomePage {
   async deletePatient() {
     switch (true) {
       case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-        await this.page.goto(`${process.env.E2E_BASE_DEMO_URL}/openmrs/admin/patients/index.htm`);
+        await this.page.goto(`${process.env.E2E_BASE_URL_DEMO}/openmrs/admin/patients/index.htm`);
         break;
       case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-        await this.page.goto(`${process.env.E2E_BASE_QA_URL}/openmrs/admin/patients/index.htm`);
+        await this.page.goto(`${process.env.E2E_BASE_URL_QA}/openmrs/admin/patients/index.htm`);
         break;
       default:
-        await this.page.goto(`${process.env.E2E_BASE_URL}/openmrs/admin/patients/index.htm`);
+        await this.page.goto(`${process.env.E2E_BASE_URL_DEV}/openmrs/admin/patients/index.htm`);
     }
     await this.page.getByPlaceholder(' ').type(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.locator('#openmrsSearchTable tbody tr.odd td:nth-child(1)').click();
@@ -533,13 +533,13 @@ export class HomePage {
   async deleteOpenMRSRole() {
     switch (true) {
       case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-        await this.page.goto(`${process.env.E2E_BASE_DEMO_URL}/openmrs/admin/users/role.list`);
+        await this.page.goto(`${process.env.E2E_BASE_URL_DEMO}/openmrs/admin/users/role.list`);
         break;
       case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-        await this.page.goto(`${process.env.E2E_BASE_QA_URL}/openmrs/admin/users/role.list`);
+        await this.page.goto(`${process.env.E2E_BASE_URL_QA}/openmrs/admin/users/role.list`);
         break;
       default:
-        await this.page.goto(`${process.env.E2E_BASE_URL}/openmrs/admin/users/role.list`);
+        await this.page.goto(`${process.env.E2E_BASE_URL_DEV}/openmrs/admin/users/role.list`);
     }
     await this.unlinkInheritedOpenMRSRoles();
     await this.page.getByRole('row', { name: `${randomOpenMRSRoleName.roleName}` }).getByRole('checkbox').check();
@@ -552,13 +552,13 @@ export class HomePage {
   async makeDelayFor03ToLoad() {
     switch (true) {
       case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-        await this.page.goto(`${process.env.E2E_SENAITE_DEMO_URL}`);
+        await this.page.goto(`${process.env.E2E_SENAITE_URL_DEMO}`);
         break;
       case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-        await this.page.goto(`${process.env.E2E_SENAITE_QA_URL}`);
+        await this.page.goto(`${process.env.E2E_SENAITE_URL_QA}`);
         break;
       default:
-        await this.page.goto(`${process.env.E2E_SENAITE_URL}`);
+        await this.page.goto(`${process.env.E2E_SENAITE_URL_DEV}`);
     }
     if (!(`${process.env.E2E_RUNNING_ON_OZONE_PRO}` == 'true')) {
       await delay(3000);
@@ -571,13 +571,13 @@ export class HomePage {
     await delay(4000);
     switch (true) {
       case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-        await this.page.goto(`${process.env.E2E_BASE_DEMO_URL}/openmrs/spa/home`);
+        await this.page.goto(`${process.env.E2E_BASE_URL_DEMO}/openmrs/spa/home`);
         break;
       case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-        await this.page.goto(`${process.env.E2E_BASE_QA_URL}/openmrs/spa/home`);
+        await this.page.goto(`${process.env.E2E_BASE_URL_QA}/openmrs/spa/home`);
         break;
       default:
-        await this.page.goto(`${process.env.E2E_BASE_URL}/openmrs/spa/home`);
+        await this.page.goto(`${process.env.E2E_BASE_URL_DEV}/openmrs/spa/home`);
     }
   }
 

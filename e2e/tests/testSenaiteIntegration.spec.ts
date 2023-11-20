@@ -48,13 +48,13 @@ test('Editing patient details with a synced lab test order edits client details 
   // replay
   switch (true) {
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_BASE_DEMO_URL}/openmrs/spa/home`);
+      await page.goto(`${process.env.E2E_BASE_URL_DEMO}/openmrs/spa/home`);
       break;
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_BASE_QA_URL}/openmrs/spa/home`);
+      await page.goto(`${process.env.E2E_BASE_URL_QA}/openmrs/spa/home`);
       break;
     default:
-      await page.goto(`${process.env.E2E_BASE_URL}/openmrs/spa/home`);
+      await page.goto(`${process.env.E2E_BASE_URL_DEV}/openmrs/spa/home`);
   }
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.updatePatientDetails();
@@ -88,13 +88,13 @@ test('Editing a synced lab order edits corresponding analysis request in SENAITE
   // replay
   switch (true) {
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_BASE_DEMO_URL}/openmrs/spa/home`);
+      await page.goto(`${process.env.E2E_BASE_URL_DEMO}/openmrs/spa/home`);
       break;
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_BASE_QA_URL}/openmrs/spa/home`);
+      await page.goto(`${process.env.E2E_BASE_URL_QA}/openmrs/spa/home`);
       break;
     default:
-      await page.goto(`${process.env.E2E_BASE_URL}/openmrs/spa/home`);
+      await page.goto(`${process.env.E2E_BASE_URL_DEV}/openmrs/spa/home`);
   }
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.updateLabOrder();
@@ -131,13 +131,13 @@ test('Voiding a synced lab order cancels corresponding analysis request in SENAI
   // replay
   switch (true) {
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_BASE_DEMO_URL}/openmrs/spa/home`);
+      await page.goto(`${process.env.E2E_BASE_URL_DEMO}/openmrs/spa/home`);
       break;
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_BASE_QA_URL}/openmrs/spa/home`);
+      await page.goto(`${process.env.E2E_BASE_URL_QA}/openmrs/spa/home`);
       break;
     default:
-      await page.goto(`${process.env.E2E_BASE_URL}/openmrs/spa/home`);
+      await page.goto(`${process.env.E2E_BASE_URL_DEV}/openmrs/spa/home`);
   }
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.discontinueLabOrder();
@@ -169,13 +169,13 @@ test('Published coded lab results from SENAITE are viewable in O3', async ({ pag
   // verify
   switch (true) {
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_BASE_DEMO_URL}/openmrs/spa/home`);
+      await page.goto(`${process.env.E2E_BASE_URL_DEMO}/openmrs/spa/home`);
       break;
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_BASE_QA_URL}/openmrs/spa/home`);
+      await page.goto(`${process.env.E2E_BASE_URL_QA}/openmrs/spa/home`);
       break;
     default:
-      await page.goto(`${process.env.E2E_BASE_URL}/openmrs/spa/home`);
+      await page.goto(`${process.env.E2E_BASE_URL_DEV}/openmrs/spa/home`);
   }
   await homePage.viewTestResults();
   const testName = await page.locator('div:nth-child(2) >div> div.cds--data-table-container td:nth-child(1)').first();
@@ -206,13 +206,13 @@ test('Published numeric lab results from SENAITE are viewable in O3', async ({ p
   // verify
   switch (true) {
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_BASE_DEMO_URL}/openmrs/spa/home`);
+      await page.goto(`${process.env.E2E_BASE_URL_DEMO}/openmrs/spa/home`);
       break;
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_BASE_QA_URL}/openmrs/spa/home`);
+      await page.goto(`${process.env.E2E_BASE_URL_QA}/openmrs/spa/home`);
       break;
     default:
-      await page.goto(`${process.env.E2E_BASE_URL}/openmrs/spa/home`);
+      await page.goto(`${process.env.E2E_BASE_URL_DEV}/openmrs/spa/home`);
   }
   await homePage.viewTestResults();
   const testName = await page.locator('div:nth-child(2) >div> div.cds--data-table-container td:nth-child(1)').first();
@@ -243,13 +243,13 @@ test('Published free text lab results from SENAITE are viewable in O3', async ({
   // verify
   switch (true) {
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_BASE_DEMO_URL}/openmrs/spa/home`);
+      await page.goto(`${process.env.E2E_BASE_URL_DEMO}/openmrs/spa/home`);
       break;
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_BASE_QA_URL}/openmrs/spa/home`);
+      await page.goto(`${process.env.E2E_BASE_URL_QA}/openmrs/spa/home`);
       break;
     default:
-      await page.goto(`${process.env.E2E_BASE_URL}/openmrs/spa/home`);
+      await page.goto(`${process.env.E2E_BASE_URL_DEV}/openmrs/spa/home`);
   }
   await homePage.viewTestResults();
   const testName = await page.locator('div:nth-child(2) >div> div.cds--data-table-container td:nth-child(1)').first();

@@ -58,13 +58,13 @@ test('Editing patient details with a synced lab order edits the corresponding cu
   // replay
   switch (true) {
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_BASE_DEMO_URL}/openmrs/spa/home`);
+      await page.goto(`${process.env.E2E_BASE_URL_DEMO}/openmrs/spa/home`);
       break;
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_BASE_QA_URL}/openmrs/spa/home`);
+      await page.goto(`${process.env.E2E_BASE_URL_QA}/openmrs/spa/home`);
       break;
     default:
-      await page.goto(`${process.env.E2E_BASE_URL}/openmrs/spa/home`);
+      await page.goto(`${process.env.E2E_BASE_URL_DEV}/openmrs/spa/home`);
   }
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.updatePatientDetails();
@@ -72,13 +72,13 @@ test('Editing patient details with a synced lab order edits the corresponding cu
   // verify
   switch (true) {
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_ODOO_DEMO_URL}`);
+      await page.goto(`${process.env.E2E_ODOO_URL_DEMO}`);
       break;
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_ODOO_QA_URL}`);
+      await page.goto(`${process.env.E2E_ODOO_URL_QA}`);
       break;
     default:
-      await page.goto(`${process.env.E2E_ODOO_URL}`);
+      await page.goto(`${process.env.E2E_ODOO_URL_DEV}`);
   }
   await homePage.searchCustomerInOdoo();
   const updatedCustomer =
@@ -127,13 +127,13 @@ test('Editing patient details with a synced drug order edits corresponding custo
   // replay
   switch (true) {
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_BASE_DEMO_URL}/openmrs/spa/home`);
+      await page.goto(`${process.env.E2E_BASE_URL_DEMO}/openmrs/spa/home`);
       break;
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_BASE_QA_URL}/openmrs/spa/home`);
+      await page.goto(`${process.env.E2E_BASE_URL_QA}/openmrs/spa/home`);
       break;
     default:
-      await page.goto(`${process.env.E2E_BASE_URL}/openmrs/spa/home`);
+      await page.goto(`${process.env.E2E_BASE_URL_DEV}/openmrs/spa/home`);
   }
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.updatePatientDetails();
@@ -141,13 +141,13 @@ test('Editing patient details with a synced drug order edits corresponding custo
   // verify
   switch (true) {
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_ODOO_DEMO_URL}`);
+      await page.goto(`${process.env.E2E_ODOO_URL_DEMO}`);
       break;
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_ODOO_QA_URL}`);
+      await page.goto(`${process.env.E2E_ODOO_URL_QA}`);
       break;
     default:
-      await page.goto(`${process.env.E2E_ODOO_URL}`);
+      await page.goto(`${process.env.E2E_ODOO_URL_DEV}`);
   }
   await homePage.searchCustomerInOdoo();
   const updatedCustomer =
@@ -177,13 +177,13 @@ test('Revising a synced drug order edits corresponding quotation line in Odoo', 
   // replay
   switch (true) {
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_BASE_DEMO_URL}/openmrs/spa/home`);
+      await page.goto(`${process.env.E2E_BASE_URL_DEMO}/openmrs/spa/home`);
       break;
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_BASE_QA_URL}/openmrs/spa/home`);
+      await page.goto(`${process.env.E2E_BASE_URL_QA}/openmrs/spa/home`);
       break;
     default:
-      await page.goto(`${process.env.E2E_BASE_URL}/openmrs/spa/home`);
+      await page.goto(`${process.env.E2E_BASE_URL_DEV}/openmrs/spa/home`);
   }
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.editDrugOrder();
@@ -191,13 +191,13 @@ test('Revising a synced drug order edits corresponding quotation line in Odoo', 
   // verify
   switch (true) {
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_ODOO_DEMO_URL}`);
+      await page.goto(`${process.env.E2E_ODOO_URL_DEMO}`);
       break;
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_ODOO_QA_URL}`);
+      await page.goto(`${process.env.E2E_ODOO_URL_QA}`);
       break;
     default:
-      await page.goto(`${process.env.E2E_ODOO_URL}`);
+      await page.goto(`${process.env.E2E_ODOO_URL_DEV}`);
   }
   await homePage.searchCustomerInOdoo();
   await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
@@ -226,13 +226,13 @@ test('Discontinuing a synced drug order cancels corresponding quotation line in 
   // replay
   switch (true) {
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_BASE_DEMO_URL}/openmrs/spa/home`);
+      await page.goto(`${process.env.E2E_BASE_URL_DEMO}/openmrs/spa/home`);
       break;
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_BASE_QA_URL}/openmrs/spa/home`);
+      await page.goto(`${process.env.E2E_BASE_URL_QA}/openmrs/spa/home`);
       break;
     default:
-      await page.goto(`${process.env.E2E_BASE_URL}/openmrs/spa/home`);
+      await page.goto(`${process.env.E2E_BASE_URL_DEV}/openmrs/spa/home`);
   }
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.discontinueDrugOrder();
@@ -240,13 +240,13 @@ test('Discontinuing a synced drug order cancels corresponding quotation line in 
   // verify
   switch (true) {
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_ODOO_DEMO_URL}`);
+      await page.goto(`${process.env.E2E_ODOO_URL_DEMO}`);
       break;
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_ODOO_QA_URL}`);
+      await page.goto(`${process.env.E2E_ODOO_URL_QA}`);
       break;
     default:
-      await page.goto(`${process.env.E2E_ODOO_URL}`);
+      await page.goto(`${process.env.E2E_ODOO_URL_DEV}`);
   }
   await homePage.searchCustomerInOdoo();
   await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();

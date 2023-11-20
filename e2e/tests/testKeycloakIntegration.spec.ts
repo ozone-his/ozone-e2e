@@ -15,13 +15,13 @@ test('Adding an OpenMRS role syncs the role into Keycloak', async ({ page }) => 
   // setup
   switch (true) {
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_BASE_DEMO_URL}/openmrs/admin/users/role.list`);
+      await page.goto(`${process.env.E2E_BASE_URL_DEMO}/openmrs/admin/users/role.list`);
       break;
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_BASE_QA_URL}/openmrs/admin/users/role.list`);
+      await page.goto(`${process.env.E2E_BASE_URL_QA}/openmrs/admin/users/role.list`);
       break;
     default:
-      await page.goto(`${process.env.E2E_BASE_URL}/openmrs/admin/users/role.list`);
+      await page.goto(`${process.env.E2E_BASE_URL_DEV}/openmrs/admin/users/role.list`);
   }
   const homePage = new HomePage(page);
   await homePage.addOpenMRSRole();
@@ -49,13 +49,13 @@ test('Updating a synced OpenMRS role updates the corresponding role in Keycloak'
   // setup
   switch (true) {
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_BASE_DEMO_URL}/openmrs/admin/users/role.list`);
+      await page.goto(`${process.env.E2E_BASE_URL_DEMO}/openmrs/admin/users/role.list`);
       break;
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_BASE_QA_URL}/openmrs/admin/users/role.list`);
+      await page.goto(`${process.env.E2E_BASE_URL_QA}/openmrs/admin/users/role.list`);
       break;
     default:
-      await page.goto(`${process.env.E2E_BASE_URL}/openmrs/admin/users/role.list`);
+      await page.goto(`${process.env.E2E_BASE_URL_DEV}/openmrs/admin/users/role.list`);
   }
   const homePage = new HomePage(page);
   await homePage.addOpenMRSRole();
@@ -77,13 +77,13 @@ test('Updating a synced OpenMRS role updates the corresponding role in Keycloak'
   await expect(page.getByText('Application: Records Allergies')).toBeTruthy();
   switch (true) {
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_BASE_DEMO_URL}/openmrs/admin/users/role.list`);
+      await page.goto(`${process.env.E2E_BASE_URL_DEMO}/openmrs/admin/users/role.list`);
       break;
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_BASE_QA_URL}/openmrs/admin/users/role.list`);
+      await page.goto(`${process.env.E2E_BASE_URL_QA}/openmrs/admin/users/role.list`);
       break;
     default:
-      await page.goto(`${process.env.E2E_BASE_URL}/openmrs/admin/users/role.list`);
+      await page.goto(`${process.env.E2E_BASE_URL_DEV}/openmrs/admin/users/role.list`);
   }
   await homePage.updateOpenMRSRole();
 
@@ -96,7 +96,7 @@ test('Updating a synced OpenMRS role updates the corresponding role in Keycloak'
       await page.goto(`${process.env.E2E_KEYCLOAK_QA_URL}/admin/master/console`);
       break;
     default:
-      await page.goto(`${process.env.E2E_KEYCLOAK_URL}/admin/master/console`);
+      await page.goto(`${process.env.E2E_KEYCLOAK_URL_DEV}/admin/master/console`);
   }
   await homePage.goToClients();
   await page.getByRole('link', { name: 'openmrs', exact: true }).click();
@@ -113,13 +113,13 @@ test('Deleting a synced OpenMRS role deletes the corresponding role in Keycloak'
   // setup
   switch (true) {
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_BASE_DEMO_URL}/openmrs/admin/users/role.list`);
+      await page.goto(`${process.env.E2E_BASE_URL_DEMO}/openmrs/admin/users/role.list`);
       break;
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_BASE_QA_URL}/openmrs/admin/users/role.list`);
+      await page.goto(`${process.env.E2E_BASE_URL_QA}/openmrs/admin/users/role.list`);
       break;
     default:
-      await page.goto(`${process.env.E2E_BASE_URL}/openmrs/admin/users/role.list`);
+      await page.goto(`${process.env.E2E_BASE_URL_DEV}/openmrs/admin/users/role.list`);
   }
   const homePage = new HomePage(page);
   await homePage.addOpenMRSRole();
@@ -144,13 +144,13 @@ test('Deleting a synced OpenMRS role deletes the corresponding role in Keycloak'
   // verify
   switch (true) {
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_KEYCLOAK_DEMO_URL}/admin/master/console`);
+      await page.goto(`${process.env.E2E_KEYCLOAK_URL_DEMO}/admin/master/console`);
       break;
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_KEYCLOAK_QA_URL}/admin/master/console`);
+      await page.goto(`${process.env.E2E_KEYCLOAK_URL_QA}/admin/master/console`);
       break;
     default:
-      await page.goto(`${process.env.E2E_KEYCLOAK_URL}/admin/master/console`);
+      await page.goto(`${process.env.E2E_KEYCLOAK_URL_DEV}/admin/master/console`);
   }
   await homePage.goToClients();
   await page.getByRole('link', { name: 'openmrs', exact: true }).click();
@@ -159,13 +159,13 @@ test('Deleting a synced OpenMRS role deletes the corresponding role in Keycloak'
   await expect(roleName).not.toHaveText(`${randomOpenMRSRoleName.roleName}`);
   switch (true) {
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_BASE_DEMO_URL}/openmrs/admin/users/role.list`);
+      await page.goto(`${process.env.E2E_BASE_URL_DEMO}/openmrs/admin/users/role.list`);
       break;
     case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_BASE_QA_URL}/openmrs/admin/users/role.list`);
+      await page.goto(`${process.env.E2E_BASE_URL_QA}/openmrs/admin/users/role.list`);
       break;
     default:
-      await page.goto(`${process.env.E2E_BASE_URL}/openmrs/admin/users/role.list`);
+      await page.goto(`${process.env.E2E_BASE_URL_DEV}/openmrs/admin/users/role.list`);
   }
   await homePage.addOpenMRSRole();
 });
