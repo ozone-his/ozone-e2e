@@ -330,23 +330,12 @@ test('Adding an OpenMRS encounter syncs encounter into encounters table in Super
   let visitTypeName = await page.getByRole('gridcell', { name: 'Facility Visit' });
   let visitTypeUuid =  await page.getByRole('gridcell', { name: '7b0f5697-27e3-40c4-8bae-f4049abfb4ed' });
   let formDescription = await page.getByRole('gridcell', { name: 'Simple lab order entry form' });
+  let formNameOnDev = await page.getByRole('gridcell', { name: 'Laboratory Test Orders' });
+  let formUuidOnDev = await page.getByRole('gridcell', { name: '2be26a7a-b2dd-3b16-82e5-81d9c2b5bb7a' });
   let locationName = await page.getByRole('gridcell', { name: 'Inpatient Ward' }).first();
   let locationUuid = await page.getByRole('gridcell', { name: 'ba685651-ed3b-4e63-9b35-78893060758a' });
   let locationDescription = await page.getByRole('gridcell', { name: 'Inpatient Ward' }).nth(1);
 
-  switch (true) {
-    case `${process.env.E2E_TEST_ENVIRONMENT}` != 'dev':
-      let formName = await page.getByRole('gridcell', { name: 'Laboratory Tests' });
-      let formUuid = await page.getByRole('gridcell', { name: 'bfc3a476-c286-3da8-ae41-fb36f801b3b9' });
-      await expect(formName).toHaveText('Laboratory Tests');
-      await expect(formUuid).toHaveText('bfc3a476-c286-3da8-ae41-fb36f801b3b9');
-      break;
-    default:
-      let formNameOnDev = await page.getByRole('gridcell', { name: 'Laboratory Test Orders' });
-      let formUuidOnDev = await page.getByRole('gridcell', { name: '2be26a7a-b2dd-3b16-82e5-81d9c2b5bb7a' });
-      await expect(formNameOnDev).toHaveText('Laboratory Test Orders');
-      await expect(formUuidOnDev).toHaveText('2be26a7a-b2dd-3b16-82e5-81d9c2b5bb7a');
-  }
   await expect(encounter_Id).toBe(Number(`${encounterIdValue}`));
   await expect(encounterTypeName).toHaveText('Consultation');
   await expect(encounterTypeUuid).toHaveText(`${encounterTypeUuidValue}`);
@@ -354,6 +343,8 @@ test('Adding an OpenMRS encounter syncs encounter into encounters table in Super
   await expect(visitTypeName).toHaveText('Facility Visit');
   await expect(visitTypeUuid).toContainText('7b0f5697-27e3-40c4-8bae-f4049abfb4ed');
   await expect(formDescription).toHaveText('Simple lab order entry form');
+  await expect(formNameOnDev).toHaveText('Laboratory Test Orders');
+  await expect(formUuidOnDev).toHaveText('2be26a7a-b2dd-3b16-82e5-81d9c2b5bb7a');
   await expect(locationName).toHaveText('Inpatient Ward');
   await expect(locationUuid).toHaveText('ba685651-ed3b-4e63-9b35-78893060758a');
   await expect(locationDescription).toHaveText('Inpatient Ward');

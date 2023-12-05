@@ -50,11 +50,11 @@ export class HomePage {
       await this.page.waitForTimeout(1000);
       await this.page.locator('button[type="submit"]').click();
     }
-    if (`${process.env.E2E_TEST_ENVIRONMENT}` == 'dev' && !(await this.page.locator('#checkbox').isChecked())
+    if (`${process.env.E2E_RUNNING_ON_OZONE_PRO}` == 'true' && !(await this.page.locator('#checkbox').isChecked())
     && await this.page.locator('input[role="searchbox"]').isVisible()) {
       await this.page.locator('label').filter({ hasText: 'Inpatient Ward' }).locator('span').first().click();
       await this.page.getByRole('button', { name: 'Confirm' }).click();
-    } else if (`${process.env.E2E_TEST_ENVIRONMENT}` == 'qa' || `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo') {
+    } else {
       await this.page.locator('label').filter({ hasText: 'Inpatient Ward' }).locator('span').first().click();
       await this.page.getByRole('button', { name: 'Confirm' }).click();
     }
@@ -244,7 +244,7 @@ export class HomePage {
     await delay(2000);
     const patientCondition = await this.page.locator('table tbody tr:nth-child(1) td:nth-child(1)');
     await expect(patientCondition).toHaveText('Typhoid fever');
-    await this.page.getByRole('button', { name: 'Close' }).click();
+    await this.page.getByRole('button', { name: 'Close', exact: true }).click();
   }
 
   async addPatientBiometrics() {
@@ -256,17 +256,13 @@ export class HomePage {
     await this.page.getByRole('button', { name: 'Save and close' }).click();
 
     await expect(this.page.getByText('Biometrics saved')).toBeVisible();
-    await this.page.getByRole('button', { name: 'Close' }).click();
+    await this.page.getByRole('button', { name: 'Close', exact: true }).click();
   }
 
   async addPatientAppointment() {
     await this.page.getByRole('link', { name: 'Appointments' }).click();
     await this.page.getByRole('button', { name: 'Add', exact: true }).click();
-    if (`${process.env.E2E_TEST_ENVIRONMENT}` == 'dev') {
-      await this.page.getByLabel('Select a service').selectOption('General Medicine service');
-    } else {
-      await this.page.getByLabel('Select service').selectOption('General Medicine service');
-    }
+    await this.page.getByLabel('Select a service').selectOption('General Medicine service');
     await this.page.getByLabel('Select the type of appointment').selectOption('WalkIn');
     await this.page.locator('#duration').clear();
     await this.page.locator('#duration').fill('40');
@@ -305,33 +301,23 @@ export class HomePage {
   }
 
   async goToLabOrderForm() {
-    if (`${process.env.E2E_TEST_ENVIRONMENT}` == 'dev') {
-      await this.page.getByLabel('Clinical forms').click();
-    } else {
-      await this.page.locator('div').filter({ hasText: /^Form$/ }).getByRole('button').click();
-    }
+    await this.page.getByLabel('Clinical forms').click();
     await delay(3000);
-    if (`${process.env.E2E_TEST_ENVIRONMENT}` == 'dev') {
-      await expect(this.page.getByText('Laboratory Test Orders')).toBeVisible();
-      await this.page.getByText('Laboratory Test Orders').click();
-    } else {
-      await expect(this.page.getByText('Laboratory Tests')).toBeVisible();
-      await this.page.getByText('Laboratory Tests').click();
-    }
-
+    await expect(this.page.getByText('Laboratory Test Orders')).toBeVisible();
+    await this.page.getByText('Laboratory Test Orders').click();
   }
 
   async saveLabOrder() {
     await this.page.getByRole('button', { name: 'Save and close' }).click();
     await expect(this.page.getByText('Lab order(s) generated')).toBeVisible();
-    await this.page.getByRole('button', { name: 'Close' }).click();
+    await this.page.getByRole('button', { name: 'Close', exact: true }).click();
     await delay(5000);
   }
 
   async updateLabOrder() {
     await this.page.getByRole('link', { name: 'Visits' }).click();
     await this.page.getByRole('tab', { name: 'All encounters' }).click();
-    await this.page.getByRole('row', { name: 'Encounter table actions menu' }).getByRole('button', { name: 'Encounter table actions menu' }).click();
+    await this.page.getByRole('button', { name: 'Options', exact: true }).click();
     await this.page.getByRole('menuitem', { name: 'Edit this encounter' }).click();
     await this.page.locator('#tab select').selectOption('160225AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
     await this.page.getByRole('button', { name: 'Save and close' }).click();
@@ -342,7 +328,7 @@ export class HomePage {
   async discontinueLabOrder() {
     await this.page.getByRole('link', { name: 'Visits' }).click();
     await this.page.getByRole('tab', { name: 'All encounters' }).click();
-    await this.page.getByRole('row', { name: 'Encounter table actions menu' }).getByRole('button', { name: 'Encounter table actions menu' }).click();
+    await this.page.getByRole('button', { name: 'Options', exact: true }).click();
     await this.page.getByRole('menuitem', { name: 'Delete this encounter' }).click();
     await this.page.getByRole('button', { name: 'danger Delete' }).click();
 
@@ -382,22 +368,13 @@ export class HomePage {
   }
 
   async makeDrugOrder() {
-    if (`${process.env.E2E_TEST_ENVIRONMENT}` == 'dev') {
-      await this.page.getByLabel('Order basket', { exact: true }).click();
-    } else {
-      await this.page.getByRole('complementary').filter({ hasText: 'Medications' }).getByRole('button').first().click();
-    }
+    await this.page.getByLabel('Order basket', { exact: true }).click();
     await delay(3000);
-    if (`${process.env.E2E_TEST_ENVIRONMENT}` == 'dev') {
-      await this.page.getByRole('button', { name: 'Add', exact: true }).nth(0).click();
-    }
+    await this.page.getByRole('button', { name: 'Add', exact: true }).nth(0).click();
+
     await delay(2000);
     await this.page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 325mg');
-    if (`${process.env.E2E_TEST_ENVIRONMENT}` == 'dev') {
-      await this.page.getByRole('button', { name: 'Order form' }).click();
-    } else {
-      await this.page.getByRole('listitem').filter({ hasText: 'Aspirin 325mg' }).click();
-    }
+    await this.page.getByRole('button', { name: 'Order form' }).click();
     await delay(4000);
     await this.page.getByPlaceholder('Dose').fill('4');
     await this.page.getByRole('button', { name: 'Open', exact: true }).nth(1).click();
@@ -419,11 +396,8 @@ export class HomePage {
   }
 
   async editDrugOrder() {
-    await this.page.getByRole('button', { name: 'Actions menu' }).click();
-    await this.page.getByRole('menuitem', { name: 'Modify' }).click();
-    if (!(`${process.env.E2E_TEST_ENVIRONMENT}` == 'dev')) {
-      await this.page.locator('a').filter({ hasText: 'Modify' }).click();
-    }
+    await this.page.getByRole('button', { name: 'Options', exact: true }).click();
+    await this.page.getByRole('menuitem', { name: 'Modify', exact: true }).click();
     await delay(4000);
     await this.page.getByPlaceholder('Dose').clear();
     await this.page.getByPlaceholder('Dose').fill('8');
@@ -440,7 +414,7 @@ export class HomePage {
   }
 
   async discontinueDrugOrder() {
-    await this.page.getByRole('button', { name: 'Actions menu' }).click();
+    await this.page.getByRole('button', { name: 'Options', exact: true }).click();
     await this.page.getByRole('menuitem', { name: 'Discontinue' }).click();
     await expect(this.page.getByText('Sign and close')).toBeVisible();
     await this.page.getByRole('button', { name: 'Sign and close' }).focus();

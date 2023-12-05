@@ -4,14 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "proE2ETests": "npx playwright test Keycloak Analytics",
+    "proE2ETests": "npx playwright test",
     "fossE2ETests": "npx playwright test Odoo Senaite"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@playwright/test": "^1.39.0",
+    "@playwright/test": "^1.40.0",
     "@types/node": "^20.8.10",
     "@types/react": "^18.2.22",
     "@types/react-dom": "^18.2.7",
