@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { HomePage } from '../utils/functions/testBase';
 import { patientName } from '../utils/functions/testBase';
+import { E2E_BASE_URL, E2E_ANALYTICS_URL } from '../utils/configs/globalSetup';
 
 let homePage: HomePage;
 
@@ -27,31 +28,13 @@ test('Adding an OpenMRS patient syncs patient into patients table in Superset', 
   await homePage.clearSQLEditor();
 
   // replay
-  switch (true) {
-    case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_BASE_URL_DEMO}/openmrs/spa/home`);
-      break;
-    case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_BASE_URL_QA}/openmrs/spa/home`);
-      break;
-    default:
-      await page.goto(`${process.env.E2E_BASE_URL_DEV}/openmrs/spa/home`);
-  }
+  await page.goto(`${E2E_BASE_URL}`);
   await homePage.createPatient();
   await homePage.searchOpenMRSPatientID();
   const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
 
   // verify
-  switch (true) {
-    case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_ANALYTICS_URL_DEMO}/superset/sqllab`);
-      break;
-    case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_ANALYTICS_URL_QA}/superset/sqllab`);
-      break;
-    default:
-      await page.goto(`${process.env.E2E_ANALYTICS_URL_DEV}/superset/sqllab`);
-  }
+  await page.goto(`${E2E_ANALYTICS_URL}/superset/sqllab`);
   await homePage.clearSQLEditor();
   await page.getByRole('textbox').first().fill(patientsCountQuery);
   await homePage.runSQLQuery();
@@ -96,29 +79,11 @@ test('Starting an OpenMRS visit syncs visit into visits table in Superset', asyn
   await homePage.clearSQLEditor();
 
   // replay
-  switch (true) {
-    case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_BASE_URL_DEMO}/openmrs/spa/home`);
-      break;
-    case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_BASE_URL_QA}/openmrs/spa/home`);
-      break;
-    default:
-      await page.goto(`${process.env.E2E_BASE_URL_DEV}/openmrs/spa/home`);
-  }
+  await page.goto(`${E2E_BASE_URL}`);
   await homePage.startPatientVisit();
 
   // verify
-  switch (true) {
-    case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_ANALYTICS_URL_DEMO}/superset/sqllab`);
-      break;
-    case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_ANALYTICS_URL_URL}/superset/sqllab`);
-      break;
-    default:
-      await page.goto(`${process.env.E2E_ANALYTICS_URL_DEV}/superset/sqllab`);
-  }
+  await page.goto(`${E2E_ANALYTICS_URL}/superset/sqllab`);
   await homePage.clearSQLEditor();
   await page.getByRole('textbox').first().fill(visitsCountQuery);
   await homePage.runSQLQuery();
@@ -176,16 +141,7 @@ test('Creating an OpenMRS order syncs order into orders table in Superset', asyn
   await homePage.clearSQLEditor();
 
   // replay
-  switch (true) {
-    case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_BASE_URL_DEMO}/openmrs/spa/home`);
-      break;
-    case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_BASE_URL_QA}/openmrs/spa/home`);
-      break;
-    default:
-      await page.goto(`${process.env.E2E_BASE_URL_DEV}/openmrs/spa/home`);
-  }
+  await page.goto(`${E2E_BASE_URL}`);
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.goToLabOrderForm();
   await page.getByRole('button', { name: 'Add', exact: true }).click();
@@ -193,16 +149,7 @@ test('Creating an OpenMRS order syncs order into orders table in Superset', asyn
   await homePage.saveLabOrder();
 
   // verify
-  switch (true) {
-    case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_ANALYTICS_URL_DEMO}/superset/sqllab`);
-      break;
-    case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_ANALYTICS_URL_QA}/superset/sqllab`);
-      break;
-    default:
-      await page.goto(`${process.env.E2E_ANALYTICS_URL_DEV}/superset/sqllab`);
-  }
+  await page.goto(`${E2E_ANALYTICS_URL}/superset/sqllab`);
   await homePage.clearSQLEditor();
   await page.getByRole('textbox').first().fill(ordersCountQuery);
   await homePage.runSQLQuery();
@@ -260,16 +207,7 @@ test('Adding an OpenMRS encounter syncs encounter into encounters table in Super
   await homePage.clearSQLEditor();
 
   // replay
-  switch (true) {
-    case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_BASE_URL_DEMO}/openmrs/spa/home`);
-      break;
-    case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_BASE_URL_QA}/openmrs/spa/home`);
-      break;
-    default:
-      await page.goto(`${process.env.E2E_BASE_URL_DEV}/openmrs/spa/home`);
-  }
+  await page.goto(`${E2E_BASE_URL}`);
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.goToLabOrderForm();
   await page.getByRole('button', { name: 'Add', exact: true }).click();
@@ -277,16 +215,7 @@ test('Adding an OpenMRS encounter syncs encounter into encounters table in Super
   await homePage.saveLabOrder();
 
   // verify
-  switch (true) {
-    case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_ANALYTICS_URL_DEMO}/superset/sqllab`);
-      break;
-    case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_ANALYTICS_URL_QA}/superset/sqllab`);
-      break;
-    default:
-      await page.goto(`${process.env.E2E_ANALYTICS_URL_DEV}/superset/sqllab`);
-  }
+  await page.goto(`${E2E_ANALYTICS_URL}/superset/sqllab`);
   await homePage.clearSQLEditor();
   await page.getByRole('textbox').first().fill(encountersCountQuery);
   await homePage.runSQLQuery();
@@ -372,30 +301,12 @@ test('Adding an OpenMRS condition syncs condition into conditions table in Super
   await homePage.clearSQLEditor();
 
   // replay
-  switch (true) {
-    case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_BASE_URL_DEMO}/openmrs/spa/home`);
-      break;
-    case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_BASE_URL_QA}/openmrs/spa/home`);
-      break;
-    default:
-      await page.goto(`${process.env.E2E_BASE_URL_DEV}/openmrs/spa/home`);
-  }
+  await page.goto(`${E2E_BASE_URL}`);
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.addPatientCondition();
 
   // verify
-  switch (true) {
-    case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_ANALYTICS_URL_DEMO}/superset/sqllab`);
-      break;
-    case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_ANALYTICS_URL_QA}/superset/sqllab`);
-      break;
-    default:
-      await page.goto(`${process.env.E2E_ANALYTICS_URL_DEV}/superset/sqllab`);
-  }
+  await page.goto(`${E2E_ANALYTICS_URL}/superset/sqllab`);
   await homePage.clearSQLEditor();
   await page.getByRole('textbox').first().fill(conditionsCountQuery);
   await homePage.runSQLQuery();
@@ -449,30 +360,12 @@ test('Adding an OpenMRS observation syncs observation into observations table in
   await homePage.clearSQLEditor();
 
   // replay
-  switch (true) {
-    case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_BASE_URL_DEMO}/openmrs/spa/home`);
-      break;
-    case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_BASE_URL_QA}/openmrs/spa/home`);
-      break;
-    default:
-      await page.goto(`${process.env.E2E_BASE_URL_DEV}/openmrs/spa/home`);
-  }
+  await page.goto(`${E2E_BASE_URL}`);
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.addPatientBiometrics();
 
   // verify
-  switch (true) {
-    case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_ANALYTICS_URL_DEMO}/superset/sqllab`);
-      break;
-    case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_ANALYTICS_URL_QA}/superset/sqllab`);
-      break;
-    default:
-      await page.goto(`${process.env.E2E_ANALYTICS_URL_DEV}/superset/sqllab`);
-  }
+  await page.goto(`${E2E_ANALYTICS_URL}/superset/sqllab`);
   await homePage.clearSQLEditor();
   await page.getByRole('textbox').first().fill(observationsCountQuery);
   await homePage.runSQLQuery();
@@ -557,30 +450,12 @@ test('Adding an OpenMRS appointment syncs appointment into appointments table in
   await homePage.clearSQLEditor();
 
   // replay
-  switch (true) {
-    case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_BASE_URL_DEMO}/openmrs/spa/home`);
-      break;
-    case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_BASE_URL_QA}/openmrs/spa/home`);
-      break;
-    default:
-      await page.goto(`${process.env.E2E_BASE_URL_DEV}/openmrs/spa/home`);
-  }
+  await page.goto(`${E2E_BASE_URL}`);
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.addPatientAppointment();
 
   // verify
-  switch (true) {
-    case `${process.env.E2E_TEST_ENVIRONMENT}` == 'demo':
-      await page.goto(`${process.env.E2E_ANALYTICS_URL_DEMO}/superset/sqllab`);
-      break;
-    case `${process.env.E2E_TEST_ENVIRONMENT}` == 'qa':
-      await page.goto(`${process.env.E2E_ANALYTICS_URL_QA}/superset/sqllab`);
-      break;
-    default:
-      await page.goto(`${process.env.E2E_ANALYTICS_URL_DEV}/superset/sqllab`);
-  }
+  await page.goto(`${E2E_ANALYTICS_URL}/superset/sqllab`);
   await homePage.clearSQLEditor();
   await page.getByRole('textbox').first().fill(appointmentsCountQuery);
   await homePage.runSQLQuery();
