@@ -1,18 +1,18 @@
-name: Ozone FOSS E2E Tests
+name: Ozone E2E Tests On Specified Environment
 
 on:
 
   workflow_dispatch:
     inputs:
-      e2e_base_url_input:
-        description: 'O3 URL'
+      environment:
+        description: 'Choose test environment'
         required: true
-      e2e_odoo_url_input:
-        description: 'Odoo URL'
-        required: true
-      e2e_senaite_url_input:
-        description: 'SENAITE URL'
-        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - qa
+          - demo
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -42,11 +42,8 @@ jobs:
 
       - name: Run E2E tests
         env:
-          E2E_BASE_URL_DEV: '${{ github.event.inputs.e2e_base_url_input }}'
-          E2E_ODOO_URL_DEV: '${{ github.event.inputs.e2e_odoo_url_input }}'
-          E2E_SENAITE_URL_DEV: '${{ github.event.inputs.e2e_senaite_url_input }}'
-          E2E_RUNNING_ON_OZONE_PRO: 'false'
-        run: npm run fossE2ETests
+          E2E_TEST_ENVIRONMENT: '${{ github.event.inputs.environment }}'
+        run: npm run proE2ETests
 
       - name: Upload report
         uses: actions/upload-artifact@v3

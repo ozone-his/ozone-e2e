@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { HomePage } from '../utils/functions/testBase';
 import { patientName } from '../utils/functions/testBase';
+import { E2E_BASE_URL, E2E_ODOO_URL } from '../utils/configs/globalSetup';
 
 let homePage: HomePage;
 
@@ -56,12 +57,12 @@ test('Editing patient details with a synced lab order edits the corresponding cu
   await expect(quotation?.includes("Quotation")).toBeTruthy();
 
   // replay
-  await page.goto(`${process.env.E2E_BASE_URL}/openmrs/spa/home`);
+  await page.goto(`${E2E_BASE_URL}`);
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.updatePatientDetails();
 
   // verify
-  await page.goto(`${process.env.E2E_ODOO_URL}`);
+  await page.goto(`${E2E_ODOO_URL}`);
   await homePage.searchCustomerInOdoo();
   const updatedCustomer =
   await page.locator("table tbody tr:nth-child(1) td.o_data_cell.o_field_cell.o_list_many2one.o_readonly_modifier.o_required_modifier");
@@ -107,12 +108,12 @@ test('Editing patient details with a synced drug order edits corresponding custo
   await expect(quotation?.includes("Quotation")).toBeTruthy();
 
   // replay
-  await page.goto(`${process.env.E2E_BASE_URL}/openmrs/spa/home`);
+  await page.goto(`${E2E_BASE_URL}`);
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.updatePatientDetails();
 
   // verify
-  await page.goto(`${process.env.E2E_ODOO_URL}`);
+  await page.goto(`${E2E_ODOO_URL}`);
   await homePage.searchCustomerInOdoo();
   const updatedCustomer =
   await page.locator("table tbody tr:nth-child(1) td.o_data_cell.o_field_cell.o_list_many2one.o_readonly_modifier.o_required_modifier");
@@ -139,12 +140,12 @@ test('Revising a synced drug order edits corresponding quotation line in Odoo', 
   await expect(drugOrderItem).toContainText('Twice daily - 5 Days');
 
   // replay
-  await page.goto(`${process.env.E2E_BASE_URL}/openmrs/spa/home`);
+  await page.goto(`${E2E_BASE_URL}`);
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.editDrugOrder();
 
   // verify
-  await page.goto(`${process.env.E2E_ODOO_URL}`);
+  await page.goto(`${E2E_ODOO_URL}`);
   await homePage.searchCustomerInOdoo();
   await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
   await expect(drugOrderItem).toContainText('8.0 Tablet');
@@ -170,12 +171,12 @@ test('Discontinuing a synced drug order cancels corresponding quotation line in 
   await expect(drugOrderItem).toHaveText('Aspirin 325mg');
 
   // replay
-  await page.goto(`${process.env.E2E_BASE_URL}/openmrs/spa/home`);
+  await page.goto(`${E2E_BASE_URL}`);
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.discontinueDrugOrder();
 
   // verify
-  await page.goto(`${process.env.E2E_ODOO_URL}`);
+  await page.goto(`${E2E_ODOO_URL}`);
   await homePage.searchCustomerInOdoo();
   await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
   await expect(quotation).toHaveText('Cancelled');

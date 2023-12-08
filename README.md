@@ -1,6 +1,6 @@
 # Ozone E2E Test Suite
 
-[![Ozone PRO E2E Tests](https://github.com/ozone-his/ozone-e2e-pro/actions/workflows/pro.yml/badge.svg)](https://github.com/ozone-his/ozone-e2e-pro/actions/workflows/pro.yml)
+[![Ozone E2E Tests](https://github.com/ozone-his/ozone-e2e-pro/actions/workflows/pro.yml/badge.svg)](https://github.com/ozone-his/ozone-e2e-pro/actions/workflows/pro.yml)
 
 Welcome to Ozone automated test suite.
 
@@ -75,3 +75,7 @@ The pro.yml workflow is split into two jobs, one that runs upon _Git pull reques
 The foss.yml workflow contains one job that runs Ozone FOSS specific tests. Note: You need to provide O3, Odoo and SENAITE base URLs at runtime.
 
 <img src="readme/user_inputs.png" alt="User Inputs" width="1000"/>
+
+The runOzoneTestsOnSpecifiedEnv.yml workflow contains one job that runs Ozone tests. Note: You need to choose test environment at runtime.
+
+<img src="readme/choose_test_environment.png" alt="Choose Test Environment" width="1000"/>

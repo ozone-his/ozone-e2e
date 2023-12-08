@@ -2,7 +2,6 @@ import { devices, PlaywrightTestConfig } from '@playwright/test';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-// See https://playwright.dev/docs/test-configuration.
 const config: PlaywrightTestConfig = {
   testDir: './e2e/tests',
   timeout: 3 * 60 * 1000,
@@ -11,20 +10,22 @@ const config: PlaywrightTestConfig = {
   },
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
+  workers: process.env.CI ? 1 : 1,
   retries: 0,
   reporter: process.env.CI ? [['junit', { outputFile: 'results.xml' }], ['html']] : [['html']],
   globalSetup: require.resolve('./e2e/utils/configs/globalSetup'),
   use: {
-    baseURL: `${process.env.E2E_BASE_URL}/spa/`,
+    baseURL: `${process.env.E2E_BASE_URL_DEV}/spa/`,
     storageState: 'e2e/storageState.json',
   },
   projects: [
     {
-      name: 'webkit',
+      name: 'chromium',
       use: {
-        ...devices['Desktop Safari'],
+        ...devices['Desktop Chromium'],
         viewport: {width: 1920, height: 1080}
       },
+      
     },
   ],
 };
