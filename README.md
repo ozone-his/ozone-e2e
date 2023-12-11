@@ -1,6 +1,6 @@
 # Ozone E2E Test Suite
 
-[![Ozone E2E Tests](https://github.com/ozone-his/ozone-e2e-pro/actions/workflows/pro.yml/badge.svg)](https://github.com/ozone-his/ozone-e2e-pro/actions/workflows/pro.yml)
+[![Ozone E2E Tests](https://github.com/ozone-his/ozone-e2e/actions/workflows/pro.yml/badge.svg)](https://github.com/ozone-his/ozone-e2e/actions/workflows/pro.yml)
 
 Welcome to Ozone automated test suite.
 
@@ -21,12 +21,12 @@ Welcome to Ozone automated test suite.
 Clone the project
 
 ```sh
-git clone https://github.com/ozone-his/ozone-e2e-pro
+git clone https://github.com/ozone-his/ozone-e2e
 ```
 Navigate into the project
 
 ```sh
-cd ozone-e2e-pro
+cd ozone-e2e
 ```
 
 Install dependencies
