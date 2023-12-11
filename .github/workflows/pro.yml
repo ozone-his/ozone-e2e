@@ -69,7 +69,7 @@ jobs:
                         },
                         {
                           "type": "link",
-                          "url": "https://github.com/ozone-his/ozone-e2e-pro",
+                          "url": "https://github.com/ozone-his/ozone-e2e",
                           "text": "${{ github.repository }}",
                           "style": {
                             "bold": false
