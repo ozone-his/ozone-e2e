@@ -50,6 +50,8 @@ jobs:
         id: jobStatusPretty
         env:
           E2E_TEST_ENVIRONMENT: '${{ github.event.inputs.environment }}'
+          E2E_KEYCLOAK_USERNAME: '${{ secrets.KEYCLOAK_USERNAME }}'
+          E2E_KEYCLOAK_PASSWORD: '${{ secrets.KEYCLOAK_PASSWORD }}'
         run: |
           npm run proE2ETests
 

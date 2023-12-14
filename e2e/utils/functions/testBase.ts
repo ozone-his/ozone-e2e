@@ -67,8 +67,8 @@ export class HomePage {
 
   async goToKeycloak() {
     await this.page.goto(`${E2E_KEYCLOAK_URL}/admin/master/console`);
-    await this.page.getByLabel('Username or email').fill('admin');
-    await this.page.getByLabel('Password').fill('password');
+    await this.page.getByLabel('Username or email').fill(`${process.env.E2E_KEYCLOAK_USERNAME}`);
+    await this.page.getByLabel('Password').fill(`${process.env.E2E_KEYCLOAK_PASSWORD}`);
     await this.page.getByRole('button', { name: 'Sign In' }).click();
     await delay(8000);
   }
