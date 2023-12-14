@@ -70,12 +70,10 @@ e2e
 When writing a new test case, create a new spec in `./e2e/tests`
 
 ## GitHub Actions integration
-The pro.yml workflow is split into two jobs, one that runs upon _Git pull requests_ and the other upon _Git push(es)_. The difference between the two is that, the later publishes results to the integrated slack channel.
+The pro.yml workflow is split into two jobs, one that runs upon _Git pull requests_, and _Git push(es)_. The other runs tests on an environment specified during runtime. The difference between the two is that, the later is run manually via GitHub Actions. Note: When manually running the tests, you need to choose the test environment at runtime.
+
+<img src="readme/choose_test_environment.png" alt="Choose Test Environment" width="1000"/>
 
 The foss.yml workflow contains one job that runs Ozone FOSS specific tests. Note: You need to provide O3, Odoo and SENAITE base URLs at runtime.
 
 <img src="readme/user_inputs.png" alt="User Inputs" width="1000"/>
-
-The runOzoneTestsOnSpecifiedEnv.yml workflow contains one job that runs Ozone tests. Note: You need to choose test environment at runtime.
-
-<img src="readme/choose_test_environment.png" alt="Choose Test Environment" width="1000"/>
