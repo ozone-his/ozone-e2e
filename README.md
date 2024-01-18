@@ -7,6 +7,7 @@ Welcome to Ozone automated test suite.
 - [Setup Steps](#setup-steps)
   * [Step 1. Setup the project](#step-1-setup-the-project)
   * [Step 2. Run Ozone e2e tests](#step-2-run-ozone-e2e-tests)
+  * [Step 3. Run specific tests](#step-2-run-specific-tests)
 - [Configurations](#configurations)
 - [Project Structure](#project-structure)
 - [Guide for writing tests](#guide-for-writing-tests)
@@ -39,10 +40,17 @@ yarn install
 ```sh
 npx playwright test
 ```
+
+### Step 3. Run specific tests
+To run a single test file, pass in the name of the test file that you want to run.
+
+```sh
+npx playwright test <test file name>
+```
+
 ## Configurations
 
-This is underdevelopement/WIP. At the moment, there exists a git-shared
-`.env` file used for configuring environment variables.
+There exists a git-shared `.env` file used for configuring environment variables.
 
 By default, the test suite will run against Ozone dev server.
 You can override it by changing the environment variables beforehand:
@@ -62,12 +70,12 @@ e2e
 |   ^ Contains test cases
 |__ utils
 |   ^ Contains utilities needed to setup and tear down 
-|     tests as well as methods required by the tests to run
+|     tests as well as methods required by the tests to run.
 ```
 
 ## Guide for writing tests
 
-When writing a new test case, create a new spec in `./e2e/tests`
+When writing a new test case, start by creating a new spec in `./e2e/tests`. Depending on what you want to achieve, you may need to create new function(s) in `./e2e/utils/functions` with actions that interract with the page elements. To see examples, have a look at the existing code to see how these different concepts play together.
 
 ## GitHub Actions integration
 The pro.yml workflow is split into two jobs, one that runs upon _Git pull requests_ and the other upon _Git push(es)_. The difference between the two is that, the later publishes results to the integrated slack channel.
