@@ -73,9 +73,67 @@ e2e
 |     tests as well as methods required by the tests to run.
 ```
 
-## Guide for writing tests
+## Guide for writing Ozone FOSS tests
 
-When writing a new test case, start by creating a new spec in `./e2e/tests`. Depending on what you want to achieve, you may need to create new function(s) in `./e2e/utils/functions` with actions that interract with the page elements. To see examples, have a look at the existing code to see how these different concepts play together.
+Assume you want to write a test verifying that a patient in O3 with lab order becomes client with analysis request in SENAITE. The following are the steps when writing the E2E test.
+
+#### Step 1. Write the function(s) in `./e2e/utils/functions/testBase.ts`
+
+This snippet emulates functions with actions that navigate to O3 and make the lab order
+
+```TypeScript
+import { test } from '@playwright/test';
+
+  async goToLabOrderForm() {
+    await this.page.getByLabel('Clinical forms').click();
+    await delay(3000);
+    await expect(this.page.getByText('Laboratory Test Orders')).toBeVisible();
+    await this.page.getByText('Laboratory Test Orders').click();
+  }
+
+  async saveLabOrder() {
+    await this.page.getByRole('button', { name: 'Save and close' }).click();
+    await expect(this.page.getByText('Lab order(s) generated')).toBeVisible();
+    await this.page.getByRole('button', { name: 'Close', exact: true }).click();
+    await delay(5000);
+  }
+```
+
+#### Step 2. Write the test in `./e2e/tests` spec file
+
+This snippet emulates the actual test flow navigating to O3, performs the action of ordering a lab test and verifies that the patient with lab order becomes client with analysis request in SENAITE.
+
+```TypeScript
+import { test, devices } from '@playwright/test';
+
+test.beforeEach(async ({ page }) => {
+  const homePage = new HomePage(page);
+  await homePage.initiateLogin();
+
+  await expect(page).toHaveURL(/.*home/);
+
+  await homePage.createPatient();
+  await homePage.startPatientVisit();
+});
+
+test('Patient with lab order becomes client with analysis request in SENAITE', async ({ page }) => {
+  // setup
+  const homePage = new HomePage(page);
+  await homePage.goToLabOrderForm();
+  await page.getByRole('button', { name: 'Add', exact: true }).click();
+  await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  await homePage.saveLabOrder();
+  await homePage.goToSENAITE();
+  await expect(page).toHaveURL(/.*senaite/);
+
+  // replay
+  await homePage.searchClientInSENAITE();
+
+  // verify
+  const client = await page.locator('table tbody tr:nth-child(1) td.contentcell.title div span a');
+  await expect(client).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
+});
+```
 
 ## GitHub Actions integration
 The pro.yml workflow is split into two jobs, one that runs upon _Git pull requests_ and the other upon _Git push(es)_. The difference between the two is that, the later publishes results to the integrated slack channel.
