@@ -77,7 +77,7 @@ e2e
 
 Assume you want to write a test verifying that a patient in O3 with lab order becomes client with analysis request in SENAITE. The following are the steps when writing the E2E test.
 
-#### Step 1. Write the function(s) in `./e2e/utils/functions/testBase.ts`
+#### Step 1. Write the function(s) in `./e2e/utils/functions/testBase.ts` that perform actions.
 
 This snippet emulates functions with actions that navigate to O3 and make the lab order
 
@@ -99,7 +99,7 @@ import { test } from '@playwright/test';
   }
 ```
 
-#### Step 2. Write the test in `./e2e/tests` spec file
+#### Step 2. Assert the state against expectations in `./e2e/tests` spec file
 
 This snippet emulates the actual test flow navigating to O3, performs the action of ordering a lab test and verifies that the patient with lab order becomes client with analysis request in SENAITE.
 
