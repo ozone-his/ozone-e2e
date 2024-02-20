@@ -22,12 +22,12 @@ test.skip('Adding an OpenMRS role syncs the role into Keycloak', async ({ page }
   await homePage.goToKeycloak();
   await expect(page).toHaveURL(/.*console/);
   await homePage.goToClients();
-  await homePage.goToOpenMRSRole();
+  await homePage.goToOpenMRSClient();
 
   // verify
   await expect(page.getByText(`${randomOpenMRSRoleName.roleName}`)).toBeVisible();
   await expect(page.getByText('Role for e2e test').first()).toBeVisible();
-  await homePage.goToOpenMRSRoleAttributes();
+  await homePage.goToOpenMRSClientAttributes();
   await expect(page.getByText('Organizational: Registration Clerk')).toBeTruthy();
   await expect(page.getByText('Application: Edits Existing Encounters')).toBeTruthy();
   await expect(page.getByText('Application: Uses Patient Summary')).toBeTruthy();
@@ -46,11 +46,11 @@ test.skip('Updating a synced OpenMRS role updates the corresponding role in Keyc
   await homePage.goToKeycloak();
   await expect(page).toHaveURL(/.*console/);
   await homePage.goToClients();
-  await homePage.goToOpenMRSRole();
+  await homePage.goToOpenMRSClient();
 
   await expect(page.getByText(`${randomOpenMRSRoleName.roleName}`)).toBeVisible();
   await expect(page.getByText('Role for e2e test').first()).toBeVisible();
-  await homePage.goToOpenMRSRoleAttributes();
+  await homePage.goToOpenMRSClientAttributes();
   await expect(page.getByText('Application: Enters Vitals')).toBeTruthy();
   await expect(page.getByText('Application: Edits Existing Encounters')).toBeTruthy();
   await expect(page.getByText('Application: Uses Patient Summary')).toBeTruthy();
@@ -62,8 +62,8 @@ test.skip('Updating a synced OpenMRS role updates the corresponding role in Keyc
   // verify
   await page.goto(`${E2E_KEYCLOAK_URL}/admin/master/console`);
   await homePage.goToClients();
-  await homePage.goToOpenMRSRole();
-  await homePage.goToOpenMRSRoleAttributes();
+  await homePage.goToOpenMRSClient();
+  await homePage.goToOpenMRSClientAttributes();
   await expect(page.getByText('Updated role description')).toBeTruthy();
   await page.getByTestId('attributesTab').click();
   await expect(page.getByText('Application: Registers Patients')).toBeTruthy();
@@ -81,11 +81,11 @@ test.skip('Deleting a synced OpenMRS role deletes the corresponding role in Keyc
   await homePage.goToKeycloak();
   await expect(page).toHaveURL(/.*console/);
   await homePage.goToClients();
-  await homePage.goToOpenMRSRole();
+  await homePage.goToOpenMRSClient();
 
   await expect(page.getByText(`${randomOpenMRSRoleName.roleName}`)).toBeVisible();
   await expect(page.getByText('Role for e2e test').first()).toBeVisible();
-  await homePage.goToOpenMRSRoleAttributes();
+  await homePage.goToOpenMRSClientAttributes();
   await expect(page.getByText('Application: Enters Vitals')).toBeTruthy();
   await expect(page.getByText('Application: Edits Existing Encounters')).toBeTruthy();
   await expect(page.getByText('Application: Uses Patient Summary')).toBeTruthy();
@@ -96,7 +96,7 @@ test.skip('Deleting a synced OpenMRS role deletes the corresponding role in Keyc
   // verify
   await page.goto(`${E2E_KEYCLOAK_URL}/admin/master/console`);
   await homePage.goToClients();
-  await homePage.goToOpenMRSRole();
+  await homePage.goToOpenMRSClient();
   const roleName = await page.locator('table tbody tr:nth-child(1) td:nth-child(1) a');
   await expect(roleName).not.toHaveText(`${randomOpenMRSRoleName.roleName}`);
 });
@@ -112,7 +112,7 @@ test('Adding a Superset role syncs the role into Keycloak', async ({ page }) => 
   // verify
   await homePage.goToKeycloak();
   await homePage.goToClients();
-  await homePage.goToSupersetRole();
+  await homePage.goToSupersetClient();
 
   await expect(page.getByText(`${randomSupersetRoleName.roleName}`)).toBeVisible();
 
@@ -128,7 +128,7 @@ test('Updating a synced Superset role updates the corresponding role in Keycloak
   await homePage.addSupersetRole();
   await homePage.goToKeycloak();
   await homePage.goToClients();
-  await homePage.goToSupersetRole();
+  await homePage.goToSupersetClient();
 
   await expect(page.getByText(`${randomSupersetRoleName.roleName}`)).toBeVisible();
   await expect(page.getByText('')).toBeTruthy();
@@ -138,7 +138,7 @@ test('Updating a synced Superset role updates the corresponding role in Keycloak
   // verify
   await page.goto(`${E2E_KEYCLOAK_URL}/admin/master/console`);
   await homePage.goToClients();
-  await homePage.goToSupersetRole();
+  await homePage.goToSupersetClient();
   await expect(page.getByText(`${randomSupersetRoleName.roleName}`)).not.toBeVisible();
   await expect(page.getByText(`${randomSupersetRoleName.updatedRoleName}`)).toBeVisible();
 
@@ -154,10 +154,9 @@ test('Deleting a synced Superset role deletes the corresponding role in Keycloak
   // reply
   await homePage.goToKeycloak();
   await homePage.goToClients();
-  await homePage.goToSupersetRole();
+  await homePage.goToSupersetClient();
 
   await expect(page.getByText(`${randomSupersetRoleName.roleName}`)).toBeVisible();
-  await expect(page.getByText('')).toBeTruthy();
 
   await homePage.deleteSupersetRole();
   await delay(30000);
@@ -165,7 +164,7 @@ test('Deleting a synced Superset role deletes the corresponding role in Keycloak
   // verify
   await page.goto(`${E2E_KEYCLOAK_URL}/admin/master/console`);
   await homePage.goToClients();
-  await homePage.goToSupersetRole();
+  await homePage.goToSupersetClient();
 
   await expect(page.getByText(`${randomSupersetRoleName.roleName}`)).not.toBeVisible();
 });
@@ -181,14 +180,14 @@ test('Deleting a synchronized role in Keycloak gets created in the subsequent po
   // verify
   await homePage.goToKeycloak();
   await homePage.goToClients();
-  await homePage.goToSupersetRole();
+  await homePage.goToSupersetClient();
 
   await expect(page.getByText(`${randomSupersetRoleName.roleName}`)).toBeVisible();
   await homePage.deleteSyncedSupersetRoleInKeycloak();
-  await delay(30000);
   await expect(page.getByText(`${randomSupersetRoleName.roleName}`)).not.toBeVisible();
+  await delay(30000);
   await page.getByLabel('Manage').getByRole('link', { name: 'Clients' }).click();
-  await homePage.goToSupersetRole();
+  await homePage.goToSupersetClient();
   await expect(page.getByText(`${randomSupersetRoleName.roleName}`)).toBeVisible();
 
   await homePage.deleteSupersetRole();
@@ -197,19 +196,19 @@ test('Deleting a synchronized role in Keycloak gets created in the subsequent po
 test('Creating a role in Keycloak automatically gets deleted during the subsequent polling cycle', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
-
-  // reply
   await homePage.goToKeycloak();
 
-  // verify
+  // reply
   await homePage.goToClients();
-  await homePage.goToOpenMRSRole();
+  await homePage.goToOpenMRSClient();
   await homePage.createRoleInKeycloak();
-
+  await page.getByRole('link', { name: 'Client details' }).click();
   await expect(page.getByText(`${randomKeycloakRoleName.roleName}`)).toBeVisible();
   await delay(30000);
   await page.getByLabel('Manage').getByRole('link', { name: 'Clients' }).click();
-  await homePage.goToOpenMRSRole();
+
+  // verify
+  await homePage.goToOpenMRSClient();
 
   await expect(page.getByText(`${randomKeycloakRoleName.roleName}`)).not.toBeVisible();
 });
