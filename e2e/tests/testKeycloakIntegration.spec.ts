@@ -12,7 +12,7 @@ test.beforeEach(async ({ page }) => {
   await expect(page).toHaveURL(/.*home/);
 });
 
-test.skip('Adding an OpenMRS role syncs the role into Keycloak', async ({ page }) => {
+test('Adding an OpenMRS role syncs the role into Keycloak', async ({ page }) => {
   // setup
   await page.goto(`${E2E_BASE_URL}/openmrs/admin/users/role.list`);
   const homePage = new HomePage(page);
@@ -36,7 +36,7 @@ test.skip('Adding an OpenMRS role syncs the role into Keycloak', async ({ page }
   await homePage.deleteOpenMRSRole();
 });
 
-test.skip('Updating a synced OpenMRS role updates the corresponding role in Keycloak', async ({ page }) => {
+test('Updating a synced OpenMRS role updates the corresponding role in Keycloak', async ({ page }) => {
   // setup
   await page.goto(`${E2E_BASE_URL}/openmrs/admin/users/role.list`);
   const homePage = new HomePage(page);
@@ -71,7 +71,7 @@ test.skip('Updating a synced OpenMRS role updates the corresponding role in Keyc
   await homePage.deleteOpenMRSRole();
 });
 
-test.skip('Deleting a synced OpenMRS role deletes the corresponding role in Keycloak', async ({ page }) => {
+test('Deleting a synced OpenMRS role deletes the corresponding role in Keycloak', async ({ page }) => {
   // setup
   await page.goto(`${E2E_BASE_URL}/openmrs/admin/users/role.list`);
   const homePage = new HomePage(page);
