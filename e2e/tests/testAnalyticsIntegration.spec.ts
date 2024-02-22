@@ -121,7 +121,7 @@ test('Starting an OpenMRS visit syncs visit into visits table in Superset', asyn
   await homePage.clearSQLEditor();
 });
 
-test.skip('Creating an OpenMRS order syncs order into orders table in Superset', async ({ page }) => {
+test('Creating an OpenMRS order syncs order into orders table in Superset', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
   await homePage.createPatient();
@@ -187,7 +187,7 @@ test.skip('Creating an OpenMRS order syncs order into orders table in Superset',
   await homePage.clearSQLEditor();
 });
 
-test.skip('Adding an OpenMRS encounter syncs encounter into encounters table in Superset', async ({ page }) => {
+test('Adding an OpenMRS encounter syncs encounter into encounters table in Superset', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
   await homePage.createPatient();
@@ -281,7 +281,7 @@ test.skip('Adding an OpenMRS encounter syncs encounter into encounters table in 
   await homePage.clearSQLEditor();
 });
 
-test.skip('Adding an OpenMRS condition syncs condition into conditions table in Superset', async ({ page }) => {
+test('Adding an OpenMRS condition syncs condition into conditions table in Superset', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
   await homePage.createPatient();
@@ -340,7 +340,7 @@ test.skip('Adding an OpenMRS condition syncs condition into conditions table in 
   await homePage.clearSQLEditor();
 });
 
-test.skip('Adding an OpenMRS observation syncs observation into observations table in Superset', async ({ page }) => {
+test('Adding an OpenMRS observation syncs observation into observations table in Superset', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
   await homePage.createPatient();
@@ -429,7 +429,7 @@ test.skip('Adding an OpenMRS observation syncs observation into observations tab
   await homePage.clearSQLEditor();
 });
 
-test.skip('Adding an OpenMRS appointment syncs appointment into appointments table in Superset', async ({ page }) => {
+test('Adding an OpenMRS appointment syncs appointment into appointments table in Superset', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
   await homePage.createPatient();

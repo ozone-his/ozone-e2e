@@ -59,14 +59,8 @@ export class HomePage {
       await this.page.waitForTimeout(1000);
       await this.page.locator('button[type="submit"]').click();
     }
-    if (`${process.env.E2E_RUNNING_ON_OZONE_PRO}` == 'true' && !(await this.page.locator('#checkbox').isChecked())
-    && await this.page.locator('input[role="searchbox"]').isVisible()) {
-      await this.page.locator('label').filter({ hasText: 'Inpatient Ward' }).locator('span').first().click();
-      await this.page.getByRole('button', { name: 'Confirm' }).click();
-    } else {
-      await this.page.locator('label').filter({ hasText: 'Inpatient Ward' }).locator('span').first().click();
-      await this.page.getByRole('button', { name: 'Confirm' }).click();
-    }
+    await this.page.locator('label').filter({ hasText: 'Inpatient Ward' }).locator('span').first().click();
+    await this.page.getByRole('button', { name: 'Confirm' }).click();
     await delay(5000);
     await this.expectAllButtonsToBePresent();
   }
@@ -117,9 +111,6 @@ export class HomePage {
     }
     patientFullName = patientName.firstName + ' ' + patientName.givenName;
 
-    if (`${process.env.E2E_RUNNING_ON_OZONE_PRO}` == 'true') {
-      await this.makeDelayFor03ToLoad();
-    }
     await this.expectAllButtonsToBePresent();
     await this.page.getByRole('button', { name: 'Add Patient' }).click();
     await expect(this.page.getByRole('button', { name: 'Register Patient' })).toBeEnabled();
@@ -149,13 +140,12 @@ export class HomePage {
   }
 
   async goToHomePage() {
-    await this.page.getByRole('link', { name: 'Home' }).click();
-    await this.page.getByRole('button', { name: 'danger Discard' }).click();
+    await this.page.goto(`${E2E_BASE_URL}/openmrs/spa/home`);
     await expect(this.page).toHaveURL(/.*home/);
   }
 
   async searchPatient(searchText: string) {
-    this.goToHomePage();
+    await this.goToHomePage();
     await this.patientSearchIcon().click();
     await this.patientSearchBar().type(searchText);
     await this.page.getByRole('link', { name: `${patientFullName}` }).first().click();
@@ -234,7 +224,7 @@ export class HomePage {
     await this.page.getByRole('link', { name: 'Appointments' }).click();
     await this.page.getByRole('button', { name: 'Add', exact: true }).click();
     await this.page.getByLabel('Select a service').selectOption('General Medicine service');
-    await this.page.getByLabel('Select the type of appointment').selectOption('WalkIn');
+    await this.page.getByLabel('Select an appointment type').selectOption('WalkIn');
     await this.page.locator('#duration').clear();
     await this.page.locator('#duration').fill('40');
     await this.page.getByPlaceholder('Write any additional points here').clear();
@@ -334,7 +324,7 @@ export class HomePage {
 
   async viewTestResults() {
     await this.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
-    await this.page.getByRole('link', { name: 'Test Results' }).click();
+    await this.page.getByRole('link', { name: 'Results Viewer' }).click();
     await this.page.getByRole('tab', { name: 'Panel' }).click();
   }
 
@@ -579,20 +569,6 @@ export class HomePage {
     await expect(this.page.getByText(`${randomOpenMRSRoleName.roleName} deleted`)).toBeVisible();
     await delay(1500);
     await this.page.getByRole('link', { name: 'Log out' }).click();
-  }
-
-  async makeDelayFor03ToLoad() {
-    await this.page.goto(`${E2E_SENAITE_URL}`);
-    if (!(`${process.env.E2E_RUNNING_ON_OZONE_PRO}` == 'true')) {
-      await delay(3000);
-      await this.page.locator('#__ac_name').fill(`${process.env.FOSS_E2E_USER_ADMIN_USERNAME}`);
-      await delay(1000);
-      await this.page.locator('#__ac_password').fill('password');
-      await delay(1000);
-      await this.page.locator('#buttons-login').click();
-    }
-    await delay(4000);
-    await this.page.goto(`${E2E_BASE_URL}`);
   }
 
   async expectAllButtonsToBePresent() {
