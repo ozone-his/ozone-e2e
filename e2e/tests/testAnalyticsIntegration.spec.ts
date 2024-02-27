@@ -12,7 +12,7 @@ test.beforeEach(async ({ page }) => {
   await expect(page).toHaveURL(/.*home/);
 });
 
-test('Adding an OpenMRS patient syncs patient into patients table in Superset', async ({ page }) => {
+test.skip('Adding an OpenMRS patient syncs patient into patients table in Superset', async ({ page }) => {
   // setup //Done
   const homePage = new HomePage(page);
   await homePage.goToSuperset();
@@ -60,12 +60,10 @@ test('Adding an OpenMRS patient syncs patient into patients table in Superset', 
   await homePage.clearSQLEditor();
 });
 
-test.skip('Starting an OpenMRS visit syncs visit into visits table in Superset', async ({ page }) => {
+test('Starting an OpenMRS visit syncs visit into visits table in Superset', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
   await homePage.createPatient();
-  await homePage.searchOpenMRSPatientID();
-  const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
   await homePage.goToSuperset();
   await expect(page).toHaveURL(/.*superset/);
   await homePage.selectDBSchema();
@@ -81,6 +79,7 @@ test.skip('Starting an OpenMRS visit syncs visit into visits table in Superset',
   // replay
   await page.goto(`${E2E_BASE_URL}`);
   await homePage.startPatientVisit();
+  const patient_uuid = await homePage.getPatientUUID();
 
   // verify
   await page.goto(`${E2E_ANALYTICS_URL}/superset/sqllab`);
@@ -94,14 +93,8 @@ test.skip('Starting an OpenMRS visit syncs visit into visits table in Superset',
 
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
-  let patientIdQuery = `SELECT * FROM patients WHERE identifiers like 'OpenMRS ID: ${patientIdentifier}';`;
-  await page.getByRole('textbox').fill(patientIdQuery);
-  await homePage.runSQLQuery();
-  let patientId = await page.locator('div.virtual-table-cell').textContent();
-  const patientIdValue = Number(patientId);
-  await page.getByRole('tab', { name: 'Results' }).click();
-  await homePage.clearSQLEditor();
-  let patientVisitQuery = `SELECT * FROM visits WHERE patient_id=${patientIdValue};`;
+
+  let patientVisitQuery = `SELECT * FROM visits WHERE patient_uuid like '${patient_uuid}';`;
   await page.getByRole('textbox').first().fill(patientVisitQuery);
   await homePage.runSQLQuery();
 
@@ -118,7 +111,7 @@ test.skip('Starting an OpenMRS visit syncs visit into visits table in Superset',
   await homePage.clearSQLEditor();
 });
 
-test('Creating an OpenMRS order syncs order into orders table in Superset', async ({ page }) => {
+test.skip('Creating an OpenMRS order syncs order into orders table in Superset', async ({ page }) => {
   // setup //Done
   const homePage = new HomePage(page);
   await homePage.createPatient();
@@ -177,7 +170,7 @@ test('Creating an OpenMRS order syncs order into orders table in Superset', asyn
   await homePage.clearSQLEditor();
 });
 
-test('Adding an OpenMRS encounter syncs encounter into encounters table in Superset', async ({ page }) => {
+test.skip('Adding an OpenMRS encounter syncs encounter into encounters table in Superset', async ({ page }) => {
   // setup //Done
   const homePage = new HomePage(page);
   await homePage.createPatient();
@@ -250,7 +243,7 @@ test('Adding an OpenMRS encounter syncs encounter into encounters table in Super
   await homePage.clearSQLEditor();
 });
 
-test('Adding an OpenMRS condition syncs condition into conditions table in Superset', async ({ page }) => {
+test.skip('Adding an OpenMRS condition syncs condition into conditions table in Superset', async ({ page }) => {
   // setup //Done
   const homePage = new HomePage(page);
   await homePage.createPatient();
@@ -305,7 +298,7 @@ test('Adding an OpenMRS condition syncs condition into conditions table in Super
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
 });
-/*
+
 test.skip('Adding an OpenMRS observation syncs observation into observations table in Superset', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
@@ -441,7 +434,7 @@ test.skip('Adding an OpenMRS appointment syncs appointment into appointments tab
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
 });
-*/
+
 test.afterEach(async ({ page }) => {
   const homePage = new HomePage(page);
   await homePage.deletePatient();

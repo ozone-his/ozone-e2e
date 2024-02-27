@@ -16,7 +16,6 @@ export var patientName = {
 
 var patientFullName = '';
 
-
 export var randomSupersetRoleName = {
   roleName : `Ac${(Math.random() + 1).toString(36).substring(2)}`,
   updatedRoleName : `Ab${(Math.random() + 1).toString(36).substring(2)}`
@@ -170,13 +169,14 @@ export class HomePage {
 
     // If a match is found, return the UUID, else return null
     if (match && match.length > 1) {
-        return match[1];
+        return match[1].toString();
     } else {
         return null;
     }
   }
 
   async getPatientUUID() {
+    await this.page.goto(`${E2E_BASE_URL}/openmrs/spa/home`);
     await this.patientSearchIcon().click();
     await this.patientSearchBar().type(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.getByRole('link', { name: `${patientFullName}` }).first().click();
