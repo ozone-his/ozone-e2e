@@ -16,7 +16,6 @@ export var patientName = {
 
 var patientFullName = '';
 
-
 export var randomSupersetRoleName = {
   roleName : `Ac${(Math.random() + 1).toString(36).substring(2)}`,
   updatedRoleName : `Ab${(Math.random() + 1).toString(36).substring(2)}`
@@ -162,6 +161,29 @@ export class HomePage {
     await expect(this.page.getByText('OpenMRS ID', {exact: true})).toBeVisible();
   }
 
+  async extractUUIDFromURL(url) {
+    // Regular expression to match UUID in URL
+    var regex = /\/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})\//;
+
+    var match = regex.exec(url);
+
+    // If a match is found, return the UUID, else return null
+    if (match && match.length > 1) {
+        return match[1].toString();
+    } else {
+        return null;
+    }
+  }
+
+  async getPatientUUID() {
+    await this.page.goto(`${E2E_BASE_URL}/openmrs/spa/home`);
+    await this.patientSearchIcon().click();
+    await this.patientSearchBar().type(`${patientName.firstName + ' ' + patientName.givenName}`);
+    await this.page.getByRole('link', { name: `${patientFullName}` }).first().click();
+    let url = await this.page.url();
+    return this.extractUUIDFromURL(url);
+  }
+
   async startPatientVisit() {
     await this.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.getByRole('button', { name: 'Start a visit' }).click();
@@ -224,7 +246,7 @@ export class HomePage {
     await this.page.getByRole('link', { name: 'Appointments' }).click();
     await this.page.getByRole('button', { name: 'Add', exact: true }).click();
     await this.page.getByLabel('Select a service').selectOption('General Medicine service');
-    await this.page.getByLabel('Select an appointment type').selectOption('WalkIn');
+    await this.page.getByLabel('Select an appointment type').selectOption('Scheduled');
     await this.page.locator('#duration').clear();
     await this.page.locator('#duration').fill('40');
     await this.page.getByPlaceholder('Write any additional points here').clear();
@@ -237,7 +259,7 @@ export class HomePage {
     await expect(serviceType).toHaveText('General Medicine service');
 
     const appointmentType = await this.page.locator('table tbody tr:nth-child(1) td:nth-child(5)');
-    await expect(appointmentType).toHaveText('WalkIn');
+    await expect(appointmentType).toHaveText('Scheduled');
 
     const appointmentStatus = await this.page.locator('table tbody tr:nth-child(1) td:nth-child(4)');
     await expect(appointmentStatus).toHaveText('Scheduled');
