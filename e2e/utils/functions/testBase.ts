@@ -308,7 +308,7 @@ export class HomePage {
     await delay(5000);
   }
 
-  async discontinueLabOrder() {
+  async discontinueAnOpenMRSEncounter() {
     await this.page.getByRole('link', { name: 'Visits' }).click();
     await this.page.getByRole('tab', { name: 'All encounters' }).click();
     await this.page.getByRole('button', { name: 'Options', exact: true }).click();

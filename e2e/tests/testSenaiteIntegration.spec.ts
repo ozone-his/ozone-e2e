@@ -114,7 +114,7 @@ test('Voiding a synced lab order cancels corresponding analysis request in SENAI
   // replay
   await page.goto(`${E2E_BASE_URL}`);
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
-  await homePage.discontinueLabOrder();
+  await homePage.discontinueAnOpenMRSEncounter();
 
   // verify
   await homePage.goToSENAITE();
