@@ -597,7 +597,7 @@ export class HomePage {
     await expect(this.page.getByRole('button', { name: 'Search Patient' })).toBeEnabled();
     await expect(this.page.getByRole('button', { name: 'Add Patient' })).toBeEnabled();
     await expect(this.page.getByRole('button', { name: 'Implementer Tools' })).toBeEnabled();
-    await expect(this.page.getByRole('button', { name: 'User' })).toBeEnabled();
+    await expect(this.page.getByRole('button', { name: 'My Account' })).toBeEnabled();
     await expect(this.page.getByRole('button', { name: 'App Menu' })).toBeEnabled();
   }
 
