@@ -12,10 +12,10 @@
   "license": "ISC",
   "devDependencies": {
     "@playwright/test": "^1.42.1",
-    "@types/node": "^20.8.10",
-    "@types/react": "^18.2.22",
-    "@types/react-dom": "^18.2.7",
-    "dotenv": "^16.3.1"
+    "@types/node": "^20.11.26",
+    "@types/react": "^18.2.65",
+    "@types/react-dom": "^18.2.21",
+    "dotenv": "^16.4.5"
   }
 
 }
