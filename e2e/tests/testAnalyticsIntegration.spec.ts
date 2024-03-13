@@ -434,7 +434,7 @@ test('Voiding an OpenMRS observation updates observations dataset in Superset', 
 
   await page.goto(`${E2E_BASE_URL}/openmrs/spa/home`);
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
-  await homePage.discontinueAnOpenMRSEncounter();
+  await homePage.voidEncounter();
 
   // verify
   await page.goto(`${E2E_ANALYTICS_URL}/superset/sqllab`);
