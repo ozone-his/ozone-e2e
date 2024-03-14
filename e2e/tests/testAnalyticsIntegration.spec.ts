@@ -296,8 +296,6 @@ test('Adding an OpenMRS observation syncs observation into observations table in
   // setup
   const homePage = new HomePage(page);
   await homePage.createPatient();
-  await homePage.searchOpenMRSPatientID();
-  const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
   await homePage.startPatientVisit();
   const patient_uuid = await homePage.getPatientUUID();
   await homePage.goToSuperset();
@@ -406,6 +404,50 @@ test('Adding an OpenMRS appointment syncs appointment into appointments table in
 
   await expect(appointmentStatus).toContainText('Scheduled');
   await page.getByRole('tab', { name: 'Query history' }).click();
+  await homePage.clearSQLEditor();
+});
+
+test('Voiding an OpenMRS observation updates observations dataset in Superset', async ({ page }) => {
+  // setup
+  const homePage = new HomePage(page);
+  await homePage.createPatient();
+  await homePage.startPatientVisit();
+  const patient_uuid = await homePage.getPatientUUID();
+  await homePage.addPatientBiometrics();
+
+  // replay
+  await homePage.goToSuperset();
+  await expect(page).toHaveURL(/.*superset/);
+  await homePage.selectDBSchema();
+  await homePage.clearSQLEditor();
+  let obsVoidedQuery = `SELECT obs_voided FROM Observations WHERE patient_uuid like '${patient_uuid}';`;
+
+  await page.getByRole('textbox').first().fill(obsVoidedQuery);
+  await homePage.runSQLQuery();
+
+  let firstObsVoidedState = await page.locator('div.virtual-table-cell:nth-child(1)');
+  let secondObsVoidedState = await page.locator('div.virtual-table-cell:nth-child(2)');
+  let thirdObsVoidedState = await page.locator('div.virtual-table-cell:nth-child(3)');
+  await expect(firstObsVoidedState).toContainText('false');
+  await expect(secondObsVoidedState).toContainText('false');
+  await expect(thirdObsVoidedState).toContainText('false');
+
+  await page.goto(`${E2E_BASE_URL}/openmrs/spa/home`);
+  await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
+  await homePage.voidEncounter();
+
+  // verify
+  await page.goto(`${E2E_ANALYTICS_URL}/superset/sqllab`);
+  await homePage.clearSQLEditor();
+
+  await page.getByRole('textbox').first().fill(obsVoidedQuery);
+  await homePage.runSQLQuery();
+
+  await expect(firstObsVoidedState).toContainText('true');
+  await expect(secondObsVoidedState).toContainText('true');
+  await expect(thirdObsVoidedState).toContainText('true');
+
+  await page.getByRole('tab', { name: 'Results' }).click();
   await homePage.clearSQLEditor();
 });
 
