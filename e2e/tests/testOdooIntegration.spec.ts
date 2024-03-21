@@ -170,10 +170,10 @@ test('Discontinuing a synced drug order cancels corresponding quotation line in 
   await expect(quotation).toHaveText('Cancelled');
 });
 
-test('Patient with free dosage drug order becomes customer in Odoo', async ({ page }) => {
+test('Patient with free text medication dosage becomes customer in Odoo', async ({ page }) => {
   // setup
   const homePage = new HomePage(page);
-  await homePage.makeFreeDosageDrugOrder();
+  await homePage.prescribeFreeTextMedicationDosage();
 
   await homePage.goToOdoo();
   await expect(page).toHaveURL(/.*web/);

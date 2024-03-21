@@ -377,7 +377,7 @@ export class HomePage {
     await delay(5000);
   }
 
-  async makeFreeDosageDrugOrder() {
+  async prescribeFreeTextMedicationDosage() {
     await this.page.getByLabel('Order basket', { exact: true }).click();
     await delay(3000);
     await this.page.getByRole('button', { name: 'Add', exact: true }).nth(0).click();
