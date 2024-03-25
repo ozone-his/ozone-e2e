@@ -1,0 +1,27 @@
+name: Publish Ozone E2E Tests
+
+on:
+
+  workflow_dispatch:
+
+jobs:
+  publish-npm-release:
+    name: "publish to NPM"
+    runs-on: ubuntu-latest
+    if: github.repository == 'ozone-his/ozone-e2e'
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 18
+      run: npm adduser --auth-type=legacy --registry=https://nexus.mekomsolutions.net/repository/mks-npm/
+      env:
+        USERNAME: ${{ secrets.NPM_USERNAME }}
+        PASSWORD: ${{ secrets.NPM_TOKEN }}
+      run: yarn publish
+      if: "github.event.release.prerelease"
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
