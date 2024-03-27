@@ -19,6 +19,6 @@ jobs:
           registry-url: 'https://nexus.mekomsolutions.net/repository/mks-npm'
 
       - run: yarn
-      - run: yarn npm publish
+      - run: yarn publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
