@@ -1,4 +1,4 @@
-name: Publish to NPM Registry
+name: Publish to NPM
 
 on:
   push:
@@ -18,7 +18,10 @@ jobs:
           node-version: '20.x'
           registry-url: 'https://nexus.mekomsolutions.net/repository/mks-npm'
 
-      - run: yarn
-      - run: yarn publish
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Publish to NPM
+        run: npm run publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
