@@ -3,6 +3,7 @@
   "version": "1.0.0-SNAPSHOT",
   "description": "",
   "main": "index.js",
+  "files": [ "**/*", "!node_modules/", "!**/.git/" ],
   "scripts": {
     "proE2ETests": "npx playwright test",
     "fossE2ETests": "npx playwright test Odoo Senaite",
