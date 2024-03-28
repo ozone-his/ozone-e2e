@@ -1,7 +1,7 @@
 {
   "name": "ozone-e2e",
   "version": "1.0.0-SNAPSHOT",
-  "description": "This is end-to-end automated tests for all Ozone HIS workflows",
+  "description": "These are end-to-end automated tests covering all Ozone HIS workflows",
   "main": "index.js",
   "files": [
     "**/*",
