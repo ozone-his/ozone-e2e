@@ -3,14 +3,21 @@
   "version": "1.0.0-SNAPSHOT",
   "description": "",
   "main": "index.js",
-  "files": [ "**/*", "!node_modules/","!playwright-report/", "!test-results/", "!**/.git/" ],
+  "files": [
+    "**/*",
+    "!**/.git*/",
+    "!*.gitignore",
+    "!node_modules/",
+    "!test-results/",
+    "!playwright-report/"
+  ],
   "scripts": {
     "proE2ETests": "npx playwright test",
     "fossE2ETests": "npx playwright test Odoo Senaite",
     "publish": "npm publish"
   },
   "publishConfig": {
-    "registry": "https://nexus.mekomsolutions.net/repository/mks-npm/"
+    "registry": "https://nexus.mekomsolutions.net/repository/mks-npm"
   },
   "keywords": [],
   "author": "",
