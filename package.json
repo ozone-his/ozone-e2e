@@ -1,11 +1,23 @@
 {
   "name": "ozone-e2e",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0.0-SNAPSHOT",
+  "description": "These are end-to-end automated tests covering all Ozone HIS workflows",
   "main": "index.js",
+  "files": [
+    "**/*",
+    "!**/.git*/",
+    "!*.gitignore",
+    "!node_modules/",
+    "!test-results/",
+    "!playwright-report/"
+  ],
   "scripts": {
     "proE2ETests": "npx playwright test",
-    "fossE2ETests": "npx playwright test Odoo Senaite"
+    "fossE2ETests": "npx playwright test Odoo Senaite",
+    "publish": "npm publish"
+  },
+  "publishConfig": {
+    "registry": "https://nexus.mekomsolutions.net/repository/npm-public"
   },
   "keywords": [],
   "author": "",
@@ -15,7 +27,7 @@
     "@types/node": "^20.8.10",
     "@types/react": "^18.2.22",
     "@types/react-dom": "^18.2.7",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "typescript": "^4.5.5"
   }
-
 }
