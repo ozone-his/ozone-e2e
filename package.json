@@ -17,7 +17,7 @@
     "publish": "npm publish"
   },
   "publishConfig": {
-    "registry": "https://nexus.mekomsolutions.net/repository/npm-public"
+    "registry": "https://nexus.mekomsolutions.net/repository/npm-public/"
   },
   "keywords": [],
   "author": "",
