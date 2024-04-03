@@ -14,7 +14,7 @@
   "scripts": {
     "proE2ETests": "npx playwright test",
     "fossE2ETests": "npx playwright test Odoo Senaite",
-    "publish": "npm publish"
+    "publish": "npm publish --yes"
   },
   "publishConfig": {
     "registry": "https://nexus.mekomsolutions.net/repository/npm-public/"
