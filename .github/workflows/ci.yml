@@ -26,6 +26,6 @@ jobs:
 
       - name: Publish to NPM repository
         shell: pwsh
-        run: npm run publish
+        run: yarn config set npmAuthToken "${{ secrets.NPM_AUTH_TOKEN }}" && yarn run publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
