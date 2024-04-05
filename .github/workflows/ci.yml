@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
   release:
     types:
       - created
@@ -22,6 +25,7 @@ jobs:
         run: yarn install
 
       - name: Publish to NPM repository
+        shell: pwsh
         run: npm run publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
