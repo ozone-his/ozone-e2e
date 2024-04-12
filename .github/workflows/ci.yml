@@ -21,11 +21,6 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Set package version
-        run: |
-          git config user.email "'" && git config user.name "ozone-his"
-          yarn version --new-version "$(node -e "console.log(require('semver').inc(require('./package.json').version, 'patch'))")-pre.${{ github.run_number }}"
-
       - name: Publish to NPM repository
         run: yarn publish
         env:
