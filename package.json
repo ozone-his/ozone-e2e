@@ -1,6 +1,7 @@
 {
   "name": "ozone-e2e",
-  "version": "1.0.0-SNAPSHOT",
+  "version": "1.0.0-alpha",
+  "license": "MPL-2.0",
   "description": "These are end-to-end automated tests covering all Ozone HIS workflows",
   "main": "index.js",
   "files": [
@@ -20,13 +21,13 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
   "devDependencies": {
     "@playwright/test": "^1.43.0",
     "@types/node": "^20.8.10",
     "@types/react": "^18.2.22",
     "@types/react-dom": "^18.2.7",
     "dotenv": "^16.3.1",
-    "typescript": "^4.5.5"
+    "typescript": "^4.5.5",
+    "semver": "^7.5.4"
   }
 }
