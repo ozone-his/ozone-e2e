@@ -1,41 +1,39 @@
 import { test, expect } from '@playwright/test';
 import { HomePage } from '../utils/functions/testBase';
 import { patientName } from '../utils/functions/testBase';
-import { E2E_BASE_URL, E2E_SENAITE_URL } from '../utils/configs/globalSetup';
+import { O3_URL } from '../utils/configs/globalSetup';
 
 let homePage: HomePage;
 
 test.beforeEach(async ({ page }) => {
-  const homePage = new HomePage(page);
+  homePage = new HomePage(page);
   await homePage.initiateLogin();
-
   await expect(page).toHaveURL(/.*home/);
-
   await homePage.createPatient();
   await homePage.startPatientVisit();
 });
 
 test('Patient with lab order becomes client with analysis request in SENAITE', async ({ page }) => {
   // setup
-  const homePage = new HomePage(page);
+  homePage = new HomePage(page);
   await homePage.goToLabOrderForm();
   await page.getByRole('button', { name: 'Add', exact: true }).click();
   await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
   await homePage.saveLabOrder();
+
+  // replay
   await homePage.goToSENAITE();
   await expect(page).toHaveURL(/.*senaite/);
 
-  // replay
-  await homePage.searchClientInSENAITE();
-
   // verify
+  await homePage.searchClientInSENAITE();
   const client = await page.locator('table tbody tr:nth-child(1) td.contentcell.title div span a');
   await expect(client).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
 });
 
 test('Editing patient details with a synced lab test order edits client details in SENAITE', async ({ page }) => {
   // setup
-  const homePage = new HomePage(page);
+  homePage = new HomePage(page);
   await homePage.goToLabOrderForm();
   await page.getByRole('button', { name: 'Add', exact: true }).click();
   await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
@@ -47,7 +45,7 @@ test('Editing patient details with a synced lab test order edits client details 
   await expect(client).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
 
   // replay
-  await page.goto(`${E2E_BASE_URL}`);
+  await page.goto(`${O3_URL}`);
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.updatePatientDetails();
 
@@ -60,7 +58,7 @@ test('Editing patient details with a synced lab test order edits client details 
 
 test('Editing a synced lab order edits corresponding analysis request in SENAITE', async ({ page }) => {
   // setup
-  const homePage = new HomePage(page);
+  homePage = new HomePage(page);
   await homePage.goToLabOrderForm();
   await page.getByRole('button', { name: 'Add', exact: true }).click();
   await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
@@ -78,7 +76,7 @@ test('Editing a synced lab order edits corresponding analysis request in SENAITE
   await expect(analysisRequest).toHaveText('Blood urea nitrogen Template');
 
   // replay
-  await page.goto(`${E2E_BASE_URL}`);
+  await page.goto(`${O3_URL}`);
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.updateLabOrder();
 
@@ -94,7 +92,7 @@ test('Editing a synced lab order edits corresponding analysis request in SENAITE
 
 test('Voiding a synced lab order cancels corresponding analysis request in SENAITE', async ({ page }) => {
   // setup
-  const homePage = new HomePage(page);
+  homePage = new HomePage(page);
   await homePage.goToLabOrderForm();
   await page.getByRole('button', { name: 'Add', exact: true }).click();
   await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
@@ -112,7 +110,7 @@ test('Voiding a synced lab order cancels corresponding analysis request in SENAI
   await expect(analysisRequest).toHaveText('Blood urea nitrogen Template');
 
   // replay
-  await page.goto(`${E2E_BASE_URL}`);
+  await page.goto(`${O3_URL}`);
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.voidEncounter();
 
@@ -124,15 +122,15 @@ test('Voiding a synced lab order cancels corresponding analysis request in SENAI
 
 test('Published coded lab results from SENAITE are viewable in O3', async ({ page }) => {
   // setup
-  const homePage = new HomePage(page);
+  homePage = new HomePage(page);
   await homePage.goToLabOrderForm();
   await page.getByRole('button', { name: 'Add', exact: true }).click();
   await page.locator('#tab select').selectOption('1325AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
   await homePage.saveLabOrder();
-  await homePage.goToSENAITE();
-  await expect(page).toHaveURL(/.*senaite/);
 
   // replay
+  await homePage.goToSENAITE();
+  await expect(page).toHaveURL(/.*senaite/);
   await homePage.searchClientInSENAITE();
   await homePage.createPartition();
   await page.getByRole('combobox', { name: 'Result' }).selectOption('664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
@@ -141,7 +139,7 @@ test('Published coded lab results from SENAITE are viewable in O3', async ({ pag
   await expect(reviewState?.includes('Published')).toBeTruthy();
 
   // verify
-  await page.goto(`${E2E_BASE_URL}`);
+  await page.goto(`${O3_URL}`);
   await homePage.viewTestResults();
   const testName = await page.locator('div:nth-child(2) >div> div.cds--data-table-container td:nth-child(1)').first();
   await expect(testName).toContainText('Hepatitis C test - qualitative');
@@ -152,15 +150,15 @@ test('Published coded lab results from SENAITE are viewable in O3', async ({ pag
 
 test('Published numeric lab results from SENAITE are viewable in O3', async ({ page }) => {
   // setup
-  const homePage = new HomePage(page);
+  homePage = new HomePage(page);
   await homePage.goToLabOrderForm();
   await page.getByRole('button', { name: 'Add', exact: true }).click();
   await page.locator('#tab select').selectOption('655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
   await homePage.saveLabOrder();
-  await homePage.goToSENAITE();
-  await expect(page).toHaveURL(/.*senaite/);
 
   // replay
+  await homePage.goToSENAITE();
+  await expect(page).toHaveURL(/.*senaite/);
   await homePage.searchClientInSENAITE();
   await homePage.createPartition();
   await page.locator('tr:nth-child(1) td.contentcell.Result div span input').fill('64');
@@ -169,7 +167,7 @@ test('Published numeric lab results from SENAITE are viewable in O3', async ({ p
   await expect(reviewState?.includes('Published')).toBeTruthy();
 
   // verify
-  await page.goto(`${E2E_BASE_URL}`);
+  await page.goto(`${O3_URL}`);
   await homePage.viewTestResults();
   const testName = await page.locator('div:nth-child(2) >div> div.cds--data-table-container td:nth-child(1)').first();
   await expect(testName).toContainText('Total bilirubin');
@@ -180,15 +178,15 @@ test('Published numeric lab results from SENAITE are viewable in O3', async ({ p
 
 test('Published free text lab results from SENAITE are viewable in O3', async ({ page }) => {
   // setup
-  const homePage = new HomePage(page);
+  homePage = new HomePage(page);
   await homePage.goToLabOrderForm();
   await page.getByRole('button', { name: 'Add', exact: true }).click();
   await page.locator('#tab select').selectOption('161447AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
   await homePage.saveLabOrder();
-  await homePage.goToSENAITE();
-  await expect(page).toHaveURL(/.*senaite/);
 
   // replay
+  await homePage.goToSENAITE();
+  await expect(page).toHaveURL(/.*senaite/);
   await homePage.searchClientInSENAITE();
   await homePage.createPartition();
   await page.locator('div:nth-child(4) div table tbody tr td.contentcell.Result div span input').fill('Test result: Normal');
@@ -197,7 +195,7 @@ test('Published free text lab results from SENAITE are viewable in O3', async ({
   await expect(reviewState?.includes('Published')).toBeTruthy();
 
   // verify
-  await page.goto(`${E2E_BASE_URL}`);
+  await page.goto(`${O3_URL}`);
   await homePage.viewTestResults();
   const testName = await page.locator('div:nth-child(2) >div> div.cds--data-table-container td:nth-child(1)').first();
   await expect(testName).toHaveText('Stool microscopy with concentration');
@@ -207,7 +205,7 @@ test('Published free text lab results from SENAITE are viewable in O3', async ({
 });
 
 test.afterEach(async ({ page }) => {
-  const homePage = new HomePage(page);
+  homePage = new HomePage(page);
   await homePage.deletePatient();
   await page.close();
 });
