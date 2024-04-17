@@ -1,34 +1,32 @@
 import { test, expect } from '@playwright/test';
 import { HomePage } from '../utils/functions/testBase';
 import { patientName } from '../utils/functions/testBase';
-import { E2E_BASE_URL, E2E_ODOO_URL } from '../utils/configs/globalSetup';
+import { O3_URL, ODOO_URL } from '../utils/configs/globalSetup';
 
 let homePage: HomePage;
 
 test.beforeEach(async ({ page }) => {
-  const homePage = new HomePage(page);
+  homePage = new HomePage(page);
   await homePage.initiateLogin();
-
   await expect(page).toHaveURL(/.*home/);
-
   await homePage.createPatient();
   await homePage.startPatientVisit();
 });
 
 test('Patient with lab order becomes customer in Odoo', async ({ page }) => {
   // setup
-  const homePage = new HomePage(page);
+  homePage = new HomePage(page);
   await homePage.goToLabOrderForm();
   await page.getByRole('button', { name: 'Add', exact: true }).click();
   await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
   await homePage.saveLabOrder();
+
+  // replay
   await homePage.goToOdoo();
   await expect(page).toHaveURL(/.*web/);
 
-  // replay
-  await homePage.searchCustomerInOdoo();
-
   // verify
+  await homePage.searchCustomerInOdoo();
   const customer = await page.locator("table tbody td.o_data_cell:nth-child(4)").textContent();
   await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
 
@@ -38,7 +36,7 @@ test('Patient with lab order becomes customer in Odoo', async ({ page }) => {
 
 test('Editing patient details with a synced lab order edits the corresponding customer details in Odoo', async ({ page }) => {
   // setup
-  const homePage = new HomePage(page);
+  homePage = new HomePage(page);
   await homePage.goToLabOrderForm();
   await page.getByRole('button', { name: 'Add', exact: true }).click();
   await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
@@ -53,12 +51,12 @@ test('Editing patient details with a synced lab order edits the corresponding cu
   await expect(quotation?.includes("Quotation")).toBeTruthy();
 
   // replay
-  await page.goto(`${E2E_BASE_URL}`);
+  await page.goto(`${O3_URL}`);
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.updatePatientDetails();
 
   // verify
-  await page.goto(`${E2E_ODOO_URL}`);
+  await page.goto(`${ODOO_URL}`);
   await homePage.searchCustomerInOdoo();
   const updatedCustomer = await page.locator("table tbody td.o_data_cell:nth-child(4)");
   await expect(updatedCustomer).toHaveText(`${patientName.updatedFirstName}` + ' ' + `${patientName.givenName}`);
@@ -67,15 +65,15 @@ test('Editing patient details with a synced lab order edits the corresponding cu
 
 test('Patient with drug order becomes customer in Odoo', async ({ page }) => {
   // setup
-  const homePage = new HomePage(page);
+  homePage = new HomePage(page);
   await homePage.makeDrugOrder();
+
+  // replay
   await homePage.goToOdoo();
   await expect(page).toHaveURL(/.*web/);
 
-  // replay
-  await homePage.searchCustomerInOdoo();
-
   // verify
+  await homePage.searchCustomerInOdoo();
   const customer = await page.locator("table tbody td.o_data_cell:nth-child(4)").textContent();
   await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
 
@@ -85,7 +83,7 @@ test('Patient with drug order becomes customer in Odoo', async ({ page }) => {
 
 test('Editing patient details with a synced drug order edits corresponding customer details in Odoo', async ({ page }) => {
   // setup
-  const homePage = new HomePage(page);
+  homePage = new HomePage(page);
   await homePage.makeDrugOrder();
   await homePage.goToOdoo();
   await expect(page).toHaveURL(/.*web/);
@@ -98,12 +96,12 @@ test('Editing patient details with a synced drug order edits corresponding custo
   await expect(quotation?.includes("Quotation")).toBeTruthy();
 
   // replay
-  await page.goto(`${E2E_BASE_URL}`);
+  await page.goto(`${O3_URL}`);
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.updatePatientDetails();
 
   // verify
-  await page.goto(`${E2E_ODOO_URL}`);
+  await page.goto(`${ODOO_URL}`);
   await homePage.searchCustomerInOdoo();
   const updatedCustomer = await page.locator("table tbody td.o_data_cell:nth-child(4)");
 
@@ -113,7 +111,7 @@ test('Editing patient details with a synced drug order edits corresponding custo
 
 test('Revising a synced drug order edits corresponding quotation line in Odoo', async ({ page }) => {
   // setup
-  const homePage = new HomePage(page);
+  homePage = new HomePage(page);
   await homePage.makeDrugOrder();
   await homePage.goToOdoo();
   await expect(page).toHaveURL(/.*web/);
@@ -129,12 +127,12 @@ test('Revising a synced drug order edits corresponding quotation line in Odoo', 
   await expect(drugOrderItem).toContainText('Twice daily - 5 Days');
 
   // replay
-  await page.goto(`${E2E_BASE_URL}`);
+  await page.goto(`${O3_URL}`);
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.editDrugOrder();
 
   // verify
-  await page.goto(`${E2E_ODOO_URL}`);
+  await page.goto(`${ODOO_URL}`);
   await homePage.searchCustomerInOdoo();
   await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
   await expect(drugOrderItem).toContainText('8.0 Tablet');
@@ -143,7 +141,7 @@ test('Revising a synced drug order edits corresponding quotation line in Odoo', 
 
 test('Discontinuing a synced drug order cancels corresponding quotation line in Odoo', async ({ page }) => {
   // setup
-  const homePage = new HomePage(page);
+  homePage = new HomePage(page);
   await homePage.makeDrugOrder();
   await homePage.goToOdoo();
   await expect(page).toHaveURL(/.*web/);
@@ -159,12 +157,12 @@ test('Discontinuing a synced drug order cancels corresponding quotation line in 
   await expect(drugOrderItem).toHaveText('Aspirin 325mg');
 
   // replay
-  await page.goto(`${E2E_BASE_URL}`);
+  await page.goto(`${O3_URL}`);
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.discontinueDrugOrder();
 
   // verify
-  await page.goto(`${E2E_ODOO_URL}`);
+  await page.goto(`${ODOO_URL}`);
   await homePage.searchCustomerInOdoo();
   await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
   await expect(quotation).toHaveText('Cancelled');
@@ -172,13 +170,12 @@ test('Discontinuing a synced drug order cancels corresponding quotation line in 
 
 test('Patient with free text medication dosage becomes customer in Odoo', async ({ page }) => {
   // setup
-  const homePage = new HomePage(page);
+  homePage = new HomePage(page);
   await homePage.prescribeFreeTextMedicationDosage();
 
+  // replay
   await homePage.goToOdoo();
   await expect(page).toHaveURL(/.*web/);
-
-  // replay
   await homePage.searchCustomerInOdoo();
 
   // verify
@@ -190,7 +187,7 @@ test('Patient with free text medication dosage becomes customer in Odoo', async 
 });
 
 test.afterEach(async ({ page }) => {
-  const homePage = new HomePage(page);
+  homePage = new HomePage(page);
   await homePage.deletePatient();
   await page.close();
 });
