@@ -4,7 +4,7 @@ import {
   ODOO_URL,
   SENAITE_URL,
   KEYCLOAK_URL,
-  ANALYTICS_URL
+  SUPERSET_URL
 }
   from '../configs/globalSetup';
 
@@ -45,10 +45,10 @@ export class HomePage {
 
   async initiateLogin() {
     await this.page.goto(`${O3_URL}`);
-    if (`${process.env.RUNNING_OZONE_ON_PRO}` == 'true') {
-      await this.page.locator('#username').fill(`${process.env.O3_USERNAME}`);
+    if (`${process.env.TEST_PRO}` == 'true') {
+      await this.page.locator('#username').fill(`${process.env.OZONE_USERNAME}`);
       await this.page.getByRole('button', { name: 'Continue' }).click();
-      await this.page.locator('#password').fill(`${process.env.O3_PASSWORD}`);
+      await this.page.locator('#password').fill(`${process.env.OZONE_PASSWORD}`);
       await this.page.getByRole('button', { name: 'Sign In' }).click();
     } else {
       await this.page.locator('#username').fill(`${process.env.O3_USERNAME_ON_FOSS}`);
@@ -65,7 +65,7 @@ export class HomePage {
   }
 
   async goToSuperset() {
-    await this.page.goto(`${ANALYTICS_URL}`);
+    await this.page.goto(`${SUPERSET_URL}`);
   }
 
   async goToKeycloak() {
@@ -78,7 +78,7 @@ export class HomePage {
 
   async goToOdoo() {
     await this.page.goto(`${ODOO_URL}`);
-    if (`${process.env.RUNNING_OZONE_ON_PRO}` == 'true') {
+    if (`${process.env.TEST_PRO}` == 'true') {
       await this.page.getByRole('link', { name: 'Login with Single Sign-On' }).click();
     } else {
       await delay(3000);
@@ -92,7 +92,7 @@ export class HomePage {
 
   async goToSENAITE() {
     await this.page.goto(`${SENAITE_URL}`);
-    if (!(`${process.env.RUNNING_OZONE_ON_PRO}` == 'true')) {
+    if (!(`${process.env.TEST_PRO}` == 'true')) {
       await delay(3000);
       await this.page.locator('#__ac_name').fill(`${process.env.SENAITE_USERNAME_ON_FOSS}`);
       await delay(1000);
@@ -495,7 +495,7 @@ export class HomePage {
   }
 
   async updateSupersetRole() {
-    await this.page.goto(`${ANALYTICS_URL}/roles/list/`);
+    await this.page.goto(`${SUPERSET_URL}/roles/list/`);
     await this.page.getByRole('row', { name: `${randomSupersetRoleName.roleName}` }).getByRole('link').nth(1).click();
     await delay(2000);
     await this.page.getByPlaceholder('Name').clear();
@@ -508,7 +508,7 @@ export class HomePage {
   }
 
   async deleteSupersetRole(){
-    await this.page.goto(`${ANALYTICS_URL}/roles/list`);
+    await this.page.goto(`${SUPERSET_URL}/roles/list`);
     await this.page.getByRole('row', { name: `${randomSupersetRoleName.roleName}` }).getByRole('checkbox').check();
     await this.page.getByRole('row', { name: `${randomSupersetRoleName.roleName}` }).getByRole('link').nth(2).click();
     await delay(2000);
@@ -519,7 +519,7 @@ export class HomePage {
   }
 
   async deleteUpdatedSupersetRole(){
-    await this.page.goto(`${ANALYTICS_URL}/roles/list`);
+    await this.page.goto(`${SUPERSET_URL}/roles/list`);
     await this.page.getByRole('row', { name: `${randomSupersetRoleName.updatedRoleName}` }).getByRole('checkbox').check();
     await this.page.getByRole('row', { name: `${randomSupersetRoleName.updatedRoleName}` }).getByRole('link').nth(2).click();
     await delay(2000);

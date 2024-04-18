@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { HomePage } from '../utils/functions/testBase';
 import { patientName } from '../utils/functions/testBase';
-import { O3_URL, ANALYTICS_URL } from '../utils/configs/globalSetup';
+import { O3_URL, SUPERSET_URL } from '../utils/configs/globalSetup';
 
 let homePage: HomePage;
 
@@ -33,7 +33,7 @@ test('Adding an OpenMRS patient syncs patient into patients table in Superset', 
   const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
 
   // verify
-  await page.goto(`${ANALYTICS_URL}/superset/sqllab`);
+  await page.goto(`${SUPERSET_URL}/superset/sqllab`);
   await homePage.clearSQLEditor();
   await page.getByRole('textbox').first().fill(patientsCountQuery);
   await homePage.runSQLQuery();
@@ -80,7 +80,7 @@ test('Starting an OpenMRS visit syncs visit into visits table in Superset', asyn
   const patient_uuid = await homePage.getPatientUUID();
 
   // verify
-  await page.goto(`${ANALYTICS_URL}/superset/sqllab`);
+  await page.goto(`${SUPERSET_URL}/superset/sqllab`);
   await homePage.clearSQLEditor();
   await page.getByRole('textbox').first().fill(visitsCountQuery);
   await homePage.runSQLQuery();
@@ -133,7 +133,7 @@ test('Creating an OpenMRS order syncs order into orders table in Superset', asyn
   await homePage.saveLabOrder();
 
   // verify
-  await page.goto(`${ANALYTICS_URL}/superset/sqllab`);
+  await page.goto(`${SUPERSET_URL}/superset/sqllab`);
   await homePage.clearSQLEditor();
   await page.getByRole('textbox').first().fill(ordersCountQuery);
   await homePage.runSQLQuery();
@@ -191,7 +191,7 @@ test('Adding an OpenMRS encounter syncs encounter into encounters table in Super
   await homePage.saveLabOrder();
 
   // verify
-  await page.goto(`${ANALYTICS_URL}/superset/sqllab`);
+  await page.goto(`${SUPERSET_URL}/superset/sqllab`);
   await homePage.clearSQLEditor();
   await page.getByRole('textbox').first().fill(encountersCountQuery);
   await homePage.runSQLQuery();
@@ -259,7 +259,7 @@ test('Adding an OpenMRS condition syncs condition into conditions table in Super
   await homePage.addPatientCondition();
 
   // verify
-  await page.goto(`${ANALYTICS_URL}/superset/sqllab`);
+  await page.goto(`${SUPERSET_URL}/superset/sqllab`);
   await homePage.clearSQLEditor();
   await page.getByRole('textbox').first().fill(conditionsCountQuery);
   await homePage.runSQLQuery();
@@ -313,7 +313,7 @@ test('Adding an OpenMRS observation syncs observation into observations table in
   await homePage.addPatientBiometrics();
 
   // verify
-  await page.goto(`${ANALYTICS_URL}/superset/sqllab`);
+  await page.goto(`${SUPERSET_URL}/superset/sqllab`);
   await homePage.clearSQLEditor();
   await page.getByRole('textbox').first().fill(observationsCountQuery);
   await homePage.runSQLQuery();
@@ -372,7 +372,7 @@ test('Adding an OpenMRS appointment syncs appointment into appointments table in
   await homePage.addPatientAppointment();
 
   // verify
-  await page.goto(`${ANALYTICS_URL}/superset/sqllab`);
+  await page.goto(`${SUPERSET_URL}/superset/sqllab`);
   await homePage.clearSQLEditor();
   await page.getByRole('textbox').first().fill(appointmentsCountQuery);
   await homePage.runSQLQuery();
@@ -429,7 +429,7 @@ test('Voiding an OpenMRS observation updates observations dataset in Superset', 
   await homePage.voidEncounter();
 
   // verify
-  await page.goto(`${ANALYTICS_URL}/superset/sqllab`);
+  await page.goto(`${SUPERSET_URL}/superset/sqllab`);
   await homePage.clearSQLEditor();
   await page.getByRole('textbox').first().fill(obsVoidedQuery);
   await homePage.runSQLQuery();
