@@ -15,11 +15,11 @@ export const O3_URL = `${process.env.TEST_ENVIRONMENT}` == 'demo' ? `${process.e
 export const ODOO_URL = `${process.env.TEST_ENVIRONMENT}` == 'demo' ? `${process.env.ODOO_URL_DEMO}` : `${process.env.TEST_ENVIRONMENT}` == 'qa' ? `${process.env.ODOO_URL_QA}`: `${process.env.ODOO_URL_DEV}`;
 export const SENAITE_URL = `${process.env.TEST_ENVIRONMENT}` == 'demo' ? `${process.env.SENAITE_URL_DEMO}` : `${process.env.TEST_ENVIRONMENT}` == 'qa' ? `${process.env.SENAITE_URL_QA}`: `${process.env.SENAITE_URL_DEV}`;
 export const KEYCLOAK_URL = `${process.env.TEST_ENVIRONMENT}` == 'demo' ? `${process.env.KEYCLOAK_URL_DEMO}` : `${process.env.TEST_ENVIRONMENT}` == 'qa' ? `${process.env.KEYCLOAK_URL_QA}`: `${process.env.KEYCLOAK_URL_DEV}`;
-export const ANALYTICS_URL = `${process.env.TEST_ENVIRONMENT}` == 'demo' ? `${process.env.ANALYTICS_URL_DEMO}` : `${process.env.TEST_ENVIRONMENT}` == 'qa' ? `${process.env.ANALYTICS_URL_QA}`: `${process.env.ANALYTICS_URL_DEV}`;
+export const SUPERSET_URL = `${process.env.TEST_ENVIRONMENT}` == 'demo' ? `${process.env.SUPERSET_URL_DEMO}` : `${process.env.TEST_ENVIRONMENT}` == 'qa' ? `${process.env.SUPERSET_URL_QA}`: `${process.env.SUPERSET_URL_DEV}`;
 
 async function globalSetup() {
   const requestContext = await request.newContext();
-  const token = Buffer.from(`${process.env.O3_USERNAME}:${process.env.O3_PASSWORD}`).toString(
+  const token = Buffer.from(`${process.env.OZONE_USERNAME}:${process.env.OZONE_PASSWORD}`).toString(
     'base64',
   );
   await requestContext.post(`${O3_URL}/ws/rest/v1/session`, {
@@ -40,8 +40,8 @@ export const api: WorkerFixture<APIRequestContext, PlaywrightWorkerArgs> = async
   const ctx = await playwright.request.newContext({
     baseURL: `${O3_URL}/ws/rest/v1/`,
     httpCredentials: {
-      username: process.env.O3_USERNAME ?? "",
-      password: process.env.O3_PASSWORD ?? "",
+      username: process.env.OZONE_USERNAME ?? "",
+      password: process.env.OZONE_PASSWORD ?? "",
     },
   });
 
