@@ -11,7 +11,7 @@ test.beforeEach(async ({ page }) => {
   await expect(page).toHaveURL(/.*home/);
 });
 
-test('Adding an OpenMRS role syncs the role into Keycloak', async ({ page }) => {
+test('Creating an OpenMRS role creates the corresponding Keycloak role.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await page.goto(`${O3_URL}/openmrs/admin/users/role.list`);
@@ -35,7 +35,7 @@ test('Adding an OpenMRS role syncs the role into Keycloak', async ({ page }) => 
   await homePage.deleteOpenMRSRole();
 });
 
-test('Updating a synced OpenMRS role updates the corresponding role in Keycloak', async ({ page }) => {
+test('Updating a synced OpenMRS role updates the corresponding Keycloak role.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await page.goto(`${O3_URL}/openmrs/admin/users/role.list`);
@@ -70,7 +70,7 @@ test('Updating a synced OpenMRS role updates the corresponding role in Keycloak'
   await homePage.deleteOpenMRSRole();
 });
 
-test('Deleting a synced OpenMRS role deletes the corresponding role in Keycloak', async ({ page }) => {
+test('Deleting a synced OpenMRS role deletes the corresponding Keycloak role.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await page.goto(`${O3_URL}/openmrs/admin/users/role.list`);
@@ -100,7 +100,7 @@ test('Deleting a synced OpenMRS role deletes the corresponding role in Keycloak'
   await expect(roleName).not.toHaveText(`${randomOpenMRSRoleName.roleName}`);
 });
 
-test('Adding a Superset role syncs the role into Keycloak', async ({ page }) => {
+test('Creating a Superset role creates the corresponding Keycloak role.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.goToSuperset();
@@ -118,7 +118,7 @@ test('Adding a Superset role syncs the role into Keycloak', async ({ page }) => 
   await homePage.deleteSupersetRole();
 });
 
-test('Updating a synced Superset role updates the corresponding role in Keycloak', async ({ page }) => {
+test('Updating a synced Superset role updates the corresponding Keycloak role.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.goToSuperset();
@@ -144,7 +144,7 @@ test('Updating a synced Superset role updates the corresponding role in Keycloak
   await homePage.deleteUpdatedSupersetRole();
 });
 
-test('Deleting a synced Superset role deletes the corresponding role in Keycloak', async ({ page }) => {
+test('Deleting a synced Superset role deletes the corresponding Keycloak role.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.goToSuperset();
@@ -168,7 +168,7 @@ test('Deleting a synced Superset role deletes the corresponding role in Keycloak
   await expect(page.getByText(`${randomSupersetRoleName.roleName}`)).not.toBeVisible();
 });
 
-test('Deleting a synchronized role in Keycloak gets created in the subsequent polling cycle', async ({ page }) => {
+test('Deleted synced Keycloak role gets recreated in subsequent polling cycle.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.goToSuperset();
@@ -192,7 +192,7 @@ test('Deleting a synchronized role in Keycloak gets created in the subsequent po
   await homePage.deleteSupersetRole();
 });
 
-test('Creating a role in Keycloak automatically gets deleted during the subsequent polling cycle', async ({ page }) => {
+test('Created a (non-synced) Keycloak role gets deleted in subsequent polling cycle.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.goToKeycloak();

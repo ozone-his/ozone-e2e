@@ -13,7 +13,7 @@ test.beforeEach(async ({ page }) => {
   await homePage.startPatientVisit();
 });
 
-test('Patient with lab order becomes client with analysis request in SENAITE', async ({ page }) => {
+test('Ordering lab test for an OpenMRS patient creates the corresponding SENAITE client with analysis request.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.goToLabOrderForm();
@@ -31,7 +31,7 @@ test('Patient with lab order becomes client with analysis request in SENAITE', a
   await expect(client).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
 });
 
-test('Editing patient details with a synced lab test order edits client details in SENAITE', async ({ page }) => {
+test('Editing details of an OpenMRS patient with a synced lab order edits the corresponding SENAITE client details.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.goToLabOrderForm();
@@ -56,7 +56,7 @@ test('Editing patient details with a synced lab test order edits client details 
   await expect(client).toContainText(`${patientName.updatedFirstName}` + ' ' + `${patientName.givenName }`);
 });
 
-test('Editing a synced lab order edits corresponding analysis request in SENAITE', async ({ page }) => {
+test('Editing a synced OpenMRS lab order edits the corresponding SENAITE analysis request.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.goToLabOrderForm();
@@ -90,7 +90,7 @@ test('Editing a synced lab order edits corresponding analysis request in SENAITE
   await expect(analysisRequest).toHaveText('Sickle cell screening test Template');
 });
 
-test('Voiding a synced lab order cancels corresponding analysis request in SENAITE', async ({ page }) => {
+test('Voiding a synced OpenMRS lab order cancels the corresponding SENAITE analysis request.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.goToLabOrderForm();
@@ -120,7 +120,7 @@ test('Voiding a synced lab order cancels corresponding analysis request in SENAI
   await expect(client).not.toHaveText(`${patientName.firstName + ' ' + patientName.givenName}`);
 });
 
-test('Published coded lab results from SENAITE are viewable in O3', async ({ page }) => {
+test('Published coded lab results from SENAITE are viewable in OpenMRS lab results viewer.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.goToLabOrderForm();
@@ -148,7 +148,7 @@ test('Published coded lab results from SENAITE are viewable in O3', async ({ pag
   await expect(labResult).toContainText('Negative');
 });
 
-test('Published numeric lab results from SENAITE are viewable in O3', async ({ page }) => {
+test('Published numeric lab results from SENAITE are viewable in OpenMRS lab results viewer.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.goToLabOrderForm();
@@ -176,7 +176,7 @@ test('Published numeric lab results from SENAITE are viewable in O3', async ({ p
   await expect(labResult).toContainText('64');
 });
 
-test('Published free text lab results from SENAITE are viewable in O3', async ({ page }) => {
+test('Published free text lab results from SENAITE are viewable in OpenMRS lab results viewer.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.goToLabOrderForm();
