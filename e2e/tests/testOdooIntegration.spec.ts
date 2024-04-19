@@ -13,7 +13,7 @@ test.beforeEach(async ({ page }) => {
   await homePage.startPatientVisit();
 });
 
-test('Ordering lab test for an OpenMRS patient creates the corresponding Odoo customer with a filled quotation.', async ({ page }) => {
+test('Ordering a lab test for an OpenMRS patient creates the corresponding Odoo customer with a filled quotation.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.goToLabOrderForm();
@@ -34,7 +34,7 @@ test('Ordering lab test for an OpenMRS patient creates the corresponding Odoo cu
   await expect(quotation?.includes("Quotation")).toBeTruthy();
 });
 
-test('Editing details of an OpenMRS patient with a synced lab order edits the corresponding Odoo customer details.', async ({ page }) => {
+test('Editing the details of an OpenMRS patient with a synced lab order edits the corresponding Odoo customer details.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.goToLabOrderForm();
@@ -63,7 +63,7 @@ test('Editing details of an OpenMRS patient with a synced lab order edits the co
   await expect(quotation?.includes("Quotation")).toBeTruthy();
 });
 
-test('Ordering drug for an OpenMRS patient creates the corresponding Odoo customer with a filled quotation.', async ({ page }) => {
+test('Ordering a drug for an OpenMRS patient creates the corresponding Odoo customer with a filled quotation.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.makeDrugOrder();
@@ -81,7 +81,7 @@ test('Ordering drug for an OpenMRS patient creates the corresponding Odoo custom
   await expect(quotation?.includes("Quotation")).toBeTruthy();
 });
 
-test('Editing details of an OpenMRS patient with a synced drug order edits the corresponding Odoo customer details.', async ({ page }) => {
+test('Editing the details of an OpenMRS patient with a synced drug order edits the corresponding Odoo customer details.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.makeDrugOrder();
@@ -168,7 +168,7 @@ test('Discontinuing a synced OpenMRS drug order cancels the corresponding Odoo q
   await expect(quotation).toHaveText('Cancelled');
 });
 
-test('Ordering drug with free text medication dosage for an OpenMRS patient creates the corresponding Odoo customer with a filled quotation.', async ({ page }) => {
+test('Ordering a drug with free text medication dosage for an OpenMRS patient creates the corresponding Odoo customer with a filled quotation.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.prescribeFreeTextMedicationDosage();

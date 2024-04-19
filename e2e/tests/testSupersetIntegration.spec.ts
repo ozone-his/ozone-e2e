@@ -11,7 +11,7 @@ test.beforeEach(async ({ page }) => {
   await expect(page).toHaveURL(/.*home/);
 });
 
-test('Creating an OpenMRS patient creates patient in Superset patients table.', async ({ page }) => {
+test('Creating an OpenMRS patient creates the patient in Superset patients table.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.goToSuperset();
@@ -58,7 +58,7 @@ test('Creating an OpenMRS patient creates patient in Superset patients table.', 
   await homePage.clearSQLEditor();
 });
 
-test('Creating an OpenMRS visit creates visit in Superset visits table.', async ({ page }) => {
+test('Creating an OpenMRS visit creates the visit in Superset visits table.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.createPatient();
@@ -105,7 +105,7 @@ test('Creating an OpenMRS visit creates visit in Superset visits table.', async 
   await homePage.clearSQLEditor();
 });
 
-test('Creating an OpenMRS order creates order in Superset orders table.', async ({ page }) => {
+test('Creating an OpenMRS order creates the order in Superset orders table.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.createPatient();
@@ -163,7 +163,7 @@ test('Creating an OpenMRS order creates order in Superset orders table.', async 
   await homePage.clearSQLEditor();
 });
 
-test('Creating an OpenMRS encounter creates encounter in Superset encounters table.', async ({ page }) => {
+test('Creating an OpenMRS encounter creates the encounter in Superset encounters table.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.createPatient();
@@ -234,7 +234,7 @@ test('Creating an OpenMRS encounter creates encounter in Superset encounters tab
   await homePage.clearSQLEditor();
 });
 
-test('Creating an OpenMRS condition creates condition in Superset conditions table.', async ({ page }) => {
+test('Creating an OpenMRS condition creates the condition in Superset conditions table.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.createPatient();
@@ -289,7 +289,7 @@ test('Creating an OpenMRS condition creates condition in Superset conditions tab
   await homePage.clearSQLEditor();
 });
 
-test('Creating an OpenMRS observation creates observation in Superset observations table.', async ({ page }) => {
+test('Creating an OpenMRS obs creates the observation in Superset observations table.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.createPatient();
@@ -347,7 +347,7 @@ test('Creating an OpenMRS observation creates observation in Superset observatio
   await homePage.clearSQLEditor();
 });
 
-test('Creating an OpenMRS appointment creates appointment in Superset appointments table.', async ({ page }) => {
+test('Creating an OpenMRS appointment creates the appointment in Superset appointments table.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.createPatient();
@@ -400,7 +400,7 @@ test('Creating an OpenMRS appointment creates appointment in Superset appointmen
   await homePage.clearSQLEditor();
 });
 
-test('Voiding an OpenMRS observation updates Superset observations dataset.', async ({ page }) => {
+test('Voiding an OpenMRS obs updates the observation in Superset observations table.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.createPatient();

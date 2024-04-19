@@ -13,7 +13,7 @@ test.beforeEach(async ({ page }) => {
   await homePage.startPatientVisit();
 });
 
-test('Ordering lab test for an OpenMRS patient creates the corresponding SENAITE client with analysis request.', async ({ page }) => {
+test('Ordering a lab test for an OpenMRS patient creates the corresponding SENAITE client with analysis request.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.goToLabOrderForm();
@@ -31,7 +31,7 @@ test('Ordering lab test for an OpenMRS patient creates the corresponding SENAITE
   await expect(client).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
 });
 
-test('Editing details of an OpenMRS patient with a synced lab order edits the corresponding SENAITE client details.', async ({ page }) => {
+test('Editing the details of an OpenMRS patient with a synced lab order edits the corresponding SENAITE client details.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.goToLabOrderForm();
@@ -120,7 +120,7 @@ test('Voiding a synced OpenMRS lab order cancels the corresponding SENAITE analy
   await expect(client).not.toHaveText(`${patientName.firstName + ' ' + patientName.givenName}`);
 });
 
-test('Published coded lab results from SENAITE are viewable in OpenMRS lab results viewer.', async ({ page }) => {
+test('Published coded lab results from SENAITE are viewable in the OpenMRS lab results viewer.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.goToLabOrderForm();
@@ -148,7 +148,7 @@ test('Published coded lab results from SENAITE are viewable in OpenMRS lab resul
   await expect(labResult).toContainText('Negative');
 });
 
-test('Published numeric lab results from SENAITE are viewable in OpenMRS lab results viewer.', async ({ page }) => {
+test('Published numeric lab results from SENAITE are viewable in the OpenMRS lab results viewer.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.goToLabOrderForm();
@@ -176,7 +176,7 @@ test('Published numeric lab results from SENAITE are viewable in OpenMRS lab res
   await expect(labResult).toContainText('64');
 });
 
-test('Published free text lab results from SENAITE are viewable in OpenMRS lab results viewer.', async ({ page }) => {
+test('Published free text lab results from SENAITE are viewable in the OpenMRS lab results viewer.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.goToLabOrderForm();

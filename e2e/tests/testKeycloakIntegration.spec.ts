@@ -192,7 +192,7 @@ test('Deleted synced Keycloak role gets recreated in subsequent polling cycle.',
   await homePage.deleteSupersetRole();
 });
 
-test('Created a (non-synced) Keycloak role gets deleted in subsequent polling cycle.', async ({ page }) => {
+test('Created (non-synced) Keycloak role gets deleted in subsequent polling cycle.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.goToKeycloak();
