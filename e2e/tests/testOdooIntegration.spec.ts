@@ -168,7 +168,7 @@ test('Discontinuing a synced OpenMRS drug order cancels the corresponding Odoo q
   await expect(quotation).toHaveText('Cancelled');
 });
 
-test('Ordering a drug with free text medication dosage for an OpenMRS patient creates the corresponding Odoo customer with a filled quotation.', async ({ page }) => {
+test('Ordering a drug with a free text medication dosage for an OpenMRS patient creates the corresponding Odoo customer with a filled quotation.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.prescribeFreeTextMedicationDosage();

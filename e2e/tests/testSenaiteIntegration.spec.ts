@@ -13,7 +13,7 @@ test.beforeEach(async ({ page }) => {
   await homePage.startPatientVisit();
 });
 
-test('Ordering a lab test for an OpenMRS patient creates the corresponding SENAITE client with analysis request.', async ({ page }) => {
+test('Ordering a lab test for an OpenMRS patient creates the corresponding SENAITE client with an analysis request.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.goToLabOrderForm();
