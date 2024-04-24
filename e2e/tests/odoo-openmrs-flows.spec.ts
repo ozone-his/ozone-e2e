@@ -139,7 +139,7 @@ test('Revising a synced OpenMRS drug order edits the corresponding Odoo quotatio
   await expect(drugOrderItem).toContainText('Thrice daily - 6 Days');
 });
 
-test('Discontinuing a synced OpenMRS drug order cancels the corresponding Odoo quotation.', async ({ page }) => {
+test('Discontinuing a synced OpenMRS drug order removes the corresponding Odoo quotation line.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.makeDrugOrder();
@@ -166,6 +166,9 @@ test('Discontinuing a synced OpenMRS drug order cancels the corresponding Odoo q
   await homePage.searchCustomerInOdoo();
   await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
   await expect(quotation).toHaveText('Cancelled');
+  await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
+  const QuotationItem = await page.locator(".o_section_and_note_list_view tbody:nth-child(2) tr:nth-child(1) td");
+  await expect(QuotationItem).not.toHaveText('Aspirin 325mg');
 });
 
 test('Ordering a drug with a free text medication dosage for an OpenMRS patient creates the corresponding Odoo customer with a filled quotation.', async ({ page }) => {
