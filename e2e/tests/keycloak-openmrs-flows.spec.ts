@@ -168,7 +168,7 @@ test('Deleting a synced Superset role deletes the corresponding Keycloak role.',
   await expect(page.getByText(`${randomSupersetRoleName.roleName}`)).not.toBeVisible();
 });
 
-test('A role deleted from within Keycloak gets recreated in the subsequent polling cycle.', async ({ page }) => {
+test('A synced role deleted from within Keycloak gets recreated in the subsequent polling cycle.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.goToSuperset();
@@ -192,7 +192,7 @@ test('A role deleted from within Keycloak gets recreated in the subsequent polli
   await homePage.deleteSupersetRole();
 });
 
-test('A role created from within Keycloak gets deleted in the subsequent polling cycle.', async ({ page }) => {
+test('A (non-synced) role created from within Keycloak gets deleted in the subsequent polling cycle.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
   await homePage.goToKeycloak();
