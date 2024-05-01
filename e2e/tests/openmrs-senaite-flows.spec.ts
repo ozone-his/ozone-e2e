@@ -17,15 +17,15 @@ test('Ordering a lab test for an OpenMRS patient creates the corresponding SENAI
   // setup
   homePage = new HomePage(page);
   await homePage.goToLabOrderForm();
+
+  // replay
   await page.getByRole('button', { name: 'Add', exact: true }).click();
   await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
   await homePage.saveLabOrder();
 
-  // replay
+  // verify
   await homePage.goToSENAITE();
   await expect(page).toHaveURL(/.*senaite/);
-
-  // verify
   await homePage.searchClientInSENAITE();
   const client = await page.locator('table tbody tr:nth-child(1) td.contentcell.title div span a');
   await expect(client).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);

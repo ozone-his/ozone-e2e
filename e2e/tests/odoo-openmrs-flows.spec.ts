@@ -17,15 +17,15 @@ test('Ordering a lab test for an OpenMRS patient creates the corresponding Odoo 
   // setup
   homePage = new HomePage(page);
   await homePage.goToLabOrderForm();
+
+  // replay
   await page.getByRole('button', { name: 'Add', exact: true }).click();
   await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
   await homePage.saveLabOrder();
 
-  // replay
+  // verify
   await homePage.goToOdoo();
   await expect(page).toHaveURL(/.*web/);
-
-  // verify
   await homePage.searchCustomerInOdoo();
   const customer = await page.locator("table tbody td.o_data_cell:nth-child(4)").textContent();
   await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
@@ -66,13 +66,13 @@ test('Editing the details of an OpenMRS patient with a synced lab order edits th
 test('Ordering a drug for an OpenMRS patient creates the corresponding Odoo customer with a filled quotation.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
-  await homePage.makeDrugOrder();
 
   // replay
-  await homePage.goToOdoo();
-  await expect(page).toHaveURL(/.*web/);
+  await homePage.makeDrugOrder();
 
   // verify
+  await homePage.goToOdoo();
+  await expect(page).toHaveURL(/.*web/);
   await homePage.searchCustomerInOdoo();
   const customer = await page.locator("table tbody td.o_data_cell:nth-child(4)").textContent();
   await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
@@ -174,14 +174,14 @@ test('Discontinuing a synced OpenMRS drug order removes the corresponding Odoo q
 test('Ordering a drug with a free text medication dosage for an OpenMRS patient creates the corresponding Odoo customer with a filled quotation.', async ({ page }) => {
   // setup
   homePage = new HomePage(page);
-  await homePage.prescribeFreeTextMedicationDosage();
 
   // replay
+  await homePage.prescribeFreeTextMedicationDosage();
+
+  // verify
   await homePage.goToOdoo();
   await expect(page).toHaveURL(/.*web/);
   await homePage.searchCustomerInOdoo();
-
-  // verify
   const customer = await page.locator("table tbody td.o_data_cell:nth-child(4)").textContent();
   await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
 

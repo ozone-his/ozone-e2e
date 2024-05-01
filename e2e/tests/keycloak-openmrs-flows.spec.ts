@@ -15,15 +15,15 @@ test('Creating an OpenMRS role creates the corresponding Keycloak role.', async 
   // setup
   homePage = new HomePage(page);
   await page.goto(`${O3_URL}/openmrs/admin/users/role.list`);
-  await homePage.addOpenMRSRole();
 
   // replay
+  await homePage.addOpenMRSRole();
+
+  // verify
   await homePage.goToKeycloak();
   await expect(page).toHaveURL(/.*console/);
   await homePage.goToClients();
   await homePage.goToOpenMRSClient();
-
-  // verify
   await expect(page.getByText(`${randomOpenMRSRoleName.roleName}`)).toBeVisible();
   await expect(page.getByText('Role for e2e test').first()).toBeVisible();
   await homePage.goToOpenMRSClientAttributes();
@@ -39,9 +39,9 @@ test('Updating a synced OpenMRS role updates the corresponding Keycloak role.', 
   // setup
   homePage = new HomePage(page);
   await page.goto(`${O3_URL}/openmrs/admin/users/role.list`);
-  await homePage.addOpenMRSRole();
 
   // replay
+  await homePage.addOpenMRSRole();
   await homePage.goToKeycloak();
   await expect(page).toHaveURL(/.*console/);
   await homePage.goToClients();
@@ -74,9 +74,9 @@ test('Deleting a synced OpenMRS role deletes the corresponding Keycloak role.', 
   // setup
   homePage = new HomePage(page);
   await page.goto(`${O3_URL}/openmrs/admin/users/role.list`);
-  await homePage.addOpenMRSRole();
 
   // replay
+  await homePage.addOpenMRSRole();
   await homePage.goToKeycloak();
   await expect(page).toHaveURL(/.*console/);
   await homePage.goToClients();
@@ -104,9 +104,9 @@ test('Creating a Superset role creates the corresponding Keycloak role.', async 
   // setup
   homePage = new HomePage(page);
   await homePage.goToSuperset();
-  await homePage.addSupersetRole();
 
   // replay
+  await homePage.addSupersetRole();
   await homePage.goToKeycloak();
   await homePage.goToClients();
 
@@ -123,8 +123,6 @@ test('Updating a synced Superset role updates the corresponding Keycloak role.',
   homePage = new HomePage(page);
   await homePage.goToSuperset();
   await homePage.addSupersetRole();
-
-  // replay
   await homePage.goToKeycloak();
   await homePage.goToClients();
   await homePage.goToSupersetClient();
@@ -132,6 +130,7 @@ test('Updating a synced Superset role updates the corresponding Keycloak role.',
   await expect(page.getByText(`${randomSupersetRoleName.roleName}`)).toBeVisible();
   await expect(page.getByText('')).toBeTruthy();
 
+  // replay
   await homePage.updateSupersetRole();
 
   // verify
@@ -150,13 +149,13 @@ test('Deleting a synced Superset role deletes the corresponding Keycloak role.',
   await homePage.goToSuperset();
   await homePage.addSupersetRole();
 
-  // replay
   await homePage.goToKeycloak();
   await homePage.goToClients();
   await homePage.goToSupersetClient();
 
   await expect(page.getByText(`${randomSupersetRoleName.roleName}`)).toBeVisible();
 
+  // replay
   await homePage.deleteSupersetRole();
   await delay(30000);
 
@@ -173,16 +172,15 @@ test('A synced role deleted from within Keycloak gets recreated in the subsequen
   homePage = new HomePage(page);
   await homePage.goToSuperset();
   await homePage.addSupersetRole();
-
-  // replay
   await homePage.goToKeycloak();
   await homePage.goToClients();
 
-  // verify
+  // replay
   await homePage.goToSupersetClient();
-
   await expect(page.getByText(`${randomSupersetRoleName.roleName}`)).toBeVisible();
   await homePage.deleteSyncedSupersetRoleInKeycloak();
+
+  // verify
   await expect(page.getByText(`${randomSupersetRoleName.roleName}`)).not.toBeVisible();
   await delay(30000);
   await page.getByLabel('Manage').getByRole('link', { name: 'Clients' }).click();
@@ -198,15 +196,15 @@ test('A (non-synced) role created from within Keycloak gets deleted in the subse
   await homePage.goToKeycloak();
   await homePage.goToClients();
   await homePage.goToOpenMRSClient();
-  await homePage.createRoleInKeycloak();
 
   // replay
+  await homePage.createRoleInKeycloak();
+
+  // verify
   await page.getByRole('link', { name: 'Client details' }).click();
   await expect(page.getByText(`${randomKeycloakRoleName.roleName}`)).toBeVisible();
   await delay(30000);
   await page.getByLabel('Manage').getByRole('link', { name: 'Clients' }).click();
-
-  // verify
   await homePage.goToOpenMRSClient();
 
   await expect(page.getByText(`${randomKeycloakRoleName.roleName}`)).not.toBeVisible();

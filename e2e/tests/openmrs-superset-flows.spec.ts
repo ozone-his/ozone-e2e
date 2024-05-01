@@ -407,8 +407,6 @@ test('Voiding an OpenMRS obs updates the observation in Superset observations ta
   await homePage.startPatientVisit();
   const patient_uuid = await homePage.getPatientUUID();
   await homePage.addPatientBiometrics();
-
-  // replay
   await homePage.goToSuperset();
   await expect(page).toHaveURL(/.*superset/);
   await homePage.selectDBSchema();
@@ -424,6 +422,7 @@ test('Voiding an OpenMRS obs updates the observation in Superset observations ta
   await expect(secondObsVoidedState).toContainText('false');
   await expect(thirdObsVoidedState).toContainText('false');
 
+  // replay
   await page.goto(`${O3_URL}/openmrs/spa/home`);
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.voidEncounter();
