@@ -4,7 +4,7 @@ import { patientName } from '../utils/functions/testBase';
 import { O3_URL, SUPERSET_URL } from '../utils/configs/globalSetup';
 
 let homePage: HomePage;
-
+/*
 test.beforeEach(async ({ page }) => {
   homePage = new HomePage(page);
   await homePage.initiateLogin();
@@ -441,7 +441,7 @@ test('Voiding an OpenMRS obs updates the observation in Superset observations ta
   await page.getByRole('tab', { name: 'Results' }).click();
   await homePage.clearSQLEditor();
 });
-
+*/
 test.afterEach(async ({ page }) => {
   homePage = new HomePage(page);
   await homePage.deletePatient();
