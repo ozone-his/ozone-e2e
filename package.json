@@ -13,7 +13,7 @@
     "!playwright-report/"
   ],
   "scripts": {
-    "proE2ETests": "npx playwright test",
+    "proE2ETests": "npx playwright test keycloak-openmrs",
     "fossE2ETests": "npx playwright test Odoo Senaite"
   },
   "publishConfig": {
