@@ -7,16 +7,13 @@ let homePage: HomePage;
 
 test.beforeEach(async ({ page }) => {
   homePage = new HomePage(page);
-  await homePage.initiateLogin();
-  await expect(page).toHaveURL(/.*home/);
 });
 
 test('Creating an OpenMRS role creates the corresponding Keycloak role.', async ({ page }) => {
-  // setup
-  homePage = new HomePage(page);
-  await page.goto(`${O3_URL}/openmrs/admin/users/role.list`);
-
   // replay
+  await homePage.initiateLogin();
+  await expect(page).toHaveURL(/.*home/);
+  await page.goto(`${O3_URL}/openmrs/admin/users/role.list`);
   await homePage.addOpenMRSRole();
 
   // verify
@@ -36,17 +33,15 @@ test('Creating an OpenMRS role creates the corresponding Keycloak role.', async 
 });
 
 test('Updating a synced OpenMRS role updates the corresponding Keycloak role.', async ({ page }) => {
-  // setup
-  homePage = new HomePage(page);
-  await page.goto(`${O3_URL}/openmrs/admin/users/role.list`);
-
   // replay
+  await homePage.initiateLogin();
+  await expect(page).toHaveURL(/.*home/);
+  await page.goto(`${O3_URL}/openmrs/admin/users/role.list`);
   await homePage.addOpenMRSRole();
   await homePage.goToKeycloak();
   await expect(page).toHaveURL(/.*console/);
   await homePage.goToClients();
   await homePage.selectOpenMRSId();
-
   await expect(page.getByText(`${randomOpenMRSRoleName.roleName}`)).toBeVisible();
   await expect(page.getByText('Role for e2e test').first()).toBeVisible();
   await homePage.goToClientAttributes();
@@ -71,17 +66,15 @@ test('Updating a synced OpenMRS role updates the corresponding Keycloak role.', 
 });
 
 test('Deleting a synced OpenMRS role deletes the corresponding Keycloak role.', async ({ page }) => {
-  // setup
-  homePage = new HomePage(page);
-  await page.goto(`${O3_URL}/openmrs/admin/users/role.list`);
-
   // replay
+  await homePage.initiateLogin();
+  await expect(page).toHaveURL(/.*home/);
+  await page.goto(`${O3_URL}/openmrs/admin/users/role.list`);
   await homePage.addOpenMRSRole();
   await homePage.goToKeycloak();
   await expect(page).toHaveURL(/.*console/);
   await homePage.goToClients();
   await homePage.selectOpenMRSId();
-
   await expect(page.getByText(`${randomOpenMRSRoleName.roleName}`)).toBeVisible();
   await expect(page.getByText('Role for e2e test').first()).toBeVisible();
   await homePage.goToClientAttributes();
@@ -101,11 +94,10 @@ test('Deleting a synced OpenMRS role deletes the corresponding Keycloak role.', 
 });
 
 test('Creating a Superset role creates the corresponding Keycloak role.', async ({ page }) => {
-  // setup
-  homePage = new HomePage(page);
-  await homePage.goToSuperset();
-
   // replay
+  await homePage.initiateLogin();
+  await expect(page).toHaveURL(/.*home/);
+  await homePage.goToSuperset();
   await homePage.addSupersetRole();
 
   // verify
@@ -117,12 +109,11 @@ test('Creating a Superset role creates the corresponding Keycloak role.', async 
 });
 
 test('Updating a synced Superset role updates the corresponding Keycloak role.', async ({ page }) => {
-  // setup
-  homePage = new HomePage(page);
+  // replay
+  await homePage.initiateLogin();
+  await expect(page).toHaveURL(/.*home/);
   await homePage.goToSuperset();
   await homePage.addSupersetRole();
-
-  // replay
   await homePage.goToKeycloak();
   await homePage.goToClients();
   await homePage.selectSupersetId();
@@ -136,17 +127,15 @@ test('Updating a synced Superset role updates the corresponding Keycloak role.',
   await homePage.selectSupersetId();
   await expect(page.getByText(`${randomSupersetRoleName.roleName}`)).not.toBeVisible();
   await expect(page.getByText(`${randomSupersetRoleName.updatedRoleName}`)).toBeVisible();
-
   await homePage.deleteUpdatedSupersetRole();
 });
 
 test('Deleting a synced Superset role deletes the corresponding Keycloak role.', async ({ page }) => {
-  // setup
-  homePage = new HomePage(page);
+  // replay
+  await homePage.initiateLogin();
+  await expect(page).toHaveURL(/.*home/);
   await homePage.goToSuperset();
   await homePage.addSupersetRole();
-
-  // replay
   await homePage.goToKeycloak();
   await homePage.goToClients();
   await homePage.selectSupersetId();
@@ -158,39 +147,35 @@ test('Deleting a synced Superset role deletes the corresponding Keycloak role.',
   await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
   await homePage.goToClients();
   await homePage.selectSupersetId();
-
   await expect(page.getByText(`${randomSupersetRoleName.roleName}`)).not.toBeVisible();
 });
 
 test('A synced role deleted from within Keycloak gets recreated in the subsequent polling cycle.', async ({ page }) => {
-  // setup
-  homePage = new HomePage(page);
+  // replay
+  await homePage.initiateLogin();
+  await expect(page).toHaveURL(/.*home/);
   await homePage.goToSuperset();
   await homePage.addSupersetRole();
 
-  // replay
+  // verify
   await homePage.goToKeycloak();
   await homePage.goToClients();
   await homePage.selectSupersetId();
   await expect(page.getByText(`${randomSupersetRoleName.roleName}`)).toBeVisible();
   await homePage.deleteSyncedSupersetRoleInKeycloak();
-
-  // verify
   await expect(page.getByText(`${randomSupersetRoleName.roleName}`)).not.toBeVisible();
   await delay(30000);
   await page.getByLabel('Manage').getByRole('link', { name: 'Clients' }).click();
   await homePage.selectSupersetId();
   await expect(page.getByText(`${randomSupersetRoleName.roleName}`)).toBeVisible();
-
   await homePage.deleteSupersetRole();
 });
 
 test('A (non-synced) role created from within Keycloak gets deleted in the subsequent polling cycle.', async ({ page }) => {
-  // setup
-  homePage = new HomePage(page);
-  await homePage.goToKeycloak();
-
   // replay
+  await homePage.initiateLogin();
+  await expect(page).toHaveURL(/.*home/);
+  await homePage.goToKeycloak();
   await homePage.goToClients();
   await homePage.selectOpenMRSId();
   await homePage.createRoleInKeycloak();
@@ -201,7 +186,6 @@ test('A (non-synced) role created from within Keycloak gets deleted in the subse
   await delay(30000);
   await page.getByLabel('Manage').getByRole('link', { name: 'Clients' }).click();
   await homePage.selectOpenMRSId();
-
   await expect(page.getByText(`${randomKeycloakRoleName.roleName}`)).not.toBeVisible();
 });
 

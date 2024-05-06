@@ -7,13 +7,12 @@ let homePage: HomePage;
 
 test.beforeEach(async ({ page }) => {
   homePage = new HomePage(page);
-  await homePage.initiateLogin();
-  await expect(page).toHaveURL(/.*home/);
 });
 
 test('Creating an OpenMRS patient creates the patient in Superset patients table.', async ({ page }) => {
-  // setup
-  homePage = new HomePage(page);
+  // replay
+  await homePage.initiateLogin();
+  await expect(page).toHaveURL(/.*home/);
   await homePage.goToSuperset();
   await expect(page).toHaveURL(/.*superset/);
   await homePage.selectDBSchema();
@@ -25,8 +24,6 @@ test('Creating an OpenMRS patient creates the patient in Superset patients table
   let initialPatientsCount = Number(initialNumberOfPatients);
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
-
-  // replay
   await page.goto(`${O3_URL}`);
   await homePage.createPatient();
   await homePage.searchOpenMRSPatientID();
@@ -59,8 +56,9 @@ test('Creating an OpenMRS patient creates the patient in Superset patients table
 });
 
 test('Creating an OpenMRS visit creates the visit in Superset visits table.', async ({ page }) => {
-  // setup
-  homePage = new HomePage(page);
+  // replay
+  await homePage.initiateLogin();
+  await expect(page).toHaveURL(/.*home/);
   await homePage.createPatient();
   await homePage.goToSuperset();
   await expect(page).toHaveURL(/.*superset/);
@@ -73,8 +71,6 @@ test('Creating an OpenMRS visit creates the visit in Superset visits table.', as
   let initialVisitsCount = Number(initialNumberOfVisits);
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
-
-  // replay
   await page.goto(`${O3_URL}`);
   await homePage.startPatientVisit();
   const patient_uuid = await homePage.getPatientUUID();
@@ -106,8 +102,9 @@ test('Creating an OpenMRS visit creates the visit in Superset visits table.', as
 });
 
 test('Creating an OpenMRS order creates the order in Superset orders table.', async ({ page }) => {
-  // setup
-  homePage = new HomePage(page);
+  // replay
+  await homePage.initiateLogin();
+  await expect(page).toHaveURL(/.*home/);
   await homePage.createPatient();
   await homePage.searchOpenMRSPatientID();
   const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
@@ -123,8 +120,6 @@ test('Creating an OpenMRS order creates the order in Superset orders table.', as
   let initialOrdersCount = Number(initialNumberOfOrders);
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
-
-  // replay
   await page.goto(`${O3_URL}`);
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.goToLabOrderForm();
@@ -164,8 +159,9 @@ test('Creating an OpenMRS order creates the order in Superset orders table.', as
 });
 
 test('Creating an OpenMRS encounter creates the encounter in Superset encounters table.', async ({ page }) => {
-  // setup
-  homePage = new HomePage(page);
+  // replay
+  await homePage.initiateLogin();
+  await expect(page).toHaveURL(/.*home/);
   await homePage.createPatient();
   await homePage.searchOpenMRSPatientID();
   const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
@@ -181,8 +177,6 @@ test('Creating an OpenMRS encounter creates the encounter in Superset encounters
   let initialEncountersCount = Number(initialNumberOfEncounters);
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
-
-  // replay
   await page.goto(`${O3_URL}`);
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.goToLabOrderForm();
@@ -235,8 +229,9 @@ test('Creating an OpenMRS encounter creates the encounter in Superset encounters
 });
 
 test('Creating an OpenMRS condition creates the condition in Superset conditions table.', async ({ page }) => {
-  // setup
-  homePage = new HomePage(page);
+  // replay
+  await homePage.initiateLogin();
+  await expect(page).toHaveURL(/.*home/);
   await homePage.createPatient();
   await homePage.searchOpenMRSPatientID();
   const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
@@ -252,8 +247,6 @@ test('Creating an OpenMRS condition creates the condition in Superset conditions
   let initialConditionsCount = Number(initialNumberOfConditions);
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
-
-  // replay
   await page.goto(`${O3_URL}`);
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.addPatientCondition();
@@ -290,8 +283,9 @@ test('Creating an OpenMRS condition creates the condition in Superset conditions
 });
 
 test('Creating an OpenMRS obs creates the observation in Superset observations table.', async ({ page }) => {
-  // setup
-  homePage = new HomePage(page);
+  // replay
+  await homePage.initiateLogin();
+  await expect(page).toHaveURL(/.*home/);
   await homePage.createPatient();
   await homePage.startPatientVisit();
   const patient_uuid = await homePage.getPatientUUID();
@@ -306,8 +300,6 @@ test('Creating an OpenMRS obs creates the observation in Superset observations t
   let initialObservationsCount = Number(initialNumberOfObservations);
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
-
-  // replay
   await page.goto(`${O3_URL}`);
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.addPatientBiometrics();
@@ -348,8 +340,9 @@ test('Creating an OpenMRS obs creates the observation in Superset observations t
 });
 
 test('Creating an OpenMRS appointment creates the appointment in Superset appointments table.', async ({ page }) => {
-  // setup
-  homePage = new HomePage(page);
+  // replay
+  await homePage.initiateLogin();
+  await expect(page).toHaveURL(/.*home/);
   await homePage.createPatient();
   await homePage.searchOpenMRSPatientID();
   const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
@@ -365,8 +358,6 @@ test('Creating an OpenMRS appointment creates the appointment in Superset appoin
   let initialAppointmentsCount = Number(initialNumberOfAppointments);
   await page.getByRole('tab', { name: 'Query history' }).click();
   await homePage.clearSQLEditor();
-
-  // replay
   await page.goto(`${O3_URL}`);
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.addPatientAppointment();
@@ -401,8 +392,9 @@ test('Creating an OpenMRS appointment creates the appointment in Superset appoin
 });
 
 test('Voiding an OpenMRS obs updates the observation in Superset observations table.', async ({ page }) => {
-  // setup
-  homePage = new HomePage(page);
+  // replay
+  await homePage.initiateLogin();
+  await expect(page).toHaveURL(/.*home/);
   await homePage.createPatient();
   await homePage.startPatientVisit();
   const patient_uuid = await homePage.getPatientUUID();
@@ -422,7 +414,6 @@ test('Voiding an OpenMRS obs updates the observation in Superset observations ta
   await expect(secondObsVoidedState).toContainText('false');
   await expect(thirdObsVoidedState).toContainText('false');
 
-  // replay
   await page.goto(`${O3_URL}/openmrs/spa/home`);
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.voidEncounter();
@@ -442,7 +433,6 @@ test('Voiding an OpenMRS obs updates the observation in Superset observations ta
 });
 
 test.afterEach(async ({ page }) => {
-  homePage = new HomePage(page);
   await homePage.deletePatient();
   await page.close();
 });
