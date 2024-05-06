@@ -13,8 +13,8 @@
     "!playwright-report/"
   ],
   "scripts": {
-    "proE2ETests": "npx playwright test",
-    "fossE2ETests": "npx playwright test Odoo Senaite"
+    "e2eTests": "npx playwright test",
+    "fossE2ETests": "npx playwright test odoo-openmrs senaite-openmrs"
   },
   "publishConfig": {
     "registry": "https://nexus.mekomsolutions.net/repository/npm-public/"
