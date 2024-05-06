@@ -46,7 +46,7 @@ jobs:
           ODOO_URL_DEV: '${{ github.event.inputs.e2e_odoo_url_input }}'
           SENAITE_URL_DEV: '${{ github.event.inputs.e2e_senaite_url_input }}'
           RUNNING_OZONE_ON_PRO: 'false'
-        run: npm run fossE2ETests
+        run: npm run e2e-tests-foss
 
       - name: Upload report
         uses: actions/upload-artifact@v4

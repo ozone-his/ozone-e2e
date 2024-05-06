@@ -7,33 +7,33 @@ let homePage: HomePage;
 
 test.beforeEach(async ({ page }) => {
   homePage = new HomePage(page);
+});
+
+test('Ordering a lab test for an OpenMRS patient creates the corresponding SENAITE client with an analysis request.', async ({ page }) => {
+  // replay
   await homePage.initiateLogin();
   await expect(page).toHaveURL(/.*home/);
   await homePage.createPatient();
   await homePage.startPatientVisit();
-});
-
-test('Ordering a lab test for an OpenMRS patient creates the corresponding SENAITE client with an analysis request.', async ({ page }) => {
-  // setup
-  homePage = new HomePage(page);
   await homePage.goToLabOrderForm();
   await page.getByRole('button', { name: 'Add', exact: true }).click();
   await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
   await homePage.saveLabOrder();
 
-  // replay
+  // verify
   await homePage.goToSENAITE();
   await expect(page).toHaveURL(/.*senaite/);
-
-  // verify
   await homePage.searchClientInSENAITE();
   const client = await page.locator('table tbody tr:nth-child(1) td.contentcell.title div span a');
   await expect(client).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
 });
 
 test('Editing the details of an OpenMRS patient with a synced lab order edits the corresponding SENAITE client details.', async ({ page }) => {
-  // setup
-  homePage = new HomePage(page);
+  // replay
+  await homePage.initiateLogin();
+  await expect(page).toHaveURL(/.*home/);
+  await homePage.createPatient();
+  await homePage.startPatientVisit();
   await homePage.goToLabOrderForm();
   await page.getByRole('button', { name: 'Add', exact: true }).click();
   await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
@@ -43,8 +43,6 @@ test('Editing the details of an OpenMRS patient with a synced lab order edits th
   await homePage.searchClientInSENAITE();
   const client = await page.locator('table tbody tr:nth-child(1) td.contentcell.title div span a');
   await expect(client).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
-
-  // replay
   await page.goto(`${O3_URL}`);
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.updatePatientDetails();
@@ -57,25 +55,24 @@ test('Editing the details of an OpenMRS patient with a synced lab order edits th
 });
 
 test('Editing a synced OpenMRS lab order edits the corresponding SENAITE analysis request.', async ({ page }) => {
-  // setup
-  homePage = new HomePage(page);
+  // replay
+  await homePage.initiateLogin();
+  await expect(page).toHaveURL(/.*home/);
+  await homePage.createPatient();
+  await homePage.startPatientVisit();
   await homePage.goToLabOrderForm();
   await page.getByRole('button', { name: 'Add', exact: true }).click();
   await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
   await homePage.saveLabOrder();
   await homePage.goToSENAITE();
   await expect(page).toHaveURL(/.*senaite/);
-
   await homePage.searchClientInSENAITE();
   const client = await page.locator('table tbody tr:nth-child(1) td.contentcell.title div');
   await expect(client).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
-
   await page.locator('table tbody tr:nth-child(1) td.contentcell.title div').click();
   await page.locator('table tbody tr:nth-child(1) td.contentcell.getId div span a').click();
   const analysisRequest = await page.locator('#sampleheader-standard-fields tr:nth-child(1) td:nth-child(6)');
   await expect(analysisRequest).toHaveText('Blood urea nitrogen Template');
-
-  // replay
   await page.goto(`${O3_URL}`);
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.updateLabOrder();
@@ -91,25 +88,24 @@ test('Editing a synced OpenMRS lab order edits the corresponding SENAITE analysi
 });
 
 test('Voiding a synced OpenMRS lab order cancels the corresponding SENAITE analysis request.', async ({ page }) => {
-  // setup
-  homePage = new HomePage(page);
+  // replay
+  await homePage.initiateLogin();
+  await expect(page).toHaveURL(/.*home/);
+  await homePage.createPatient();
+  await homePage.startPatientVisit();
   await homePage.goToLabOrderForm();
   await page.getByRole('button', { name: 'Add', exact: true }).click();
   await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
   await homePage.saveLabOrder();
   await homePage.goToSENAITE();
   await expect(page).toHaveURL(/.*senaite/);
-
   await homePage.searchClientInSENAITE();
   const client = await page.locator('table tbody tr:nth-child(1) td.contentcell.title div');
   await expect(client).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
-
   await page.locator('table tbody tr:nth-child(1) td.contentcell.title div').click();
   await page.locator('table tbody tr:nth-child(1) td.contentcell.getId div span a').click();
   const analysisRequest = await page.locator('#sampleheader-standard-fields tr:nth-child(1) td:nth-child(6)');
   await expect(analysisRequest).toHaveText('Blood urea nitrogen Template');
-
-  // replay
   await page.goto(`${O3_URL}`);
   await homePage.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await homePage.voidEncounter();
@@ -121,14 +117,15 @@ test('Voiding a synced OpenMRS lab order cancels the corresponding SENAITE analy
 });
 
 test('Published coded lab results from SENAITE are viewable in the OpenMRS lab results viewer.', async ({ page }) => {
-  // setup
-  homePage = new HomePage(page);
+  // replay
+  await homePage.initiateLogin();
+  await expect(page).toHaveURL(/.*home/);
+  await homePage.createPatient();
+  await homePage.startPatientVisit();
   await homePage.goToLabOrderForm();
   await page.getByRole('button', { name: 'Add', exact: true }).click();
   await page.locator('#tab select').selectOption('1325AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
   await homePage.saveLabOrder();
-
-  // replay
   await homePage.goToSENAITE();
   await expect(page).toHaveURL(/.*senaite/);
   await homePage.searchClientInSENAITE();
@@ -149,14 +146,15 @@ test('Published coded lab results from SENAITE are viewable in the OpenMRS lab r
 });
 
 test('Published numeric lab results from SENAITE are viewable in the OpenMRS lab results viewer.', async ({ page }) => {
-  // setup
-  homePage = new HomePage(page);
+  // replay
+  await homePage.initiateLogin();
+  await expect(page).toHaveURL(/.*home/);
+  await homePage.createPatient();
+  await homePage.startPatientVisit();
   await homePage.goToLabOrderForm();
   await page.getByRole('button', { name: 'Add', exact: true }).click();
   await page.locator('#tab select').selectOption('655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
   await homePage.saveLabOrder();
-
-  // replay
   await homePage.goToSENAITE();
   await expect(page).toHaveURL(/.*senaite/);
   await homePage.searchClientInSENAITE();
@@ -177,14 +175,15 @@ test('Published numeric lab results from SENAITE are viewable in the OpenMRS lab
 });
 
 test('Published free text lab results from SENAITE are viewable in the OpenMRS lab results viewer.', async ({ page }) => {
-  // setup
-  homePage = new HomePage(page);
+  // replay
+  await homePage.initiateLogin();
+  await expect(page).toHaveURL(/.*home/);
+  await homePage.createPatient();
+  await homePage.startPatientVisit();
   await homePage.goToLabOrderForm();
   await page.getByRole('button', { name: 'Add', exact: true }).click();
   await page.locator('#tab select').selectOption('161447AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
   await homePage.saveLabOrder();
-
-  // replay
   await homePage.goToSENAITE();
   await expect(page).toHaveURL(/.*senaite/);
   await homePage.searchClientInSENAITE();
@@ -205,7 +204,6 @@ test('Published free text lab results from SENAITE are viewable in the OpenMRS l
 });
 
 test.afterEach(async ({ page }) => {
-  homePage = new HomePage(page);
   await homePage.deletePatient();
   await page.close();
 });

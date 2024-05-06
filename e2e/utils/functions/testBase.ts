@@ -543,17 +543,17 @@ export class HomePage {
     await delay(2000);
   }
 
-  async goToOpenMRSClient() {
+  async selectOpenMRSId() {
     await this.page.getByRole('link', { name: 'openmrs', exact: true }).click();
     await this.page.getByTestId('rolesTab').click();
   }
 
-  async goToOpenMRSClientAttributes() {
+  async goToClientAttributes() {
     await this.page.getByRole('link', { name: `${randomOpenMRSRoleName.roleName}` }).click();
     await this.page.getByTestId('attributesTab').click();
   }
 
-  async goToSupersetClient() {
+  async selectSupersetId() {
     if (await this.page. getByRole('link', { name: 'superset', exact: true }).isHidden()) {
       await this.page.getByLabel('Pagination top').getByLabel('Go to next page').click();
     }
