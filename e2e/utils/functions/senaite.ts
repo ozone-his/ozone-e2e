@@ -39,7 +39,7 @@ export class SENAITE {
     await this.page.getByRole('button', { name: 'Submit' }).click();
     await this.page.locator('input[name="uids\\:list"]').first().check();
     await this.page.getByRole('button', { name: 'Verify' }).click();
-    //await this.page.getByRole('navigation', { name: 'breadcrumb' }).getByRole('link', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
+    await this.page.getByRole('navigation', { name: 'breadcrumb' }).getByRole('link', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
     await this.page.locator('input[name="uids\\:list"]').check();
     await this.page.locator('#publish_transition span:nth-child(1)').click();
     await delay(5000);
