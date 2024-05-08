@@ -1,5 +1,6 @@
 import { Page, expect } from '@playwright/test';
 import { randomOpenMRSRoleName } from '../functions/openmrs';
+import { randomSupersetRoleName } from '../functions/superset';
 import { KEYCLOAK_URL } from '../configs/globalSetup';
 import { delay } from './openmrs';
 
@@ -10,7 +11,7 @@ export var randomKeycloakRoleName = {
 export class Keycloack {
   constructor(readonly page: Page) {}
 
-  async goToKeycloak() {
+  async open() {
     await this.page.goto(`${KEYCLOAK_URL}/admin/master/console`);
     await this.page.getByLabel('Username or email').fill(`${process.env.KEYCLOAK_USERNAME}`);
     await this.page.getByLabel('Password').fill(`${process.env.KEYCLOAK_PASSWORD}`);
@@ -18,7 +19,7 @@ export class Keycloack {
     await delay(8000);
   }
 
-  async createRoleInKeycloak() {
+  async createRole() {
     await this.page.getByTestId('create-role').click();
     await this.page.getByLabel('Role name').fill(`${randomKeycloakRoleName.roleName}`);
     await this.page.getByLabel('Description').fill('This is Keycloak test role');
@@ -52,4 +53,10 @@ export class Keycloack {
     await this.page.getByTestId('rolesTab').click();
   }
 
+  async deleteSyncedRole() {
+    await this.page.getByRole('row', { name: `${randomSupersetRoleName.roleName}` }).getByLabel('Actions').click();
+    await this.page.getByRole('menuitem', { name: 'Delete' }).click();
+    await this.page.getByTestId('confirm').click();
+    await expect(this.page.getByText(`The role has been deleted`)).toBeVisible();
+  }
 }

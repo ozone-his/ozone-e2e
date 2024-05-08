@@ -24,9 +24,9 @@ test('Ordering a lab test for an OpenMRS patient creates the corresponding SENAI
   await openmrs.saveLabOrder();
 
   // verify
-  await senaite.goToSENAITE();
+  await senaite.open();
   await expect(page).toHaveURL(/.*senaite/);
-  await senaite.searchClientInSENAITE();
+  await senaite.searchClient();
   const client = await page.locator('table tbody tr:nth-child(1) td.contentcell.title div span a');
   await expect(client).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
 });
@@ -37,9 +37,9 @@ test('Editing the details of an OpenMRS patient with a synced lab order edits th
   await page.getByRole('button', { name: 'Add', exact: true }).click();
   await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
   await openmrs.saveLabOrder();
-  await senaite.goToSENAITE();
+  await senaite.open();
   await expect(page).toHaveURL(/.*senaite/);
-  await senaite.searchClientInSENAITE();
+  await senaite.searchClient();
   const client = await page.locator('table tbody tr:nth-child(1) td.contentcell.title div span a');
   await expect(client).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await page.goto(`${O3_URL}`);
@@ -47,8 +47,8 @@ test('Editing the details of an OpenMRS patient with a synced lab order edits th
   await openmrs.updatePatientDetails();
 
   // verify
-  await senaite.goToSENAITE();
-  await senaite.searchClientInSENAITE();
+  await senaite.open();
+  await senaite.searchClient();
 
   await expect(client).toContainText(`${patientName.updatedFirstName}` + ' ' + `${patientName.givenName }`);
 });
@@ -59,9 +59,9 @@ test('Editing a synced OpenMRS lab order edits the corresponding SENAITE analysi
   await page.getByRole('button', { name: 'Add', exact: true }).click();
   await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
   await openmrs.saveLabOrder();
-  await senaite.goToSENAITE();
+  await senaite.open();
   await expect(page).toHaveURL(/.*senaite/);
-  await senaite.searchClientInSENAITE();
+  await senaite.searchClient();
   const client = await page.locator('table tbody tr:nth-child(1) td.contentcell.title div');
   await expect(client).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await page.locator('table tbody tr:nth-child(1) td.contentcell.title div').click();
@@ -73,8 +73,8 @@ test('Editing a synced OpenMRS lab order edits the corresponding SENAITE analysi
   await openmrs.updateLabOrder();
 
   // verify
-  await senaite.goToSENAITE();
-  await senaite.searchClientInSENAITE();
+  await senaite.open();
+  await senaite.searchClient();
 
   await expect(client).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await page.locator('table tbody tr:nth-child(1) td.contentcell.title div').click();
@@ -88,9 +88,9 @@ test('Voiding a synced OpenMRS lab order cancels the corresponding SENAITE analy
   await page.getByRole('button', { name: 'Add', exact: true }).click();
   await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
   await openmrs.saveLabOrder();
-  await senaite.goToSENAITE();
+  await senaite.open();
   await expect(page).toHaveURL(/.*senaite/);
-  await senaite.searchClientInSENAITE();
+  await senaite.searchClient();
   const client = await page.locator('table tbody tr:nth-child(1) td.contentcell.title div');
   await expect(client).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await page.locator('table tbody tr:nth-child(1) td.contentcell.title div').click();
@@ -102,8 +102,8 @@ test('Voiding a synced OpenMRS lab order cancels the corresponding SENAITE analy
   await openmrs.voidEncounter();
 
   // verify
-  await senaite.goToSENAITE();
-  await senaite.searchClientInSENAITE();
+  await senaite.open();
+  await senaite.searchClient();
   await expect(client).not.toHaveText(`${patientName.firstName + ' ' + patientName.givenName}`);
 });
 
@@ -113,9 +113,9 @@ test('Published coded lab results from SENAITE are viewable in the OpenMRS lab r
   await page.getByRole('button', { name: 'Add', exact: true }).click();
   await page.locator('#tab select').selectOption('1325AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
   await openmrs.saveLabOrder();
-  await senaite.goToSENAITE();
+  await senaite.open();
   await expect(page).toHaveURL(/.*senaite/);
-  await senaite.searchClientInSENAITE();
+  await senaite.searchClient();
   await senaite.createPartition();
   await page.getByRole('combobox', { name: 'Result' }).selectOption('664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
   await senaite.publishLabResults();
@@ -138,9 +138,9 @@ test('Published numeric lab results from SENAITE are viewable in the OpenMRS lab
   await page.getByRole('button', { name: 'Add', exact: true }).click();
   await page.locator('#tab select').selectOption('655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
   await openmrs.saveLabOrder();
-  await senaite.goToSENAITE();
+  await senaite.open();
   await expect(page).toHaveURL(/.*senaite/);
-  await senaite.searchClientInSENAITE();
+  await senaite.searchClient();
   await senaite.createPartition();
   await page.locator('tr:nth-child(1) td.contentcell.Result div span input').fill('64');
   await senaite.publishLabResults();
@@ -163,9 +163,9 @@ test('Published free text lab results from SENAITE are viewable in the OpenMRS l
   await page.getByRole('button', { name: 'Add', exact: true }).click();
   await page.locator('#tab select').selectOption('161447AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
   await openmrs.saveLabOrder();
-  await senaite.goToSENAITE();
+  await senaite.open();
   await expect(page).toHaveURL(/.*senaite/);
-  await senaite.searchClientInSENAITE();
+  await senaite.searchClient();
   await senaite.createPartition();
   await page.locator('div:nth-child(4) div table tbody tr td.contentcell.Result div span input').fill('Test result: Normal');
   await senaite.publishLabResults();

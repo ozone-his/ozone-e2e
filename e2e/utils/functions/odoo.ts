@@ -6,7 +6,7 @@ import { delay } from './openmrs';
 export class Odoo {
   constructor(readonly page: Page) {}
 
-  async goToOdoo() {
+  async open() {
     await this.page.goto(`${ODOO_URL}`);
     if (`${process.env.TEST_PRO}` == 'true') {
       await this.page.getByRole('link', { name: 'Login with Single Sign-On' }).click();
@@ -20,7 +20,7 @@ export class Odoo {
     }
   }
 
-  async searchCustomerInOdoo() {
+  async searchCustomer() {
     await this.page.locator("//a[contains(@class, 'full')]").click();
     await this.page.getByRole('menuitem', { name: 'Sales' }).click();
     await delay(1500);
@@ -28,5 +28,4 @@ export class Odoo {
     await this.page.getByPlaceholder('Search...').press('Enter');
     await delay(2000);
   }
-
 }

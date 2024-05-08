@@ -93,7 +93,7 @@ export class OpenMRS {
     await this.page.getByRole('link', { name: `${patientFullName}` }).first().click();
   }
 
-  async searchOpenMRSPatientID() {
+  async searchPatientID() {
     await this.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
     await expect(this.page.getByText('Actions', {exact: true})).toBeVisible();
     await this.page.getByRole('button', { name: 'Actions', exact: true }).click();
@@ -336,7 +336,7 @@ export class OpenMRS {
     await delay(5000);
   }
 
-  async addOpenMRSRole() {
+  async addRole() {
     await this.page.getByRole('link', { name: 'Add Role' }).click();
     await this.page.locator('#role').fill(`${randomOpenMRSRoleName.roleName}`);
     await this.page.locator('textarea[name="description"]').fill('Role for e2e test');
@@ -349,7 +349,7 @@ export class OpenMRS {
     await expect(this.page.getByText('Role saved')).toBeVisible();
   }
 
-  async updateOpenMRSRole() {
+  async updateRole() {
     await this.page.getByRole('link', { name: `${randomOpenMRSRoleName.roleName}` }).click();
     await this.page.locator('textarea[name="description"]').clear();
     await this.page.locator('textarea[name="description"]').fill('Updated role description');
@@ -359,7 +359,7 @@ export class OpenMRS {
     await expect(this.page.getByText('Role saved')).toBeVisible();
   }
 
-  async unlinkInheritedOpenMRSRoles() {
+  async unlinkInheritedRoles() {
     await this.page.getByRole('link', { name: `${randomOpenMRSRoleName.roleName}` }).click();
     await this.page.getByLabel('Application: Edits Existing Encounters').uncheck();
     await this.page.getByLabel('Application: Enters Vitals').uncheck();
@@ -371,7 +371,7 @@ export class OpenMRS {
     await delay(2000);
   }
 
-  async unlinkUpdatedOpenMRSInheritedRoles() {
+  async unlinkUpdatedInheritedRoles() {
     await this.page.getByRole('link', { name: `${randomOpenMRSRoleName.roleName}` }).click();
     await this.page.getByLabel('Application: Edits Existing Encounters').uncheck();
     await this.page.getByLabel('Application: Enters Vitals').uncheck();
@@ -384,9 +384,9 @@ export class OpenMRS {
     await expect(this.page.getByText('Role saved')).toBeVisible();
   }
 
-  async deleteOpenMRSRole() {
+  async deleteRole() {
     await this.page.goto(`${O3_URL}/openmrs/admin/users/role.list`);
-    await this.unlinkInheritedOpenMRSRoles();
+    await this.unlinkInheritedRoles();
     await this.page.getByRole('row', { name: `${randomOpenMRSRoleName.roleName}` }).getByRole('checkbox').check();
     await this.page.getByRole('button', { name: 'Delete Selected Roles' }).click();
     await expect(this.page.getByText(`${randomOpenMRSRoleName.roleName} deleted`)).toBeVisible();

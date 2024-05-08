@@ -16,7 +16,7 @@ test.beforeEach(async ({ page }) => {
 
 test('Creating an OpenMRS patient creates the patient in Superset patients table.', async ({ page }) => {
   // replay
-  await superset.goToSuperset();
+  await superset.open();
   await expect(page).toHaveURL(/.*superset/);
   await superset.selectDBSchema();
   await superset.clearSQLEditor();
@@ -29,7 +29,7 @@ test('Creating an OpenMRS patient creates the patient in Superset patients table
   await superset.clearSQLEditor();
   await page.goto(`${O3_URL}`);
   await openmrs.createPatient();
-  await openmrs.searchOpenMRSPatientID();
+  await openmrs.searchPatientID();
   const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
 
   // verify
@@ -61,7 +61,7 @@ test('Creating an OpenMRS patient creates the patient in Superset patients table
 test('Creating an OpenMRS visit creates the visit in Superset visits table.', async ({ page }) => {
   // replay
   await openmrs.createPatient();
-  await superset.goToSuperset();
+  await superset.open();
   await expect(page).toHaveURL(/.*superset/);
   await superset.selectDBSchema();
   await superset.clearSQLEditor();
@@ -105,10 +105,10 @@ test('Creating an OpenMRS visit creates the visit in Superset visits table.', as
 test('Creating an OpenMRS order creates the order in Superset orders table.', async ({ page }) => {
   // replay
   await openmrs.createPatient();
-  await openmrs.searchOpenMRSPatientID();
+  await openmrs.searchPatientID();
   const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
   await openmrs.startPatientVisit();
-  await superset.goToSuperset();
+  await superset.open();
   await expect(page).toHaveURL(/.*superset/);
   await superset.selectDBSchema();
   await superset.clearSQLEditor();
@@ -160,10 +160,10 @@ test('Creating an OpenMRS order creates the order in Superset orders table.', as
 test('Creating an OpenMRS encounter creates the encounter in Superset encounters table.', async ({ page }) => {
   // replay
   await openmrs.createPatient();
-  await openmrs.searchOpenMRSPatientID();
+  await openmrs.searchPatientID();
   const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
   await openmrs.startPatientVisit();
-  await superset.goToSuperset();
+  await superset.open();
   await expect(page).toHaveURL(/.*superset/);
   await superset.selectDBSchema();
   await superset.clearSQLEditor();
@@ -228,10 +228,10 @@ test('Creating an OpenMRS encounter creates the encounter in Superset encounters
 test('Creating an OpenMRS condition creates the condition in Superset conditions table.', async ({ page }) => {
   // replay
   await openmrs.createPatient();
-  await openmrs.searchOpenMRSPatientID();
+  await openmrs.searchPatientID();
   const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
   await openmrs.startPatientVisit();
-  await superset.goToSuperset();
+  await superset.open();
   await expect(page).toHaveURL(/.*superset/);
   await superset.selectDBSchema();
   await superset.clearSQLEditor();
@@ -282,7 +282,7 @@ test('Creating an OpenMRS obs creates the observation in Superset observations t
   await openmrs.createPatient();
   await openmrs.startPatientVisit();
   const patient_uuid = await openmrs.getPatientUUID();
-  await superset.goToSuperset();
+  await superset.open();
   await expect(page).toHaveURL(/.*superset/);
   await superset.selectDBSchema();
   await superset.clearSQLEditor();
@@ -335,10 +335,10 @@ test('Creating an OpenMRS obs creates the observation in Superset observations t
 test('Creating an OpenMRS appointment creates the appointment in Superset appointments table.', async ({ page }) => {
   // replay
   await openmrs.createPatient();
-  await openmrs.searchOpenMRSPatientID();
+  await openmrs.searchPatientID();
   const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
   await openmrs.startPatientVisit();
-  await superset.goToSuperset();
+  await superset.open();
   await expect(page).toHaveURL(/.*superset/);
   await superset.selectDBSchema();
   await superset.clearSQLEditor();
@@ -388,7 +388,7 @@ test('Voiding an OpenMRS obs updates the observation in Superset observations ta
   await openmrs.startPatientVisit();
   const patient_uuid = await openmrs.getPatientUUID();
   await openmrs.addPatientBiometrics();
-  await superset.goToSuperset();
+  await superset.open();
   await expect(page).toHaveURL(/.*superset/);
   await superset.selectDBSchema();
   await superset.clearSQLEditor();

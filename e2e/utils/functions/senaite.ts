@@ -6,7 +6,7 @@ import { delay } from './openmrs';
 export class SENAITE {
   constructor(readonly page: Page) {}
 
-  async goToSENAITE() {
+  async open() {
     await this.page.goto(`${SENAITE_URL}`);
     if (!(`${process.env.TEST_PRO}` == 'true')) {
       await delay(3000);
@@ -18,7 +18,7 @@ export class SENAITE {
     }
   }
 
-  async searchClientInSENAITE() {
+  async searchClient() {
     await this.page.getByRole('link', { name: 'Clients', exact: true }).click();
     await this.page.getByRole('textbox', { name: 'Search' }).type(`${patientName.givenName}`);
     await this.page.locator('div.col-sm-3.text-right button:nth-child(2) i').click();
@@ -48,5 +48,4 @@ export class SENAITE {
     await this.page.getByRole('button', { name: 'Send' }).click();
     await delay(8000);
   }
-
 }

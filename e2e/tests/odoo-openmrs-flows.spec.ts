@@ -24,9 +24,9 @@ test('Ordering a lab test for an OpenMRS patient creates the corresponding Odoo 
   await openmrs.saveLabOrder();
 
   // verify
-  await odoo.goToOdoo();
+  await odoo.open();
   await expect(page).toHaveURL(/.*web/);
-  await odoo.searchCustomerInOdoo();
+  await odoo.searchCustomer();
   const customer = await page.locator("tr.o_data_row:nth-child(1) td:nth-child(4)").textContent();
   await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
 
@@ -40,9 +40,9 @@ test('Editing the details of an OpenMRS patient with a synced lab order edits th
   await page.getByRole('button', { name: 'Add', exact: true }).click();
   await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
   await openmrs.saveLabOrder();
-  await odoo.goToOdoo();
+  await odoo.open();
   await expect(page).toHaveURL(/.*web/);
-  await odoo.searchCustomerInOdoo();
+  await odoo.searchCustomer();
   const customer = await page.locator("tr.o_data_row:nth-child(1) td:nth-child(4)").textContent();
   await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
   const quotation = await page.locator("table tbody td.o_data_cell:nth-child(8)").textContent();
@@ -53,7 +53,7 @@ test('Editing the details of an OpenMRS patient with a synced lab order edits th
 
   // verify
   await page.goto(`${ODOO_URL}`);
-  await odoo.searchCustomerInOdoo();
+  await odoo.searchCustomer();
   const updatedCustomer = await page.locator("tr.o_data_row:nth-child(1) td:nth-child(4)");
   await expect(updatedCustomer).toHaveText(`${patientName.updatedFirstName}` + ' ' + `${patientName.givenName}`);
   await expect(quotation?.includes("Quotation")).toBeTruthy();
@@ -64,9 +64,9 @@ test('Ordering a drug for an OpenMRS patient creates the corresponding Odoo cust
   await openmrs.makeDrugOrder();
 
   // verify
-  await odoo.goToOdoo();
+  await odoo.open();
   await expect(page).toHaveURL(/.*web/);
-  await odoo.searchCustomerInOdoo();
+  await odoo.searchCustomer();
   const customer = await page.locator("tr.o_data_row:nth-child(1) td:nth-child(4)").textContent();
   await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
 
@@ -77,9 +77,9 @@ test('Ordering a drug for an OpenMRS patient creates the corresponding Odoo cust
 test('Editing the details of an OpenMRS patient with a synced drug order edits the corresponding Odoo customer details.', async ({ page }) => {
   // replay
   await openmrs.makeDrugOrder();
-  await odoo.goToOdoo();
+  await odoo.open();
   await expect(page).toHaveURL(/.*web/);
-  await odoo.searchCustomerInOdoo();
+  await odoo.searchCustomer();
   const customer = await page.locator("tr.o_data_row:nth-child(1) td:nth-child(4)").textContent();
   await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
   const quotation = await page.locator("table tbody td.o_data_cell:nth-child(8)").textContent();
@@ -90,7 +90,7 @@ test('Editing the details of an OpenMRS patient with a synced drug order edits t
 
   // verify
   await page.goto(`${ODOO_URL}`);
-  await odoo.searchCustomerInOdoo();
+  await odoo.searchCustomer();
   const updatedCustomer = await page.locator("table tbody td.o_data_cell:nth-child(4)");
 
   await expect(updatedCustomer).toHaveText(`${patientName.updatedFirstName}` + ' ' + `${patientName.givenName }`);
@@ -100,9 +100,9 @@ test('Editing the details of an OpenMRS patient with a synced drug order edits t
 test('Revising a synced OpenMRS drug order edits the corresponding Odoo quotation line.', async ({ page }) => {
   // replay
   await openmrs.makeDrugOrder();
-  await odoo.goToOdoo();
+  await odoo.open();
   await expect(page).toHaveURL(/.*web/);
-  await odoo.searchCustomerInOdoo();
+  await odoo.searchCustomer();
   const customer = await page.locator("tr.o_data_row:nth-child(1) td:nth-child(4)").textContent();
   await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
   await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
@@ -115,7 +115,7 @@ test('Revising a synced OpenMRS drug order edits the corresponding Odoo quotatio
 
   // verify
   await page.goto(`${ODOO_URL}`);
-  await odoo.searchCustomerInOdoo();
+  await odoo.searchCustomer();
   await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
   await expect(drugOrderItem).toContainText('8.0 Tablet');
   await expect(drugOrderItem).toContainText('Thrice daily - 6 Days');
@@ -124,9 +124,9 @@ test('Revising a synced OpenMRS drug order edits the corresponding Odoo quotatio
 test('Discontinuing a synced OpenMRS drug order removes the corresponding Odoo quotation line.', async ({ page }) => {
   // replay
   await openmrs.makeDrugOrder();
-  await odoo.goToOdoo();
+  await odoo.open();
   await expect(page).toHaveURL(/.*web/);
-  await odoo.searchCustomerInOdoo();
+  await odoo.searchCustomer();
   const customer = await page.locator("tr.o_data_row:nth-child(1) td:nth-child(4)").textContent();
   await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
   const quotation = await page.locator("table tbody td.o_data_cell:nth-child(8)");
@@ -140,7 +140,7 @@ test('Discontinuing a synced OpenMRS drug order removes the corresponding Odoo q
 
   // verify
   await page.goto(`${ODOO_URL}`);
-  await odoo.searchCustomerInOdoo();
+  await odoo.searchCustomer();
   await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
   await expect(quotation).toHaveText('Cancelled');
   await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
@@ -153,9 +153,9 @@ test('Ordering a drug with a free text medication dosage for an OpenMRS patient 
   await openmrs.prescribeFreeTextMedicationDosage();
 
   // verify
-  await odoo.goToOdoo();
+  await odoo.open();
   await expect(page).toHaveURL(/.*web/);
-  await odoo.searchCustomerInOdoo();
+  await odoo.searchCustomer();
   const customer = await page.locator("tr.o_data_row:nth-child(1) td:nth-child(4)").textContent();
   await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
 

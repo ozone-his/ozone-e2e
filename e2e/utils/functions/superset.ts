@@ -10,7 +10,7 @@ export var randomSupersetRoleName = {
 export class Superset {
   constructor(readonly page: Page) {}
 
-  async goToSuperset() {
+  async open() {
     await this.page.goto(`${SUPERSET_URL}`);
   }
 
@@ -32,7 +32,7 @@ export class Superset {
     await delay(5000);
   }
 
-  async addSupersetRole() {
+  async addRole() {
     await this.page.getByRole('button', { name: 'triangle-down Settings' }).click();
     await expect(this.page.getByText('List Roles')).toBeVisible();
     await this.page.getByRole('link', { name: 'List Roles' }).click();
@@ -54,7 +54,7 @@ export class Superset {
     await delay(30000)
   }
 
-  async updateSupersetRole() {
+  async updateRole() {
     await this.page.goto(`${SUPERSET_URL}/roles/list/`);
     await this.page.getByRole('row', { name: `${randomSupersetRoleName.roleName}` }).getByRole('link').nth(1).click();
     await delay(2000);
@@ -67,7 +67,7 @@ export class Superset {
     await delay(30000);
   }
 
-  async deleteSupersetRole(){
+  async deleteRole(){
     await this.page.goto(`${SUPERSET_URL}/roles/list`);
     await this.page.getByRole('row', { name: `${randomSupersetRoleName.roleName}` }).getByRole('checkbox').check();
     await this.page.getByRole('row', { name: `${randomSupersetRoleName.roleName}` }).getByRole('link').nth(2).click();
@@ -78,7 +78,7 @@ export class Superset {
     await expect(this.page.getByText(`${randomSupersetRoleName.roleName}`)).not.toBeVisible();
   }
 
-  async deleteUpdatedSupersetRole(){
+  async deleteUpdatedRole(){
     await this.page.goto(`${SUPERSET_URL}/roles/list`);
     await this.page.getByRole('row', { name: `${randomSupersetRoleName.updatedRoleName}` }).getByRole('checkbox').check();
     await this.page.getByRole('row', { name: `${randomSupersetRoleName.updatedRoleName}` }).getByRole('link').nth(2).click();
@@ -88,12 +88,4 @@ export class Superset {
     await expect(this.page.getByText(`Deleted Row`)).toBeVisible();
     await expect(this.page.getByText(`${randomSupersetRoleName.updatedRoleName}`)).not.toBeVisible();
   }
-
-  async deleteSyncedSupersetRoleInKeycloak() {
-    await this.page.getByRole('row', { name: `${randomSupersetRoleName.roleName}` }).getByLabel('Actions').click();
-    await this.page.getByRole('menuitem', { name: 'Delete' }).click();
-    await this.page.getByTestId('confirm').click();
-    await expect(this.page.getByText(`The role has been deleted`)).toBeVisible();
-  }
-
 }
