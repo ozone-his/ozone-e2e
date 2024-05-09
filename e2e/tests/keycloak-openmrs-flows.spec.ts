@@ -16,7 +16,7 @@ test.beforeEach(async ({ page }) => {
   await openmrs.initiateLogin();
   await expect(page).toHaveURL(/.*home/);
 });
-/*
+
 test('Creating an OpenMRS role creates the corresponding Keycloak role.', async ({ page }) => {
   // replay
   await page.goto(`${O3_URL}/openmrs/admin/users/role.list`);
@@ -94,7 +94,7 @@ test('Deleting a synced OpenMRS role deletes the corresponding Keycloak role.', 
   const roleName = await page.locator('table tbody tr:nth-child(1) td:nth-child(1) a');
   await expect(roleName).not.toHaveText(`${randomOpenMRSRoleName.roleName}`);
 });
-*/
+
 test('Creating a Superset role creates the corresponding Keycloak role.', async ({ page }) => {
   // replay
   await superset.open();
