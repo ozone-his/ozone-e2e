@@ -26,7 +26,7 @@ export class OpenMRS {
   readonly patientSearchIcon = () => this.page.locator('[data-testid="searchPatientIcon"]');
   readonly patientSearchBar = () => this.page.locator('[data-testid="patientSearchBar"]');
 
-  async initiateLogin() {
+  async login() {
     await this.page.goto(`${O3_URL}`);
     if (`${process.env.TEST_PRO}` == 'true') {
       await this.page.locator('#username').fill(`${process.env.OZONE_USERNAME}`);
@@ -93,7 +93,7 @@ export class OpenMRS {
     await this.page.getByRole('link', { name: `${patientFullName}` }).first().click();
   }
 
-  async searchPatientID() {
+  async searchPatientId() {
     await this.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
     await expect(this.page.getByText('Actions', {exact: true})).toBeVisible();
     await this.page.getByRole('button', { name: 'Actions', exact: true }).click();
@@ -104,7 +104,7 @@ export class OpenMRS {
     await expect(this.page.getByText('OpenMRS ID', {exact: true})).toBeVisible();
   }
 
-  async extractUUIDFromURL(url) {
+  async extractUuidFromURL(url) {
     // Regular expression to match UUID in URL
     var regex = /\/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})\//;
 
@@ -118,13 +118,13 @@ export class OpenMRS {
     }
   }
 
-  async getPatientUUID() {
+  async getPatientUuid() {
     await this.page.goto(`${O3_URL}/openmrs/spa/home`);
     await this.patientSearchIcon().click();
     await this.patientSearchBar().type(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.getByRole('link', { name: `${patientFullName}` }).first().click();
     let url = await this.page.url();
-    return this.extractUUIDFromURL(url);
+    return this.extractUuidFromURL(url);
   }
 
   async startPatientVisit() {
@@ -243,7 +243,7 @@ export class OpenMRS {
     await this.page.getByRole('tab', { name: 'Panel' }).click();
   }
 
-  async makeDrugOrder() {
+  async createDrugOrder() {
     await this.page.getByLabel('Order basket', { exact: true }).click();
     await delay(3000);
     await this.page.getByRole('button', { name: 'Add', exact: true }).nth(0).click();
@@ -270,7 +270,7 @@ export class OpenMRS {
     await delay(5000);
   }
 
-  async prescribeFreeTextMedicationDosage() {
+  async createDrugOrderWithFreeTextDosage() {
     await this.page.getByLabel('Order basket', { exact: true }).click();
     await delay(3000);
     await this.page.getByRole('button', { name: 'Add', exact: true }).nth(0).click();

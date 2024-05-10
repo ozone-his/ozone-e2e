@@ -10,7 +10,7 @@ test.beforeEach(async ({ page }) => {
   openmrs = new OpenMRS(page);
   senaite = new SENAITE(page);
 
-  await openmrs.initiateLogin();
+  await openmrs.login();
   await expect(page).toHaveURL(/.*home/);
   await openmrs.createPatient();
   await openmrs.startPatientVisit();

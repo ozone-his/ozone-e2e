@@ -13,7 +13,7 @@ test.beforeEach(async ({ page }) => {
   keycloak = new Keycloak(page);
   superset = new Superset(page);
 
-  await openmrs.initiateLogin();
+  await openmrs.login();
   await expect(page).toHaveURL(/.*home/);
 });
 

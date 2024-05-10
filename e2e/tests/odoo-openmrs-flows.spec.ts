@@ -10,7 +10,7 @@ test.beforeEach(async ({ page }) => {
   openmrs = new OpenMRS(page);
   odoo = new Odoo(page);
 
-  await openmrs.initiateLogin();
+  await openmrs.login();
   await expect(page).toHaveURL(/.*home/);
   await openmrs.createPatient();
   await openmrs.startPatientVisit();
@@ -61,7 +61,7 @@ test('Editing the details of an OpenMRS patient with a synced lab order edits th
 
 test('Ordering a drug for an OpenMRS patient creates the corresponding Odoo customer with a filled quotation.', async ({ page }) => {
   // replay
-  await openmrs.makeDrugOrder();
+  await openmrs.createDrugOrder();
 
   // verify
   await odoo.open();
@@ -76,7 +76,7 @@ test('Ordering a drug for an OpenMRS patient creates the corresponding Odoo cust
 
 test('Editing the details of an OpenMRS patient with a synced drug order edits the corresponding Odoo customer details.', async ({ page }) => {
   // replay
-  await openmrs.makeDrugOrder();
+  await openmrs.createDrugOrder();
   await odoo.open();
   await expect(page).toHaveURL(/.*web/);
   await odoo.searchCustomer();
@@ -99,7 +99,7 @@ test('Editing the details of an OpenMRS patient with a synced drug order edits t
 
 test('Revising a synced OpenMRS drug order edits the corresponding Odoo quotation line.', async ({ page }) => {
   // replay
-  await openmrs.makeDrugOrder();
+  await openmrs.createDrugOrder();
   await odoo.open();
   await expect(page).toHaveURL(/.*web/);
   await odoo.searchCustomer();
@@ -123,7 +123,7 @@ test('Revising a synced OpenMRS drug order edits the corresponding Odoo quotatio
 
 test('Discontinuing a synced OpenMRS drug order removes the corresponding Odoo quotation line.', async ({ page }) => {
   // replay
-  await openmrs.makeDrugOrder();
+  await openmrs.createDrugOrder();
   await odoo.open();
   await expect(page).toHaveURL(/.*web/);
   await odoo.searchCustomer();
@@ -150,7 +150,7 @@ test('Discontinuing a synced OpenMRS drug order removes the corresponding Odoo q
 
 test('Ordering a drug with a free text medication dosage for an OpenMRS patient creates the corresponding Odoo customer with a filled quotation.', async ({ page }) => {
   // replay
-  await openmrs.prescribeFreeTextMedicationDosage();
+  await openmrs.createDrugOrderWithFreeTextDosage();
 
   // verify
   await odoo.open();

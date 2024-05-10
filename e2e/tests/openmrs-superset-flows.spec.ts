@@ -10,7 +10,7 @@ test.beforeEach(async ({ page }) => {
   openmrs = new OpenMRS(page);
   superset = new Superset(page);
 
-  await openmrs.initiateLogin();
+  await openmrs.login();
   await expect(page).toHaveURL(/.*home/);
 });
 
@@ -29,7 +29,7 @@ test('Creating an OpenMRS patient creates the patient in Superset patients table
   await superset.clearSQLEditor();
   await page.goto(`${O3_URL}`);
   await openmrs.createPatient();
-  await openmrs.searchPatientID();
+  await openmrs.searchPatientId();
   const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
 
   // verify
@@ -74,7 +74,7 @@ test('Creating an OpenMRS visit creates the visit in Superset visits table.', as
   await superset.clearSQLEditor();
   await page.goto(`${O3_URL}`);
   await openmrs.startPatientVisit();
-  const patient_uuid = await openmrs.getPatientUUID();
+  const patient_uuid = await openmrs.getPatientUuid();
 
   // verify
   await page.goto(`${SUPERSET_URL}/superset/sqllab`);
@@ -105,7 +105,7 @@ test('Creating an OpenMRS visit creates the visit in Superset visits table.', as
 test('Creating an OpenMRS order creates the order in Superset orders table.', async ({ page }) => {
   // replay
   await openmrs.createPatient();
-  await openmrs.searchPatientID();
+  await openmrs.searchPatientId();
   const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
   await openmrs.startPatientVisit();
   await superset.open();
@@ -160,7 +160,7 @@ test('Creating an OpenMRS order creates the order in Superset orders table.', as
 test('Creating an OpenMRS encounter creates the encounter in Superset encounters table.', async ({ page }) => {
   // replay
   await openmrs.createPatient();
-  await openmrs.searchPatientID();
+  await openmrs.searchPatientId();
   const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
   await openmrs.startPatientVisit();
   await superset.open();
@@ -228,7 +228,7 @@ test('Creating an OpenMRS encounter creates the encounter in Superset encounters
 test('Creating an OpenMRS condition creates the condition in Superset conditions table.', async ({ page }) => {
   // replay
   await openmrs.createPatient();
-  await openmrs.searchPatientID();
+  await openmrs.searchPatientId();
   const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
   await openmrs.startPatientVisit();
   await superset.open();
@@ -281,7 +281,7 @@ test('Creating an OpenMRS obs creates the observation in Superset observations t
   // replay
   await openmrs.createPatient();
   await openmrs.startPatientVisit();
-  const patient_uuid = await openmrs.getPatientUUID();
+  const patient_uuid = await openmrs.getPatientUuid();
   await superset.open();
   await expect(page).toHaveURL(/.*superset/);
   await superset.selectDBSchema();
@@ -335,7 +335,7 @@ test('Creating an OpenMRS obs creates the observation in Superset observations t
 test('Creating an OpenMRS appointment creates the appointment in Superset appointments table.', async ({ page }) => {
   // replay
   await openmrs.createPatient();
-  await openmrs.searchPatientID();
+  await openmrs.searchPatientId();
   const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
   await openmrs.startPatientVisit();
   await superset.open();
@@ -386,7 +386,7 @@ test('Voiding an OpenMRS obs updates the observation in Superset observations ta
   // replay
   await openmrs.createPatient();
   await openmrs.startPatientVisit();
-  const patient_uuid = await openmrs.getPatientUUID();
+  const patient_uuid = await openmrs.getPatientUuid();
   await openmrs.addPatientBiometrics();
   await superset.open();
   await expect(page).toHaveURL(/.*superset/);
