@@ -1,12 +1,5 @@
 import { Page, expect } from '@playwright/test';
-import {
-  O3_URL,
-  ODOO_URL,
-  SENAITE_URL,
-  KEYCLOAK_URL,
-  SUPERSET_URL
-}
-  from '../configs/globalSetup';
+import { O3_URL } from '../configs/globalSetup';
 
 export var patientName = {
   firstName : '',
@@ -16,17 +9,8 @@ export var patientName = {
 
 var patientFullName = '';
 
-export var randomSupersetRoleName = {
-  roleName : `Ac${(Math.random() + 1).toString(36).substring(2)}`,
-  updatedRoleName : `Ab${(Math.random() + 1).toString(36).substring(2)}`
-}
-
 export var randomOpenMRSRoleName = {
   roleName : `Ab${(Math.random() + 1).toString(36).substring(2)}`
-}
-
-export var randomKeycloakRoleName = {
-  roleName : `Aa${(Math.random() + 1).toString(36).substring(2)}`
 }
 
 export const delay = (mills) => {
@@ -36,14 +20,13 @@ export const delay = (mills) => {
      datetime1 = new Date().getTime();
     }
 }
-
-export class HomePage {
+export class OpenMRS {
   constructor(readonly page: Page) {}
 
   readonly patientSearchIcon = () => this.page.locator('[data-testid="searchPatientIcon"]');
   readonly patientSearchBar = () => this.page.locator('[data-testid="patientSearchBar"]');
 
-  async initiateLogin() {
+  async login() {
     await this.page.goto(`${O3_URL}`);
     if (`${process.env.TEST_PRO}` == 'true') {
       await this.page.locator('#username').fill(`${process.env.OZONE_USERNAME}`);
@@ -62,44 +45,6 @@ export class HomePage {
     await this.page.getByRole('button', { name: 'Confirm' }).click();
     await delay(5000);
     await this.expectAllButtonsToBePresent();
-  }
-
-  async goToSuperset() {
-    await this.page.goto(`${SUPERSET_URL}`);
-  }
-
-  async goToKeycloak() {
-    await this.page.goto(`${KEYCLOAK_URL}/admin/master/console`);
-    await this.page.getByLabel('Username or email').fill(`${process.env.KEYCLOAK_USERNAME}`);
-    await this.page.getByLabel('Password').fill(`${process.env.KEYCLOAK_PASSWORD}`);
-    await this.page.getByRole('button', { name: 'Sign In' }).click();
-    await delay(8000);
-  }
-
-  async goToOdoo() {
-    await this.page.goto(`${ODOO_URL}`);
-    if (`${process.env.TEST_PRO}` == 'true') {
-      await this.page.getByRole('link', { name: 'Login with Single Sign-On' }).click();
-    } else {
-      await delay(3000);
-      await this.page.locator('#login').fill(`${process.env.ODOO_USERNAME_ON_FOSS}`);
-      await delay(1000);
-      await this.page.locator('#password').fill(`${process.env.ODOO_PASSWORD_ON_FOSS}`);
-      await delay(1000);
-      await this.page.locator('button[type="submit"]').click();
-    }
-  }
-
-  async goToSENAITE() {
-    await this.page.goto(`${SENAITE_URL}`);
-    if (!(`${process.env.TEST_PRO}` == 'true')) {
-      await delay(3000);
-      await this.page.locator('#__ac_name').fill(`${process.env.SENAITE_USERNAME_ON_FOSS}`);
-      await delay(1000);
-      await this.page.locator('#__ac_password').fill(`${process.env.SENAITE_PASSWORD_ON_FOSS}`);
-      await delay(1000);
-      await this.page.locator('#buttons-login').click();
-    }
   }
 
   async createPatient() {
@@ -148,7 +93,7 @@ export class HomePage {
     await this.page.getByRole('link', { name: `${patientFullName}` }).first().click();
   }
 
-  async searchOpenMRSPatientID() {
+  async searchPatientId() {
     await this.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
     await expect(this.page.getByText('Actions', {exact: true})).toBeVisible();
     await this.page.getByRole('button', { name: 'Actions', exact: true }).click();
@@ -159,7 +104,7 @@ export class HomePage {
     await expect(this.page.getByText('OpenMRS ID', {exact: true})).toBeVisible();
   }
 
-  async extractUUIDFromURL(url) {
+  async extractUuidFromURL(url) {
     // Regular expression to match UUID in URL
     var regex = /\/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})\//;
 
@@ -173,13 +118,13 @@ export class HomePage {
     }
   }
 
-  async getPatientUUID() {
+  async getPatientUuid() {
     await this.page.goto(`${O3_URL}/openmrs/spa/home`);
     await this.patientSearchIcon().click();
     await this.patientSearchBar().type(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.getByRole('link', { name: `${patientFullName}` }).first().click();
     let url = await this.page.url();
-    return this.extractUUIDFromURL(url);
+    return this.extractUuidFromURL(url);
   }
 
   async startPatientVisit() {
@@ -256,24 +201,6 @@ export class HomePage {
     await expect(appointmentStatus).toHaveText('Scheduled');
   }
 
-  async selectDBSchema() {
-    await this.page.getByRole('button', { name: 'triangle-down SQL', exact: true }).click();
-    await this.page.getByRole('link', { name: 'SQL Lab', exact: true }).click();
-    await this.page.getByTitle('public').getByText('public').click();
-    await delay(4000);
-  }
-
-  async clearSQLEditor() {
-    await this.page.getByRole('textbox').first().clear();
-    await this.page.getByRole('textbox').first().fill('');
-    await delay(3000);
-  }
-
-  async runSQLQuery() {
-    await this.page.getByRole('button', { name: 'Run' }).click();
-    await delay(5000);
-  }
-
   async goToLabOrderForm() {
     await this.page.getByLabel('Clinical forms').click();
     await delay(3000);
@@ -310,37 +237,13 @@ export class HomePage {
     await delay(5000);
   }
 
-  async createPartition() {
-    await this.page.locator('table tbody tr:nth-child(1) td.contentcell.title div').click();
-    await this.page.locator('input[type=checkbox]').first().click();
-    await this.page.locator('#receive_transition span:nth-child(1)').click();
-    await this.page.getByRole('button', { name: 'Create Partitions' }).click();
-    await this.page.locator('table tbody tr:nth-child(1) td.contentcell.getId div span a').click();
-    await delay(3000);
-  }
-
-  async publishLabResults() {
-    await this.page.locator('#ajax_save_selection').click();
-    await this.page.getByRole('button', { name: 'Submit' }).click();
-    await this.page.locator('input[name="uids\\:list"]').first().check();
-    await this.page.getByRole('button', { name: 'Verify' }).click();
-    await this.page.getByRole('navigation', { name: 'breadcrumb' }).getByRole('link', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
-    await this.page.locator('input[name="uids\\:list"]').check();
-    await this.page.locator('#publish_transition span:nth-child(1)').click();
-    await delay(5000);
-    await this.page.getByRole('button', { name: 'Email' }).click();
-    await delay(5000);
-    await this.page.getByRole('button', { name: 'Send' }).click();
-    await delay(8000);
-  }
-
   async viewTestResults() {
     await this.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.getByRole('link', { name: 'Results Viewer' }).click();
     await this.page.getByRole('tab', { name: 'Panel' }).click();
   }
 
-  async makeDrugOrder() {
+  async createDrugOrder() {
     await this.page.getByLabel('Order basket', { exact: true }).click();
     await delay(3000);
     await this.page.getByRole('button', { name: 'Add', exact: true }).nth(0).click();
@@ -367,7 +270,7 @@ export class HomePage {
     await delay(5000);
   }
 
-  async prescribeFreeTextMedicationDosage() {
+  async createDrugOrderWithFreeTextDosage() {
     await this.page.getByLabel('Order basket', { exact: true }).click();
     await delay(3000);
     await this.page.getByRole('button', { name: 'Add', exact: true }).nth(0).click();
@@ -417,22 +320,6 @@ export class HomePage {
     await delay(3000);
   }
 
-  async searchCustomerInOdoo() {
-    await this.page.locator("//a[contains(@class, 'full')]").click();
-    await this.page.getByRole('menuitem', { name: 'Sales' }).click();
-    await delay(1500);
-    await this.page.getByPlaceholder('Search...').type(`${patientName.firstName + ' ' + patientName.givenName}`);
-    await this.page.getByPlaceholder('Search...').press('Enter');
-    await delay(2000);
-  }
-
-  async searchClientInSENAITE() {
-    await this.page.getByRole('link', { name: 'Clients', exact: true }).click();
-    await this.page.getByRole('textbox', { name: 'Search' }).type(`${patientName.givenName}`);
-    await this.page.locator('div.col-sm-3.text-right button:nth-child(2) i').click();
-    await delay(2000);
-  }
-
   async updatePatientDetails() {
     await this.page.getByRole('button', { name: 'Actions', exact: true }).click();
     await this.page.getByRole('menuitem', { name: 'Edit patient details' }).click();
@@ -449,7 +336,7 @@ export class HomePage {
     await delay(5000);
   }
 
-  async addOpenMRSRole() {
+  async addRole() {
     await this.page.getByRole('link', { name: 'Add Role' }).click();
     await this.page.locator('#role').fill(`${randomOpenMRSRoleName.roleName}`);
     await this.page.locator('textarea[name="description"]').fill('Role for e2e test');
@@ -462,7 +349,7 @@ export class HomePage {
     await expect(this.page.getByText('Role saved')).toBeVisible();
   }
 
-  async updateOpenMRSRole() {
+  async updateRole() {
     await this.page.getByRole('link', { name: `${randomOpenMRSRoleName.roleName}` }).click();
     await this.page.locator('textarea[name="description"]').clear();
     await this.page.locator('textarea[name="description"]').fill('Updated role description');
@@ -472,105 +359,7 @@ export class HomePage {
     await expect(this.page.getByText('Role saved')).toBeVisible();
   }
 
-  async addSupersetRole() {
-    await this.page.getByRole('button', { name: 'triangle-down Settings' }).click();
-    await expect(this.page.getByText('List Roles')).toBeVisible();
-    await this.page.getByRole('link', { name: 'List Roles' }).click();
-    await this.page.getByRole('link', { name: 'Add' }).click();
-    await this.page.getByPlaceholder('Name').clear();
-    await this.page.getByPlaceholder('Name').fill(`${randomSupersetRoleName.roleName}`);
-    await this.page.getByPlaceholder('Select Value').click();
-    await this.page.getByRole('option', { name: 'can read on SavedQuery' }).click();
-    await this.page.getByRole('searchbox').click();
-    await this.page.getByRole('option', { name: 'can read on Database' }).click();
-    await this.page.getByRole('searchbox').click();
-    await this.page.getByRole('option', { name: 'can write on Database' }).click();
-    await this.page.getByRole('searchbox').click();
-    await this.page.getByRole('option', { name: 'can read on Query' }).click();
-    await this.page.locator('button[type="submit"]').click();
-    await delay(2000);
-    await expect(this.page.getByText('Added Row')).toBeVisible();
-    await expect(this.page.getByText(`${randomSupersetRoleName.roleName}`)).toBeVisible();
-    await delay(30000)
-  }
-
-  async updateSupersetRole() {
-    await this.page.goto(`${SUPERSET_URL}/roles/list/`);
-    await this.page.getByRole('row', { name: `${randomSupersetRoleName.roleName}` }).getByRole('link').nth(1).click();
-    await delay(2000);
-    await this.page.getByPlaceholder('Name').clear();
-    await this.page.getByPlaceholder('Name').fill(`${randomSupersetRoleName.updatedRoleName}`);
-    await this.page.locator('button[type="submit"]').click();
-    await delay(2000);
-    await expect(this.page.getByText('Changed Row')).toBeVisible();
-    await expect(this.page.getByText(`${randomSupersetRoleName.updatedRoleName}`)).toBeVisible();
-    await delay(30000);
-  }
-
-  async deleteSupersetRole(){
-    await this.page.goto(`${SUPERSET_URL}/roles/list`);
-    await this.page.getByRole('row', { name: `${randomSupersetRoleName.roleName}` }).getByRole('checkbox').check();
-    await this.page.getByRole('row', { name: `${randomSupersetRoleName.roleName}` }).getByRole('link').nth(2).click();
-    await delay(2000);
-    await this.page.getByRole('link', { name: 'OK' }).click();
-    await delay(2500);
-    await expect(this.page.getByText(`Deleted Row`)).toBeVisible();
-    await expect(this.page.getByText(`${randomSupersetRoleName.roleName}`)).not.toBeVisible();
-  }
-
-  async deleteUpdatedSupersetRole(){
-    await this.page.goto(`${SUPERSET_URL}/roles/list`);
-    await this.page.getByRole('row', { name: `${randomSupersetRoleName.updatedRoleName}` }).getByRole('checkbox').check();
-    await this.page.getByRole('row', { name: `${randomSupersetRoleName.updatedRoleName}` }).getByRole('link').nth(2).click();
-    await delay(2000);
-    await this.page.getByRole('link', { name: 'OK' }).click();
-    await delay(2500);
-    await expect(this.page.getByText(`Deleted Row`)).toBeVisible();
-    await expect(this.page.getByText(`${randomSupersetRoleName.updatedRoleName}`)).not.toBeVisible();
-  }
-
-  async deleteSyncedSupersetRoleInKeycloak() {
-    await this.page.getByRole('row', { name: `${randomSupersetRoleName.roleName}` }).getByLabel('Actions').click();
-    await this.page.getByRole('menuitem', { name: 'Delete' }).click();
-    await this.page.getByTestId('confirm').click();
-    await expect(this.page.getByText(`The role has been deleted`)).toBeVisible();
-  }
-
-  async goToClients() {
-    await this.page.getByTestId('realmSelectorToggle').click();
-    await this.page.getByRole('menuitem', { name: 'ozone' }).click();
-    await this.page.getByRole('link', { name: 'Clients' }).click();
-    await delay(2000);
-  }
-
-  async selectOpenMRSId() {
-    await this.page.getByRole('link', { name: 'openmrs', exact: true }).click();
-    await this.page.getByTestId('rolesTab').click();
-  }
-
-  async goToClientAttributes() {
-    await this.page.getByRole('link', { name: `${randomOpenMRSRoleName.roleName}` }).click();
-    await this.page.getByTestId('attributesTab').click();
-  }
-
-  async selectSupersetId() {
-    if (await this.page. getByRole('link', { name: 'superset', exact: true }).isHidden()) {
-      await this.page.getByLabel('Pagination top').getByLabel('Go to next page').click();
-    }
-    await this.page.getByRole('link', { name: 'superset', exact: true }).click();
-    await this.page.getByTestId('rolesTab').click();
-  }
-
-  async createRoleInKeycloak() {
-    await this.page.getByTestId('create-role').click();
-    await this.page.getByLabel('Role name').fill(`${randomKeycloakRoleName.roleName}`);
-    await this.page.getByLabel('Description').fill('This is Keycloak test role');
-    await this.page.getByTestId('save').click();
-    await expect(this.page.getByText('Role created')).toBeVisible();
-    await delay(2000);
-  }
-
-  async unlinkInheritedOpenMRSRoles() {
+  async unlinkInheritedRoles() {
     await this.page.getByRole('link', { name: `${randomOpenMRSRoleName.roleName}` }).click();
     await this.page.getByLabel('Application: Edits Existing Encounters').uncheck();
     await this.page.getByLabel('Application: Enters Vitals').uncheck();
@@ -582,7 +371,7 @@ export class HomePage {
     await delay(2000);
   }
 
-  async unlinkUpdatedOpenMRSInheritedRoles() {
+  async unlinkUpdatedInheritedRoles() {
     await this.page.getByRole('link', { name: `${randomOpenMRSRoleName.roleName}` }).click();
     await this.page.getByLabel('Application: Edits Existing Encounters').uncheck();
     await this.page.getByLabel('Application: Enters Vitals').uncheck();
@@ -595,9 +384,9 @@ export class HomePage {
     await expect(this.page.getByText('Role saved')).toBeVisible();
   }
 
-  async deleteOpenMRSRole() {
+  async deleteRole() {
     await this.page.goto(`${O3_URL}/openmrs/admin/users/role.list`);
-    await this.unlinkInheritedOpenMRSRoles();
+    await this.unlinkInheritedRoles();
     await this.page.getByRole('row', { name: `${randomOpenMRSRoleName.roleName}` }).getByRole('checkbox').check();
     await this.page.getByRole('button', { name: 'Delete Selected Roles' }).click();
     await expect(this.page.getByText(`${randomOpenMRSRoleName.roleName} deleted`)).toBeVisible();
