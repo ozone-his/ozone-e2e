@@ -8,7 +8,7 @@ export var randomKeycloakRoleName = {
   roleName : `Aa${(Math.random() + 1).toString(36).substring(2)}`
 }
 
-export class Keycloack {
+export class Keycloak {
   constructor(readonly page: Page) {}
 
   async open() {
