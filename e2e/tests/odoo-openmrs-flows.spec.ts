@@ -121,7 +121,7 @@ test('Revising a synced OpenMRS drug order edits the corresponding Odoo quotatio
   await expect(drugOrderItem).toContainText('Thrice daily - 6 Days');
 });
 
-test('Discontinuing an OpenMRS drug order for an Odoo customer with a single quotation line removes the corresponding quotation.', async ({ page }) => {
+test('Discontinuing a synced OpenMRS drug order for an Odoo customer with a single quotation line removes the corresponding quotation.', async ({ page }) => {
   // replay
   await openmrs.createDrugOrder();
   await odoo.open();
@@ -149,7 +149,7 @@ test('Discontinuing an OpenMRS drug order for an Odoo customer with a single quo
 });
 
 
-test('Discontinuing a synced drug order of an Odoo customer with multiple quotation lines removes the corresponding quoatation.', async ({ page }) => {
+test('Discontinuing a synced OpenMRS drug order for an Odoo customer with multiple quotation lines removes the corresponding quoatation.', async ({ page }) => {
   // setup
   await openmrs.goToLabOrderForm();
   await page.getByRole('button', { name: 'Add', exact: true }).click();
