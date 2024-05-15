@@ -137,12 +137,12 @@ export class OpenMRS {
   }
 
   async endPatientVisit() {
-    await this.searchPatient(`${patientFullName}`)
+    await this.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`)
     await this.page.getByRole('button', { name: 'Actions', exact: true }).click();
     await this.page.getByRole('menuitem', { name: 'End visit' }).click();
     await this.page.getByRole('button', { name: 'danger End Visit' }).click();
     await expect(this.page.getByText('Visit ended')).toBeVisible();
-    await this.page.getByRole('button', { name: 'Close' }).click();
+    await this.page.getByRole('button', { name: 'Close', exact: true }).click();
   }
 
   async deletePatient() {
@@ -201,6 +201,18 @@ export class OpenMRS {
     await expect(appointmentStatus).toHaveText('Scheduled');
   }
 
+  async createLabOrder() {
+    await this.page.getByLabel('Order basket', { exact: true }).click();
+    await this.page.getByRole('button', { name: 'Add', exact: true }).nth(1).click();
+    await this.page.getByPlaceholder('Search for a test type').fill('Urobilinogen');
+    await delay(3000);
+    await this.page.getByRole('button', { name: 'Order form' }).click();
+    await this.page.getByRole('button', { name: 'Save order' }).click();
+    await this.page.getByRole('button', { name: 'Sign and close' }).click();
+    await expect(this.page.getByText('Placed orders')).toBeVisible();
+    await delay(3000);
+  }
+
   async goToLabOrderForm() {
     await this.page.getByLabel('Clinical forms').click();
     await delay(3000);
@@ -245,12 +257,12 @@ export class OpenMRS {
 
   async createDrugOrder() {
     await this.page.getByLabel('Order basket', { exact: true }).click();
-    await delay(3000);
+    await delay(2000);
     await this.page.getByRole('button', { name: 'Add', exact: true }).nth(0).click();
     await delay(2000);
     await this.page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 325mg');
     await this.page.getByRole('button', { name: 'Order form' }).click();
-    await delay(4000);
+    await delay(2000);
     await this.page.getByPlaceholder('Dose').fill('4');
     await this.page.getByRole('button', { name: 'Open', exact: true }).nth(1).click();
     await this.page.getByText('Intravenous', {exact: true}).click();
@@ -303,6 +315,8 @@ export class OpenMRS {
     await this.page.getByText('Thrice daily').click();
     await this.page.getByLabel('Duration', { exact: true }).clear();
     await this.page.getByLabel('Duration', { exact: true }).fill('6');
+    await this.page.getByLabel('Quantity to dispense').clear();
+    await this.page.getByLabel('Quantity to dispense').fill('8');
     await this.page.getByRole('button', { name: 'Save order' }).focus();
     await this.page.getByRole('button', { name: 'Save order' }).dispatchEvent('click');
     await expect(this.page.getByText('Sign and close')).toBeVisible();

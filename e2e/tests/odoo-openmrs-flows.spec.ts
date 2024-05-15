@@ -148,7 +148,6 @@ test('Discontinuing a synced OpenMRS drug order for an Odoo customer with a sing
   await expect(QuotationItem).not.toHaveText('Aspirin 325mg');
 });
 
-
 test('Discontinuing a synced OpenMRS drug order for an Odoo customer with multiple quotation lines removes the corresponding quoatation.', async ({ page }) => {
   // setup
   await openmrs.goToLabOrderForm();
