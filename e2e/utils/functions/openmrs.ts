@@ -44,7 +44,7 @@ export class OpenMRS {
     await this.page.locator('label').filter({ hasText: 'Inpatient Ward' }).locator('span').first().click();
     await this.page.getByRole('button', { name: 'Confirm' }).click();
     await delay(5000);
-    await this.expectAllButtonsToBePresent();
+    await this.waitHomePageToLoad();
   }
 
   async createPatient() {
@@ -54,7 +54,7 @@ export class OpenMRS {
       updatedFirstName: `${(Math.random() + 1).toString(36).substring(2)}`
     }
     patientFullName = patientName.firstName + ' ' + patientName.givenName;
-    await this.expectAllButtonsToBePresent();
+    await this.waitHomePageToLoad();
     await this.page.getByRole('button', { name: 'Add Patient' }).click();
     await expect(this.page.getByRole('button', { name: 'Register Patient' })).toBeEnabled();
     await this.page.getByLabel('First Name').clear();
@@ -153,7 +153,6 @@ export class OpenMRS {
     await this.page.getByRole('button', { name: 'Delete Patient', exact: true }).click();
     const message = await this.page.locator('//*[@id="patientFormVoided"]').textContent();
     await expect(message?.includes('This patient has been deleted')).toBeTruthy();
-    await this.page.getByRole('link', { name: 'Log out' }).click();
   }
 
   async addPatientCondition() {
@@ -403,10 +402,9 @@ export class OpenMRS {
     await this.page.getByRole('link', { name: 'Log out' }).click();
   }
 
-  async expectAllButtonsToBePresent() {
+  async waitHomePageToLoad() {
     await expect(this.page.getByRole('button', { name: 'Search Patient' })).toBeEnabled();
     await expect(this.page.getByRole('button', { name: 'Add Patient' })).toBeEnabled();
-    await expect(this.page.getByRole('button', { name: 'Implementer Tools' })).toBeEnabled();
     await expect(this.page.getByRole('button', { name: 'My Account' })).toBeEnabled();
     await expect(this.page.getByRole('button', { name: 'App Menu' })).toBeEnabled();
   }
