@@ -66,7 +66,7 @@ test('Ending an OpenMRS patient visit with a synced drug order updates the corre
   await expect(quotationStatus).toHaveText('Open');
 });
 
-test('Revising a synced OpenMRS drug order edits the corresponding ERPNext quotation line.', async ({ page }) => {
+test('Revising a synced OpenMRS drug order edits the corresponding ERPNext quotation item.', async ({ page }) => {
   // setup
   await openmrs.createDrugOrder();
   await erpnext.open();

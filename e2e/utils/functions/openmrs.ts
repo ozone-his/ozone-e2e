@@ -35,10 +35,10 @@ export class OpenMRS {
       await this.page.getByRole('button', { name: 'Sign In' }).click();
     } else {
       await this.page.locator('#username').fill(`${process.env.O3_USERNAME_ON_FOSS}`);
-      await this.page.waitForTimeout(1000);
+      await delay(1000);
       await this.page.getByRole('button', { name: 'Continue' }).click();
       await this.page.locator('#password').fill(`${process.env.O3_PASSWORD_ON_FOSS}`);
-      await this.page.waitForTimeout(1000);
+      await delay(1000);
       await this.page.locator('button[type="submit"]').click();
     }
     await this.page.locator('label').filter({ hasText: 'Inpatient Ward' }).locator('span').first().click();
@@ -257,9 +257,7 @@ export class OpenMRS {
 
   async createDrugOrder() {
     await this.page.getByLabel('Order basket', { exact: true }).click();
-    await delay(2000);
     await this.page.getByRole('button', { name: 'Add', exact: true }).nth(0).click();
-    await delay(2000);
     await this.page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 325mg');
     await this.page.getByRole('button', { name: 'Order form' }).click();
     await delay(2000);
@@ -284,12 +282,10 @@ export class OpenMRS {
 
   async createDrugOrderWithFreeTextDosage() {
     await this.page.getByLabel('Order basket', { exact: true }).click();
-    await delay(3000);
     await this.page.getByRole('button', { name: 'Add', exact: true }).nth(0).click();
-    await delay(2000);
     await this.page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 325mg');
     await this.page.getByRole('button', { name: 'Order form' }).click();
-    await delay(4000);
+    await delay(2000);
     await this.page.locator('div').filter({ hasText: /^Off$/ }).locator('div').click();
     await this.page.getByPlaceholder('Free text dosage').fill('Take up to three tablets per day');
     await this.page.getByLabel('Duration', { exact: true }).fill('3');
@@ -308,7 +304,6 @@ export class OpenMRS {
   async editDrugOrder() {
     await this.page.getByRole('button', { name: 'Options', exact: true }).click();
     await this.page.getByRole('menuitem', { name: 'Modify', exact: true }).click();
-    await delay(4000);
     await this.page.getByPlaceholder('Dose').clear();
     await this.page.getByPlaceholder('Dose').fill('8');
     await this.page.getByPlaceholder('Frequency').click();
