@@ -153,7 +153,6 @@ export class OpenMRS {
     await this.page.getByRole('button', { name: 'Delete Patient', exact: true }).click();
     const message = await this.page.locator('//*[@id="patientFormVoided"]').textContent();
     await expect(message?.includes('This patient has been deleted')).toBeTruthy();
-    await this.page.getByRole('link', { name: 'Log out' }).click();
   }
 
   async addPatientCondition() {
@@ -168,6 +167,14 @@ export class OpenMRS {
     const patientCondition = await this.page.locator('table tbody tr:nth-child(1) td:nth-child(1)');
     await expect(patientCondition).toHaveText('Typhoid fever');
     await this.page.getByRole('button', { name: 'Close', exact: true }).click();
+  }
+
+  async voidPatientCondition() {
+    await this.page.getByRole('link', { name: 'Conditions' }).click();
+    await this.page.getByRole('button', { name: 'Options' }).click();
+    await this.page.getByRole('menuitem', { name: 'Delete' }).click();
+    await this.page.getByRole('button', { name: 'Delete' }).click();
+    await expect(this.page.getByText('Condition Deleted')).toBeVisible();
   }
 
   async addPatientBiometrics() {
@@ -199,6 +206,15 @@ export class OpenMRS {
     await expect(appointmentType).toHaveText('Scheduled');
     const appointmentStatus = await this.page.locator('table tbody tr:nth-child(1) td:nth-child(4)');
     await expect(appointmentStatus).toHaveText('Scheduled');
+  }
+
+  async cancelPatientAppointment() {
+    await this.page.getByRole('link', { name: 'Appointments' }).click();
+    await this.page.getByRole('tab', { name: 'Today' }).click();
+    await this.page.getByRole('button', { name: 'Options' }).click();
+    await this.page.getByRole('menuitem', { name: 'Cancel' }).click();
+    await this.page.getByRole('button', { name: 'Cancel appointment' }).click();
+    await expect(this.page.getByText('Appointment cancelled successfully')).toBeVisible();
   }
 
   async goToLabOrderForm() {
