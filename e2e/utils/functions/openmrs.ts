@@ -145,7 +145,7 @@ export class OpenMRS {
     await this.page.getByRole('button', { name: 'Close' }).click();
   }
 
-  async deletePatient() {
+  async voidPatient() {
     await this.page.goto(`${O3_URL}/openmrs/admin/patients/index.htm`);
     await this.page.getByPlaceholder(' ').type(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.locator('#openmrsSearchTable tbody tr.odd td:nth-child(1)').click();

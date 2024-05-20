@@ -183,6 +183,6 @@ test('Published free text lab results from SENAITE are viewable in the OpenMRS l
 });
 
 test.afterEach(async ({ page }) => {
-  await openmrs.deletePatient();
+  await openmrs.voidPatient
   await page.close();
 });

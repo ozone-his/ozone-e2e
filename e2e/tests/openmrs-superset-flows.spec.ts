@@ -58,7 +58,7 @@ test('Creating an OpenMRS patient creates the patient in Superset patients table
   await expect(patientGender).toHaveText('M');
   await page.getByRole('tab', { name: 'Results' }).click();
   await superset.clearSQLEditor();
-  await openmrs.deletePatient();
+  await openmrs.voidPatient();
 });
 
 test('Creating an OpenMRS visit creates the visit in Superset visits table.', async ({ page }) => {
@@ -105,7 +105,7 @@ test('Creating an OpenMRS visit creates the visit in Superset visits table.', as
   await expect(patientAgeAtVisit).toBe(24);
   await page.getByRole('tab', { name: 'Query history' }).click();
   await superset.clearSQLEditor();
-  await openmrs.deletePatient();
+  await openmrs.voidPatient();
 });
 
 test('Creating an OpenMRS order creates the order in Superset orders table.', async ({ page }) => {
@@ -163,7 +163,7 @@ test('Creating an OpenMRS order creates the order in Superset orders table.', as
   await expect(encounterTypeName).toContainText('Consultation');
   await page.getByRole('tab', { name: 'Query history' }).click();
   await superset.clearSQLEditor();
-  await openmrs.deletePatient();
+  await openmrs.voidPatient();
 });
 
 test('Creating an OpenMRS encounter creates the encounter in Superset encounters table.', async ({ page }) => {
@@ -234,7 +234,7 @@ test('Creating an OpenMRS encounter creates the encounter in Superset encounters
   await expect(visitTypeName).toContainText('Facility Visit');
   await page.getByRole('tab', { name: 'Results' }).click();
   await superset.clearSQLEditor();
-  await openmrs.deletePatient();
+  await openmrs.voidPatient();
 });
 
 test('Creating an OpenMRS condition creates the condition in Superset conditions table.', async ({ page }) => {
@@ -289,7 +289,7 @@ test('Creating an OpenMRS condition creates the condition in Superset conditions
   await expect(onSetDate).toContainText('2023-07-27T00:00:00');
   await page.getByRole('tab', { name: 'Query history' }).click();
   await superset.clearSQLEditor();
-  await openmrs.deletePatient();
+  await openmrs.voidPatient();
 });
 
 test('Creating an OpenMRS obs creates the observation in Superset observations table.', async ({ page }) => {
@@ -347,7 +347,7 @@ test('Creating an OpenMRS obs creates the observation in Superset observations t
   await expect(patientMidUpperArmCircumference).toBe(34);
   await page.getByRole('tab', { name: 'Results' }).click();
   await superset.clearSQLEditor();
-  await openmrs.deletePatient();
+  await openmrs.voidPatient();
 });
 
 test('Creating an OpenMRS appointment creates the appointment in Superset appointments table.', async ({ page }) => {
@@ -400,7 +400,7 @@ test('Creating an OpenMRS appointment creates the appointment in Superset appoin
   await expect(appointmentStatus).toContainText('Scheduled');
   await page.getByRole('tab', { name: 'Query history' }).click();
   await superset.clearSQLEditor();
-  await openmrs.deletePatient();
+  await openmrs.voidPatient();
 });
 
 test('Voiding an OpenMRS obs updates the observation in Superset observations table.', async ({ page }) => {
@@ -441,7 +441,7 @@ test('Voiding an OpenMRS obs updates the observation in Superset observations ta
 
   await page.getByRole('tab', { name: 'Results' }).click();
   await superset.clearSQLEditor();
-  await openmrs.deletePatient();
+  await openmrs.voidPatient();
 });
 
 test('Voiding an OpenMRS patient updates the patient in Superset patients table.', async ({ page }) => {
@@ -461,7 +461,7 @@ test('Voiding an OpenMRS patient updates the patient in Superset patients table.
   await expect(patientVoidedState).toContainText('false');
 
   // replay
-  await openmrs.deletePatient();
+  await openmrs.voidPatient();
 
   // verify
   await page.goto(`${SUPERSET_URL}/superset/sqllab`);
@@ -511,7 +511,7 @@ test('Voiding an OpenMRS condition updates the condition in Superset conditions 
 
   await expect(conditionVoidedState).toContainText('true');
   await superset.clearSQLEditor();
-  await openmrs.deletePatient();
+  await openmrs.voidPatient();
 });
 
 test('Voiding an OpenMRS encounter updates the encounter in Superset encounters table.', async ({ page }) => {
@@ -569,7 +569,7 @@ test('Voiding an OpenMRS encounter updates the encounter in Superset encounters 
 
   await expect(encounterVoidedState).toContainText('true');
   await superset.clearSQLEditor();
-  await openmrs.deletePatient();
+  await openmrs.voidPatient();
 });
 
 test('Cancelling an OpenMRS appointment updates the appointment in Superset appointments table.', async ({ page }) => {
@@ -611,7 +611,7 @@ test('Cancelling an OpenMRS appointment updates the appointment in Superset appo
 
   await expect(appointmentStatus).toContainText('Cancelled');
   await superset.clearSQLEditor();
-  await openmrs.deletePatient();
+  await openmrs.voidPatient();
 });
 
 test.afterEach(async ({ page }) => {
