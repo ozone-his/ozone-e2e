@@ -473,7 +473,7 @@ test('Voiding an OpenMRS patient updates the patient in Superset patients table.
   await superset.clearSQLEditor();
 });
 
-test('Voiding an OpenMRS condition update the condition in Superset conditions table.', async ({ page }) => {
+test('Voiding an OpenMRS condition updates the condition in Superset conditions table.', async ({ page }) => {
   // setup
   await openmrs.createPatient();
   await openmrs.searchPatientId();
