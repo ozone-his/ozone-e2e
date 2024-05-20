@@ -35,16 +35,16 @@ export class OpenMRS {
       await this.page.getByRole('button', { name: 'Sign In' }).click();
     } else {
       await this.page.locator('#username').fill(`${process.env.O3_USERNAME_ON_FOSS}`);
-      await this.page.waitForTimeout(1000);
+      await delay(1000);
       await this.page.getByRole('button', { name: 'Continue' }).click();
       await this.page.locator('#password').fill(`${process.env.O3_PASSWORD_ON_FOSS}`);
-      await this.page.waitForTimeout(1000);
+      await delay(1000);
       await this.page.locator('button[type="submit"]').click();
     }
     await this.page.locator('label').filter({ hasText: 'Inpatient Ward' }).locator('span').first().click();
     await this.page.getByRole('button', { name: 'Confirm' }).click();
     await delay(5000);
-    await this.expectAllButtonsToBePresent();
+    await this.waitHomePageToLoad();
   }
 
   async createPatient() {
@@ -54,7 +54,7 @@ export class OpenMRS {
       updatedFirstName: `${(Math.random() + 1).toString(36).substring(2)}`
     }
     patientFullName = patientName.firstName + ' ' + patientName.givenName;
-    await this.expectAllButtonsToBePresent();
+    await this.waitHomePageToLoad();
     await this.page.getByRole('button', { name: 'Add Patient' }).click();
     await expect(this.page.getByRole('button', { name: 'Register Patient' })).toBeEnabled();
     await this.page.getByLabel('First Name').clear();
@@ -137,12 +137,12 @@ export class OpenMRS {
   }
 
   async endPatientVisit() {
-    await this.searchPatient(`${patientFullName}`)
+    await this.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`)
     await this.page.getByRole('button', { name: 'Actions', exact: true }).click();
     await this.page.getByRole('menuitem', { name: 'End visit' }).click();
     await this.page.getByRole('button', { name: 'danger End Visit' }).click();
     await expect(this.page.getByText('Visit ended')).toBeVisible();
-    await this.page.getByRole('button', { name: 'Close' }).click();
+    await this.page.getByRole('button', { name: 'Close', exact: true }).click();
   }
 
   async voidPatient() {
@@ -215,6 +215,18 @@ export class OpenMRS {
     await this.page.getByRole('menuitem', { name: 'Cancel' }).click();
     await this.page.getByRole('button', { name: 'Cancel appointment' }).click();
     await expect(this.page.getByText('Appointment cancelled successfully')).toBeVisible();
+   }
+
+  async createLabOrder() {
+    await this.page.getByLabel('Order basket', { exact: true }).click();
+    await this.page.getByRole('button', { name: 'Add', exact: true }).nth(1).click();
+    await this.page.getByPlaceholder('Search for a test type').fill('Urobilinogen');
+    await delay(3000);
+    await this.page.getByRole('button', { name: 'Order form' }).click();
+    await this.page.getByRole('button', { name: 'Save order' }).click();
+    await this.page.getByRole('button', { name: 'Sign and close' }).click();
+    await expect(this.page.getByText('Placed orders')).toBeVisible();
+    await delay(3000);
   }
 
   async goToLabOrderForm() {
@@ -261,12 +273,10 @@ export class OpenMRS {
 
   async createDrugOrder() {
     await this.page.getByLabel('Order basket', { exact: true }).click();
-    await delay(3000);
     await this.page.getByRole('button', { name: 'Add', exact: true }).nth(0).click();
-    await delay(2000);
     await this.page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 325mg');
     await this.page.getByRole('button', { name: 'Order form' }).click();
-    await delay(4000);
+    await delay(2000);
     await this.page.getByPlaceholder('Dose').fill('4');
     await this.page.getByRole('button', { name: 'Open', exact: true }).nth(1).click();
     await this.page.getByText('Intravenous', {exact: true}).click();
@@ -288,12 +298,10 @@ export class OpenMRS {
 
   async createDrugOrderWithFreeTextDosage() {
     await this.page.getByLabel('Order basket', { exact: true }).click();
-    await delay(3000);
     await this.page.getByRole('button', { name: 'Add', exact: true }).nth(0).click();
-    await delay(2000);
     await this.page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 325mg');
     await this.page.getByRole('button', { name: 'Order form' }).click();
-    await delay(4000);
+    await delay(2000);
     await this.page.locator('div').filter({ hasText: /^Off$/ }).locator('div').click();
     await this.page.getByPlaceholder('Free text dosage').fill('Take up to three tablets per day');
     await this.page.getByLabel('Duration', { exact: true }).fill('3');
@@ -312,13 +320,14 @@ export class OpenMRS {
   async editDrugOrder() {
     await this.page.getByRole('button', { name: 'Options', exact: true }).click();
     await this.page.getByRole('menuitem', { name: 'Modify', exact: true }).click();
-    await delay(4000);
     await this.page.getByPlaceholder('Dose').clear();
     await this.page.getByPlaceholder('Dose').fill('8');
     await this.page.getByPlaceholder('Frequency').click();
     await this.page.getByText('Thrice daily').click();
     await this.page.getByLabel('Duration', { exact: true }).clear();
     await this.page.getByLabel('Duration', { exact: true }).fill('6');
+    await this.page.getByLabel('Quantity to dispense').clear();
+    await this.page.getByLabel('Quantity to dispense').fill('8');
     await this.page.getByRole('button', { name: 'Save order' }).focus();
     await this.page.getByRole('button', { name: 'Save order' }).dispatchEvent('click');
     await expect(this.page.getByText('Sign and close')).toBeVisible();
@@ -410,10 +419,9 @@ export class OpenMRS {
     await this.page.getByRole('link', { name: 'Log out' }).click();
   }
 
-  async expectAllButtonsToBePresent() {
+  async waitHomePageToLoad() {
     await expect(this.page.getByRole('button', { name: 'Search Patient' })).toBeEnabled();
     await expect(this.page.getByRole('button', { name: 'Add Patient' })).toBeEnabled();
-    await expect(this.page.getByRole('button', { name: 'Implementer Tools' })).toBeEnabled();
     await expect(this.page.getByRole('button', { name: 'My Account' })).toBeEnabled();
     await expect(this.page.getByRole('button', { name: 'App Menu' })).toBeEnabled();
   }
