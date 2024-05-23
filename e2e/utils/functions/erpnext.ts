@@ -17,7 +17,7 @@ export class ERPNext {
     await this.page.getByRole('link', { name: 'Customer', exact: true }).click();
     await this.page.getByPlaceholder('Customer Name').clear();
     await this.page.getByPlaceholder('Customer Name').fill(`${patientName.givenName}`);
-    await delay(3000);
+    await delay(4000);
   }
 
   async searchQuotation() {
