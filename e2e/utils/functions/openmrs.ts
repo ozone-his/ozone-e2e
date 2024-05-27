@@ -145,11 +145,11 @@ export class OpenMRS {
     await this.page.getByRole('button', { name: 'Close', exact: true }).click();
   }
 
-  async deletePatient() {
+  async voidPatient() {
     await this.page.goto(`${O3_URL}/openmrs/admin/patients/index.htm`);
     await this.page.getByPlaceholder(' ').type(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.locator('#openmrsSearchTable tbody tr.odd td:nth-child(1)').click();
-    await this.page.locator('input[name="voidReason"]').fill('Delete patient created by smoke tests');
+    await this.page.locator('input[name="voidReason"]').fill('Void patient created by smoke test');
     await this.page.getByRole('button', { name: 'Delete Patient', exact: true }).click();
     const message = await this.page.locator('//*[@id="patientFormVoided"]').textContent();
     await expect(message?.includes('This patient has been deleted')).toBeTruthy();
@@ -167,6 +167,14 @@ export class OpenMRS {
     const patientCondition = await this.page.locator('table tbody tr:nth-child(1) td:nth-child(1)');
     await expect(patientCondition).toHaveText('Typhoid fever');
     await this.page.getByRole('button', { name: 'Close', exact: true }).click();
+  }
+
+  async voidPatientCondition() {
+    await this.page.getByRole('link', { name: 'Conditions' }).click();
+    await this.page.getByRole('button', { name: 'Options' }).click();
+    await this.page.getByRole('menuitem', { name: 'Delete' }).click();
+    await this.page.getByRole('button', { name: 'Delete' }).click();
+    await expect(this.page.getByText('Condition Deleted')).toBeVisible();
   }
 
   async addPatientBiometrics() {
@@ -199,6 +207,15 @@ export class OpenMRS {
     const appointmentStatus = await this.page.locator('table tbody tr:nth-child(1) td:nth-child(4)');
     await expect(appointmentStatus).toHaveText('Scheduled');
   }
+
+  async cancelPatientAppointment() {
+    await this.page.getByRole('link', { name: 'Appointments' }).click();
+    await this.page.getByRole('tab', { name: 'Today' }).click();
+    await this.page.getByRole('button', { name: 'Options' }).click();
+    await this.page.getByRole('menuitem', { name: 'Cancel' }).click();
+    await this.page.getByRole('button', { name: 'Cancel appointment' }).click();
+    await expect(this.page.getByText('Appointment cancelled successfully')).toBeVisible();
+   }
 
   async createLabOrder() {
     await this.page.getByLabel('Order basket', { exact: true }).click();

@@ -15,7 +15,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('Creating an OpenMRS patient creates the patient in Superset patients table.', async ({ page }) => {
-  // replay
+  // setup
   await superset.open();
   await expect(page).toHaveURL(/.*superset/);
   await superset.selectDBSchema();
@@ -27,6 +27,8 @@ test('Creating an OpenMRS patient creates the patient in Superset patients table
   let initialPatientsCount = Number(initialNumberOfPatients);
   await page.getByRole('tab', { name: 'Query history' }).click();
   await superset.clearSQLEditor();
+
+  // replay
   await page.goto(`${O3_URL}`);
   await openmrs.createPatient();
   await openmrs.searchPatientId();
@@ -56,10 +58,11 @@ test('Creating an OpenMRS patient creates the patient in Superset patients table
   await expect(patientGender).toHaveText('M');
   await page.getByRole('tab', { name: 'Results' }).click();
   await superset.clearSQLEditor();
+  await openmrs.voidPatient();
 });
 
 test('Creating an OpenMRS visit creates the visit in Superset visits table.', async ({ page }) => {
-  // replay
+  // setup
   await openmrs.createPatient();
   await superset.open();
   await expect(page).toHaveURL(/.*superset/);
@@ -72,6 +75,8 @@ test('Creating an OpenMRS visit creates the visit in Superset visits table.', as
   let initialVisitsCount = Number(initialNumberOfVisits);
   await page.getByRole('tab', { name: 'Query history' }).click();
   await superset.clearSQLEditor();
+
+  // replay
   await page.goto(`${O3_URL}`);
   await openmrs.startPatientVisit();
   const patient_uuid = await openmrs.getPatientUuid();
@@ -100,10 +105,11 @@ test('Creating an OpenMRS visit creates the visit in Superset visits table.', as
   await expect(patientAgeAtVisit).toBe(24);
   await page.getByRole('tab', { name: 'Query history' }).click();
   await superset.clearSQLEditor();
+  await openmrs.voidPatient();
 });
 
 test('Creating an OpenMRS order creates the order in Superset orders table.', async ({ page }) => {
-  // replay
+  // setup
   await openmrs.createPatient();
   await openmrs.searchPatientId();
   const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
@@ -119,6 +125,8 @@ test('Creating an OpenMRS order creates the order in Superset orders table.', as
   let initialOrdersCount = Number(initialNumberOfOrders);
   await page.getByRole('tab', { name: 'Query history' }).click();
   await superset.clearSQLEditor();
+
+  // replay
   await page.goto(`${O3_URL}`);
   await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await openmrs.goToLabOrderForm();
@@ -155,10 +163,11 @@ test('Creating an OpenMRS order creates the order in Superset orders table.', as
   await expect(encounterTypeName).toContainText('Consultation');
   await page.getByRole('tab', { name: 'Query history' }).click();
   await superset.clearSQLEditor();
+  await openmrs.voidPatient();
 });
 
 test('Creating an OpenMRS encounter creates the encounter in Superset encounters table.', async ({ page }) => {
-  // replay
+  // setup
   await openmrs.createPatient();
   await openmrs.searchPatientId();
   const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
@@ -174,6 +183,8 @@ test('Creating an OpenMRS encounter creates the encounter in Superset encounters
   let initialEncountersCount = Number(initialNumberOfEncounters);
   await page.getByRole('tab', { name: 'Query history' }).click();
   await superset.clearSQLEditor();
+
+  // replay
   await page.goto(`${O3_URL}`);
   await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await openmrs.goToLabOrderForm();
@@ -223,10 +234,11 @@ test('Creating an OpenMRS encounter creates the encounter in Superset encounters
   await expect(visitTypeName).toContainText('Facility Visit');
   await page.getByRole('tab', { name: 'Results' }).click();
   await superset.clearSQLEditor();
+  await openmrs.voidPatient();
 });
 
 test('Creating an OpenMRS condition creates the condition in Superset conditions table.', async ({ page }) => {
-  // replay
+  // setup
   await openmrs.createPatient();
   await openmrs.searchPatientId();
   const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
@@ -242,6 +254,8 @@ test('Creating an OpenMRS condition creates the condition in Superset conditions
   let initialConditionsCount = Number(initialNumberOfConditions);
   await page.getByRole('tab', { name: 'Query history' }).click();
   await superset.clearSQLEditor();
+
+  // replay
   await page.goto(`${O3_URL}`);
   await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await openmrs.addPatientCondition();
@@ -275,10 +289,11 @@ test('Creating an OpenMRS condition creates the condition in Superset conditions
   await expect(onSetDate).toContainText('2023-07-27T00:00:00');
   await page.getByRole('tab', { name: 'Query history' }).click();
   await superset.clearSQLEditor();
+  await openmrs.voidPatient();
 });
 
 test('Creating an OpenMRS obs creates the observation in Superset observations table.', async ({ page }) => {
-  // replay
+  // setup
   await openmrs.createPatient();
   await openmrs.startPatientVisit();
   const patient_uuid = await openmrs.getPatientUuid();
@@ -293,6 +308,8 @@ test('Creating an OpenMRS obs creates the observation in Superset observations t
   let initialObservationsCount = Number(initialNumberOfObservations);
   await page.getByRole('tab', { name: 'Query history' }).click();
   await superset.clearSQLEditor();
+
+  // replay
   await page.goto(`${O3_URL}`);
   await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await openmrs.addPatientBiometrics();
@@ -330,10 +347,11 @@ test('Creating an OpenMRS obs creates the observation in Superset observations t
   await expect(patientMidUpperArmCircumference).toBe(34);
   await page.getByRole('tab', { name: 'Results' }).click();
   await superset.clearSQLEditor();
+  await openmrs.voidPatient();
 });
 
 test('Creating an OpenMRS appointment creates the appointment in Superset appointments table.', async ({ page }) => {
-  // replay
+  // setup
   await openmrs.createPatient();
   await openmrs.searchPatientId();
   const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
@@ -349,6 +367,8 @@ test('Creating an OpenMRS appointment creates the appointment in Superset appoin
   let initialAppointmentsCount = Number(initialNumberOfAppointments);
   await page.getByRole('tab', { name: 'Query history' }).click();
   await superset.clearSQLEditor();
+
+  // replay
   await page.goto(`${O3_URL}`);
   await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await openmrs.addPatientAppointment();
@@ -380,10 +400,11 @@ test('Creating an OpenMRS appointment creates the appointment in Superset appoin
   await expect(appointmentStatus).toContainText('Scheduled');
   await page.getByRole('tab', { name: 'Query history' }).click();
   await superset.clearSQLEditor();
+  await openmrs.voidPatient();
 });
 
 test('Voiding an OpenMRS obs updates the observation in Superset observations table.', async ({ page }) => {
-  // replay
+  // setup
   await openmrs.createPatient();
   await openmrs.startPatientVisit();
   const patient_uuid = await openmrs.getPatientUuid();
@@ -403,6 +424,7 @@ test('Voiding an OpenMRS obs updates the observation in Superset observations ta
   await expect(secondObsVoidedState).toContainText('false');
   await expect(thirdObsVoidedState).toContainText('false');
 
+  // replay
   await page.goto(`${O3_URL}/openmrs/spa/home`);
   await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await openmrs.voidEncounter();
@@ -419,9 +441,179 @@ test('Voiding an OpenMRS obs updates the observation in Superset observations ta
 
   await page.getByRole('tab', { name: 'Results' }).click();
   await superset.clearSQLEditor();
+  await openmrs.voidPatient();
+});
+
+test('Voiding an OpenMRS patient updates the patient in Superset patients table.', async ({ page }) => {
+  // setup
+  await openmrs.createPatient();
+  await openmrs.searchPatientId();
+  const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
+  await superset.open();
+  await expect(page).toHaveURL(/.*superset/);
+  await superset.selectDBSchema();
+  await superset.clearSQLEditor();
+  let personVoidedQuery = `SELECT person_voided FROM patients where identifiers like 'OpenMRS ID: ${patientIdentifier}';`;
+  await page.getByRole('textbox').first().fill(personVoidedQuery);
+  await superset.runSQLQuery();
+  let patientVoidedState = await page.locator('div.virtual-table-cell');
+
+  await expect(patientVoidedState).toContainText('false');
+
+  // replay
+  await openmrs.voidPatient();
+
+  // verify
+  await page.goto(`${SUPERSET_URL}/superset/sqllab`);
+  await superset.clearSQLEditor();
+  await page.getByRole('textbox').first().fill(personVoidedQuery);
+  await superset.runSQLQuery();
+
+  await expect(patientVoidedState).toContainText('true');
+  await superset.clearSQLEditor();
+});
+
+test('Voiding an OpenMRS condition updates the condition in Superset conditions table.', async ({ page }) => {
+  // setup
+  await openmrs.createPatient();
+  await openmrs.searchPatientId();
+  const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
+  await openmrs.startPatientVisit();
+  await openmrs.addPatientCondition();
+  await superset.open();
+  await expect(page).toHaveURL(/.*superset/);
+  await superset.selectDBSchema();
+  await superset.clearSQLEditor();
+  let patientIdQuery = `SELECT patient_id FROM patients WHERE identifiers like 'OpenMRS ID: ${patientIdentifier}';`;
+  await page.getByRole('textbox').first().fill(patientIdQuery);
+  await superset.runSQLQuery();
+  let patientId = await page.locator('div.virtual-table-cell').textContent();
+  const patientIdValue = Number(patientId);
+  await superset.clearSQLEditor();
+  let conditionVoidedQuery = `SELECT voided FROM conditions WHERE patient_id=${patientIdValue};`;
+  await page.getByRole('textbox').first().fill(conditionVoidedQuery);
+  await superset.runSQLQuery();
+  let conditionVoidedState = await page.locator('div.virtual-table-cell');
+
+  await expect(conditionVoidedState).toContainText('false');
+  await superset.clearSQLEditor();
+
+  // replay
+  await page.goto(`${O3_URL}`);
+  await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
+  await openmrs.voidPatientCondition();
+
+  // verify
+  await page.goto(`${SUPERSET_URL}/superset/sqllab`);
+  await superset.clearSQLEditor();
+  await page.getByRole('textbox').first().fill(conditionVoidedQuery);
+  await superset.runSQLQuery();
+
+  await expect(conditionVoidedState).toContainText('true');
+  await superset.clearSQLEditor();
+  await openmrs.voidPatient();
+});
+
+test('Voiding an OpenMRS encounter updates the encounter in Superset encounters table.', async ({ page }) => {
+  // setup
+  await openmrs.createPatient();
+  await openmrs.searchPatientId();
+  const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
+  await openmrs.startPatientVisit();
+  await openmrs.goToLabOrderForm();
+  await page.getByRole('button', { name: 'Add', exact: true }).click();
+  await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  await openmrs.saveLabOrder();
+  await superset.open();
+  await expect(page).toHaveURL(/.*superset/);
+  await superset.selectDBSchema();
+  await superset.clearSQLEditor();
+  let patientIdQuery = `SELECT patient_id FROM patients WHERE identifiers like 'OpenMRS ID: ${patientIdentifier}';`;
+  await page.getByRole('textbox').first().fill(patientIdQuery);
+  await superset.runSQLQuery();
+  let patientId = await page.locator('div.virtual-table-cell').textContent();
+  const patientIdValue = Number(patientId);
+  await page.getByRole('tab', { name: 'Results' }).click();
+  await superset.clearSQLEditor();
+  let encounterIdQuery = `SELECT encounter_id FROM orders WHERE patient_id=${patientIdValue};`;
+  await page.getByRole('textbox').first().fill(encounterIdQuery);
+  await superset.runSQLQuery();
+  let encounterId = await page.locator('div.virtual-table-cell').textContent();
+  const encounterIdValue = Number(encounterId);
+  await page.getByRole('tab', { name: 'Query history' }).click();
+  await superset.clearSQLEditor();
+  let encounterTypeUuidQuery = `SELECT encounter_type_uuid FROM orders WHERE patient_id=${patientIdValue};`;
+  await page.getByRole('textbox').fill(encounterTypeUuidQuery);
+  await superset.runSQLQuery();
+  let encounterTypeUuidValue = await page.locator('div.virtual-table-cell').textContent();
+  await page.getByRole('tab', { name: 'Results' }).click();
+  await superset.clearSQLEditor();
+  let encounterVoidedQuery = `SELECT encounter_voided FROM encounters WHERE encounter_id=${encounterIdValue} AND encounter_type_uuid like '${encounterTypeUuidValue}';`;
+  await page.getByRole('textbox').first().fill(encounterVoidedQuery);
+  await superset.runSQLQuery();
+  let encounterVoidedState = await page.locator('div.virtual-table-cell');
+
+  await expect(encounterVoidedState).toContainText('false');
+  await superset.clearSQLEditor();
+
+  // replay
+  await page.goto(`${O3_URL}`);
+  await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
+  await openmrs.voidEncounter();
+
+  // verify
+  await page.goto(`${SUPERSET_URL}/superset/sqllab`);
+  await superset.clearSQLEditor();
+  await page.getByRole('textbox').first().fill(encounterVoidedQuery);
+  await superset.runSQLQuery();
+
+  await expect(encounterVoidedState).toContainText('true');
+  await superset.clearSQLEditor();
+  await openmrs.voidPatient();
+});
+
+test('Cancelling an OpenMRS appointment updates the appointment in Superset appointments table.', async ({ page }) => {
+  // setup
+  await openmrs.createPatient();
+  await openmrs.searchPatientId();
+  const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
+  await openmrs.startPatientVisit();
+  await openmrs.addPatientAppointment();
+  await superset.open();
+  await expect(page).toHaveURL(/.*superset/);
+  await superset.selectDBSchema();
+  await superset.clearSQLEditor();
+  let patientIdQuery = `SELECT patient_id FROM patients WHERE identifiers like 'OpenMRS ID: ${patientIdentifier}';`;
+  await page.getByRole('textbox').first().fill(patientIdQuery);
+  await superset.runSQLQuery();
+  let patientId = await page.locator('div.virtual-table-cell').textContent();
+  const patientIdValue = Number(patientId);
+  await page.getByRole('tab', { name: 'Results' }).click();
+  await superset.clearSQLEditor();
+  let appointmentStatusQuery = `SELECT status FROM appointments WHERE patient_id=${patientIdValue};`;
+  await page.getByRole('textbox').first().fill(appointmentStatusQuery);
+  await superset.runSQLQuery();
+  let appointmentStatus = await page.locator('div.virtual-table-cell');
+
+  await expect(appointmentStatus).toContainText('Scheduled');
+  await superset.clearSQLEditor();
+
+  // replay
+  await page.goto(`${O3_URL}`);
+  await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
+  await openmrs.cancelPatientAppointment();
+
+  // verify
+  await page.goto(`${SUPERSET_URL}/superset/sqllab`);
+  await superset.clearSQLEditor();
+  await page.getByRole('textbox').first().fill(appointmentStatusQuery);
+  await superset.runSQLQuery();
+
+  await expect(appointmentStatus).toContainText('Cancelled');
+  await superset.clearSQLEditor();
+  await openmrs.voidPatient();
 });
 
 test.afterEach(async ({ page }) => {
-  await openmrs.deletePatient();
   await page.close();
 });

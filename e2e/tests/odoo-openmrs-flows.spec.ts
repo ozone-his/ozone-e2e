@@ -198,6 +198,6 @@ test('Ordering a drug with a free text medication dosage for an OpenMRS patient 
 });
 
 test.afterEach(async ({ page }) => {
-  await openmrs.deletePatient();
+  await openmrs.voidPatient();
   await page.close();
 });
