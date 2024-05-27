@@ -26,7 +26,7 @@ test('Ordering a lab test for an OpenMRS patient creates the corresponding ERPNe
   await erpnext.searchCustomer();
   const customer = await page.locator(".bold a:nth-child(1)");
   await expect(customer).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
-  await openmrs.deletePatient();
+  await openmrs.voidPatient();
 });
 
 test('Ordering a drug for an OpenMRS patient creates the corresponding ERPNext customer with a filled quotation.', async ({ page }) => {
@@ -44,7 +44,7 @@ test('Ordering a drug for an OpenMRS patient creates the corresponding ERPNext c
   await page.getByLabel('Dashboard').getByText('Quotation').click();
   await erpnext.searchQuotation();
   await expect(page.getByText('Draft').nth(0)).toBeVisible();
-  await openmrs.deletePatient();
+  await openmrs.voidPatient();
   await erpnext.deleteQuotation();
 });
 
@@ -68,7 +68,7 @@ test('Ending an OpenMRS patient visit with a synced drug order updates the corre
   await erpnext.searchQuotation();
   await expect(quotationStatus).toHaveText('Open');
   await erpnext.voidQuotation();
-  await openmrs.deletePatient();
+  await openmrs.voidPatient();
   await erpnext.deleteQuotation();
 });
 
@@ -92,7 +92,7 @@ test('Revising a synced OpenMRS drug order edits the corresponding ERPNext quota
   await erpnext.searchQuotation();
   await page.getByRole('link', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
   await expect(quantity).toHaveText('8');
-  await openmrs.deletePatient();
+  await openmrs.voidPatient();
   await erpnext.deleteQuotation();
 });
 
@@ -111,7 +111,7 @@ test('Ordering a drug with a free text medication dosage for an OpenMRS patient 
   await page.getByLabel('Dashboard').getByText('Quotation').click();
   await erpnext.searchQuotation();
   await expect(page.getByText('Draft').nth(0)).toBeVisible();
-  await openmrs.deletePatient();
+  await openmrs.voidPatient();
   await erpnext.deleteQuotation();
 });
 
@@ -133,7 +133,7 @@ test('Discontinuing a synced OpenMRS drug order for an ERPNext customer with a s
   await erpnext.searchQuotation();
   await expect(page.getByText(`${patientName.firstName + ' ' + patientName.givenName}`)).not.toBeVisible();
   await expect(page.getByText('No Quotation found')).toBeVisible();
-  await openmrs.deletePatient();
+  await openmrs.voidPatient();
 });
 
 test.afterEach(async ({ page }) => {
