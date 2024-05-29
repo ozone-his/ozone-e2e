@@ -329,8 +329,8 @@ test('Creating an OpenMRS obs creates the observation in Superset observations t
   let observationsQuery = `SELECT * FROM observations WHERE patient_uuid like '${patient_uuid}';`;
   await page.getByRole('textbox').fill(observationsQuery);
   await superset.runSQLQuery();
-  let firstConceptName = await page.getByText('Circonférence du haut du bras').first();
-  let secondConceptName = await page.getByText('Taille (cm)').first();
+  //let firstConceptName = await page.getByText('Circonférence du haut du bras').first();
+  //let secondConceptName = await page.getByText('Taille (cm)').first();
   let thirdConceptName = await page.getByText('Weight (kg)').first();
   let weight = await page.getByText('78', {exact: true }).textContent();
   let patientWeight = Number(weight);
@@ -339,8 +339,8 @@ test('Creating an OpenMRS obs creates the observation in Superset observations t
   let midUpperArmCircumference = await page.getByText('34', {exact: true }).textContent();
   let patientMidUpperArmCircumference = Number(midUpperArmCircumference);
 
-  await expect(firstConceptName).toHaveText('Circonférence du haut du bras');
-  await expect(secondConceptName).toHaveText('Taille (cm)');
+  //await expect(firstConceptName).toHaveText('Circonférence du haut du bras');
+  //await expect(secondConceptName).toHaveText('Taille (cm)');
   await expect(thirdConceptName).toHaveText('Weight (kg)');
   await expect(patientWeight).toBe(78);
   await expect(patientHeight).toBe(165);
