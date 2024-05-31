@@ -8,8 +8,7 @@ export class SENAITE {
 
   async open() {
     await this.page.goto(`${SENAITE_URL}`);
-    if (!(`${process.env.TEST_PRO}` == 'true')) {
-      await delay(3000);
+    if ((`${process.env.TEST_PRO}` == 'false')) {
       await this.page.locator('#__ac_name').fill(`${process.env.SENAITE_USERNAME_ON_FOSS}`);
       await delay(1000);
       await this.page.locator('#__ac_password').fill(`${process.env.SENAITE_PASSWORD_ON_FOSS}`);

@@ -33,7 +33,7 @@ export class ERPNext {
     await this.page.goto(`${ERPNEXT_URL}/app/quotation`);
     await this.searchQuotation();
     await this.page.getByRole('checkbox', { name: 'Select All' }).check();
-    await delay(2500);
+    await delay(2000);
     await this.page.getByRole('button', { name: 'Actions' }).click();
     await this.page.getByRole('link', { name: 'Delete' }).click();
     await this.page.getByRole('button', { name: 'Yes' }).click();
@@ -44,7 +44,7 @@ export class ERPNext {
     await this.page.goto(`${ERPNEXT_URL}/app/quotation`);
     await this.searchQuotation();
     await this.page.getByRole('checkbox', { name: 'Select All' }).check();
-    await delay(2500);
+    await delay(2000);
     await this.page.getByRole('button', { name: 'Actions' }).click();
     await this.page.getByRole('link', { name: 'Cancel' }).click();
     await this.page.getByRole('button', { name: 'Yes' }).click();
@@ -54,7 +54,7 @@ export class ERPNext {
     await this.page.goto(`${ERPNEXT_URL}/app/customer`);
     await this.searchCustomer();
     await this.page.getByRole('checkbox', { name: 'Select All' }).check();
-    await delay(2500);
+    await delay(2000);
     await this.page.getByRole('button', { name: 'Actions' }).click();
     await this.page.getByRole('link', { name: 'Delete' }).click();
     await this.page.getByRole('button', { name: 'Yes' }).click();

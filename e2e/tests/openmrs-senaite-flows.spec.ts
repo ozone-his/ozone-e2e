@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { OpenMRS, patientName } from '../utils/functions/openmrs';
 import { SENAITE } from '../utils/functions/senaite';
-import { O3_URL } from '../utils/configs/globalSetup';
+import { O3_URL, SENAITE_URL } from '../utils/configs/globalSetup';
 
 let openmrs: OpenMRS;
 let senaite: SENAITE;
@@ -47,7 +47,7 @@ test('Editing the details of an OpenMRS patient with a synced lab order edits th
   await openmrs.updatePatientDetails();
 
   // verify
-  await senaite.open();
+  await page.goto(`${SENAITE_URL}`);
   await senaite.searchClient();
 
   await expect(client).toContainText(`${patientName.updatedFirstName}` + ' ' + `${patientName.givenName }`);
@@ -73,7 +73,7 @@ test('Editing a synced OpenMRS lab order edits the corresponding SENAITE analysi
   await openmrs.updateLabOrder();
 
   // verify
-  await senaite.open();
+  await page.goto(`${SENAITE_URL}`);
   await senaite.searchClient();
 
   await expect(client).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
@@ -102,7 +102,7 @@ test('Voiding a synced OpenMRS lab order cancels the corresponding SENAITE analy
   await openmrs.voidEncounter();
 
   // verify
-  await senaite.open();
+  await page.goto(`${SENAITE_URL}`);
   await senaite.searchClient();
   await expect(client).not.toHaveText(`${patientName.firstName + ' ' + patientName.givenName}`);
 });

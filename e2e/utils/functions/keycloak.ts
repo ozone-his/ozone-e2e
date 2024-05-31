@@ -16,7 +16,7 @@ export class Keycloak {
     await this.page.getByLabel('Username or email').fill(`${process.env.KEYCLOAK_USERNAME}`);
     await this.page.getByLabel('Password').fill(`${process.env.KEYCLOAK_PASSWORD}`);
     await this.page.getByRole('button', { name: 'Sign In' }).click();
-    await delay(8000);
+    await delay(6000);
   }
 
   async createRole() {
