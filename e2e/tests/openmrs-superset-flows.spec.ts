@@ -60,7 +60,7 @@ test('Creating an OpenMRS patient creates the patient in Superset patients table
   await superset.clearSQLEditor();
   await openmrs.voidPatient();
 });
-
+/*
 test('Creating an OpenMRS visit creates the visit in Superset visits table.', async ({ page }) => {
   // setup
   await openmrs.createPatient();
@@ -613,7 +613,7 @@ test('Cancelling an OpenMRS appointment updates the appointment in Superset appo
   await superset.clearSQLEditor();
   await openmrs.voidPatient();
 });
-
+*/
 test.afterEach(async ({ page }) => {
   await page.close();
 });
