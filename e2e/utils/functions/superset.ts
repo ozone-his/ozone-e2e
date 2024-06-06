@@ -12,6 +12,13 @@ export class Superset {
 
   async open() {
     await this.page.goto(`${SUPERSET_URL}`);
+    if ((`${process.env.TEST_PRO}` == 'false')) {
+      await this.page.locator('#username').fill(`${process.env.SUPERSET_USERNAME_ON_FOSS}`);
+      await delay(1000);
+      await this.page.locator('#password').fill(`${process.env.SUPERSET_PASSWORD_ON_FOSS}`);
+      await delay(1000);
+      await this.page.locator('input[type="submit"]').click();
+    }
   }
 
   async selectDBSchema() {

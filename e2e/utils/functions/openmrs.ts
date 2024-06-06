@@ -43,7 +43,7 @@ export class OpenMRS {
     }
     await this.page.locator('label').filter({ hasText: 'Inpatient Ward' }).locator('span').first().click();
     await this.page.getByRole('button', { name: 'Confirm' }).click();
-    await delay(5000);
+    await delay(4000);
     await this.waitHomePageToLoad();
   }
 
@@ -82,14 +82,18 @@ export class OpenMRS {
   }
 
   async goToHomePage() {
-    await this.page.goto(`${O3_URL}/openmrs/spa/home`);
+    if (`${process.env.TEST_LOCALHOST}` == 'true') {
+      await this.page.goto(`${O3_URL}/home`);
+    } else {
+      await this.page.goto(`${O3_URL}/openmrs/spa/home`);
+    }
     await expect(this.page).toHaveURL(/.*home/);
   }
 
   async searchPatient(searchText: string) {
     await this.goToHomePage();
     await this.patientSearchIcon().click();
-    await this.patientSearchBar().type(searchText);
+    await this.patientSearchBar().fill(searchText);
     await this.page.getByRole('link', { name: `${patientFullName}` }).first().click();
   }
 
@@ -119,7 +123,11 @@ export class OpenMRS {
   }
 
   async getPatientUuid() {
-    await this.page.goto(`${O3_URL}/openmrs/spa/home`);
+    if (`${process.env.TEST_LOCALHOST}` == 'true') {
+      await this.page.goto(`${O3_URL}/home`);
+    } else {
+      await this.page.goto(`${O3_URL}/openmrs/spa/home`);
+    }
     await this.patientSearchIcon().click();
     await this.patientSearchBar().type(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.getByRole('link', { name: `${patientFullName}` }).first().click();
@@ -146,7 +154,11 @@ export class OpenMRS {
   }
 
   async voidPatient() {
-    await this.page.goto(`${O3_URL}/openmrs/admin/patients/index.htm`);
+    if (`${process.env.TEST_LOCALHOST}` == 'true') {
+      await this.page.goto(`http://localhost/openmrs/admin/patients/index.htm`);
+    } else {
+      await this.page.goto(`${O3_URL}/openmrs/admin/patients/index.htm`);
+    }
     await this.page.getByPlaceholder(' ').type(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.locator('#openmrsSearchTable tbody tr.odd td:nth-child(1)').click();
     await this.page.locator('input[name="voidReason"]').fill('Void patient created by smoke test');

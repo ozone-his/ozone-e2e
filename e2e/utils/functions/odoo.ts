@@ -11,7 +11,6 @@ export class Odoo {
     if (`${process.env.TEST_PRO}` == 'true') {
       await this.page.getByRole('link', { name: 'Login with Single Sign-On' }).click();
     } else {
-      await delay(3000);
       await this.page.locator('#login').fill(`${process.env.ODOO_USERNAME_ON_FOSS}`);
       await delay(1000);
       await this.page.locator('#password').fill(`${process.env.ODOO_PASSWORD_ON_FOSS}`);
