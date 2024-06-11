@@ -48,6 +48,50 @@ test('Ordering a drug for an OpenMRS patient creates the corresponding ERPNext c
   await erpnext.deleteQuotation();
 });
 
+test('Editing the details of an OpenMRS patient with a synced lab order edits the corresponding ERPNext customer details.', async ({ page }) => {
+  // setup
+  await openmrs.createLabOrder();
+  await erpnext.open();
+  await expect(page).toHaveURL(/.*home/);
+  await erpnext.searchCustomer();
+  const customer = await page.locator(".bold a:nth-child(1)");
+  await expect(customer).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
+
+  // replay
+  await page.goto(`${O3_URL}`);
+  await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
+  await openmrs.updatePatientDetails();
+
+  // verify
+  await page.goto(`${ERPNEXT_URL}/app/home`);
+  await erpnext.searchCustomer();
+  await expect(customer).toContainText(`${patientName.updatedFirstName}` + ' ' + `${patientName.givenName}`);
+  await openmrs.voidPatient();
+});
+
+
+test('Editing the details of an OpenMRS patient with a synced drug order edits the corresponding ERPNext customer details.', async ({ page }) => {
+  // setup
+  await openmrs.createDrugOrder();
+  await erpnext.open();
+  await expect(page).toHaveURL(/.*home/);
+  await erpnext.searchCustomer();
+  const customer = await page.locator(".bold a:nth-child(1)");
+  await expect(customer).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
+
+  // replay
+  await page.goto(`${O3_URL}`);
+  await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
+  await openmrs.updatePatientDetails();
+
+  // verify
+  await page.goto(`${ERPNEXT_URL}/app/home`);
+  await erpnext.searchCustomer();
+  await expect(customer).toContainText(`${patientName.updatedFirstName}` + ' ' + `${patientName.givenName}`);
+  await openmrs.voidPatient();
+  await erpnext.deleteQuotation();
+});
+
 test('Ending an OpenMRS patient visit with a synced drug order updates the corresponding ERPNext draft quotation to an open state.', async ({ page }) => {
   // setup
   await openmrs.createDrugOrder();
@@ -63,7 +107,7 @@ test('Ending an OpenMRS patient visit with a synced drug order updates the corre
   await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await openmrs.endPatientVisit();
 
-   // verify
+  // verify
   await page.goto(`${ERPNEXT_URL}/app/home`);
   await erpnext.searchQuotation();
   await expect(quotationStatus).toHaveText('Open');
