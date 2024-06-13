@@ -82,11 +82,7 @@ export class OpenMRS {
   }
 
   async goToHomePage() {
-    if (`${process.env.TEST_LOCALHOST}` == 'true') {
-      await this.page.goto(`${O3_URL}/home`);
-    } else {
-      await this.page.goto(`${O3_URL}/openmrs/spa/home`);
-    }
+    await this.page.goto(`${O3_URL}/openmrs/spa/home`);
     await expect(this.page).toHaveURL(/.*home/);
   }
 
@@ -123,11 +119,7 @@ export class OpenMRS {
   }
 
   async getPatientUuid() {
-    if (`${process.env.TEST_LOCALHOST}` == 'true') {
-      await this.page.goto(`${O3_URL}/home`);
-    } else {
-      await this.page.goto(`${O3_URL}/openmrs/spa/home`);
-    }
+    await this.page.goto(`${O3_URL}/openmrs/spa/home`);
     await this.patientSearchIcon().click();
     await this.patientSearchBar().type(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.getByRole('link', { name: `${patientFullName}` }).first().click();
@@ -154,11 +146,7 @@ export class OpenMRS {
   }
 
   async voidPatient() {
-    if (`${process.env.TEST_LOCALHOST}` == 'true') {
-      await this.page.goto(`http://localhost/openmrs/admin/patients/index.htm`);
-    } else {
-      await this.page.goto(`${O3_URL}/openmrs/admin/patients/index.htm`);
-    }
+    await this.page.goto(`${O3_URL}/openmrs/admin/patients/index.htm`);
     await this.page.getByPlaceholder(' ').type(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.locator('#openmrsSearchTable tbody tr.odd td:nth-child(1)').click();
     await this.page.locator('input[name="voidReason"]').fill('Void patient created by smoke test');
