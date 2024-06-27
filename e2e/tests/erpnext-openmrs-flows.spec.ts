@@ -69,7 +69,6 @@ test('Editing the details of an OpenMRS patient with a synced lab order edits th
   await openmrs.voidPatient();
 });
 
-
 test('Editing the details of an OpenMRS patient with a synced drug order edits the corresponding ERPNext customer details.', async ({ page }) => {
   // setup
   await openmrs.createDrugOrder();
