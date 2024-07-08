@@ -96,7 +96,7 @@ test('Voiding a synced OpenMRS lab order cancels the corresponding SENAITE analy
   await expect(analysisRequest).toHaveText('Blood urea nitrogen Template');
   await page.goto(`${O3_URL}`);
   await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
-  await openmrs.discontinueLabOrder();
+  await openmrs.cancelLabOrder();
 
   // verify
   await page.goto(`${SENAITE_URL}`);

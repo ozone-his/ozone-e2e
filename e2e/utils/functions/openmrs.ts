@@ -254,7 +254,7 @@ export class OpenMRS {
     await delay(5000);
   }
 
-  async discontinueLabOrder() {
+  async cancelLabOrder() {
     await this.page.getByRole('link', { name: 'Orders' }).click();
     await this.page.getByRole('button', { name: 'Options' }).nth(0).click();
     await this.page.getByRole('menuitem', { name: 'Cancel Order' }).click();
