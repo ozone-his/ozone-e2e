@@ -19,8 +19,7 @@ test.beforeEach(async ({ page }) => {
 test('Ordering a lab test for an OpenMRS patient creates the corresponding SENAITE client with an analysis request.', async ({ page }) => {
   // replay
   await openmrs.goToLabOrderForm();
-  await page.getByRole('button', { name: 'Add', exact: true }).click();
-  await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  await page.getByPlaceholder('Search for a test type').fill('Blood urea nitrogen');
   await openmrs.saveLabOrder();
 
   // verify
@@ -34,8 +33,7 @@ test('Ordering a lab test for an OpenMRS patient creates the corresponding SENAI
 test('Editing the details of an OpenMRS patient with a synced lab order edits the corresponding SENAITE client details.', async ({ page }) => {
   // replay
   await openmrs.goToLabOrderForm();
-  await page.getByRole('button', { name: 'Add', exact: true }).click();
-  await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  await page.getByPlaceholder('Search for a test type').fill('Blood urea nitrogen');
   await openmrs.saveLabOrder();
   await senaite.open();
   await expect(page).toHaveURL(/.*senaite/);
@@ -56,9 +54,9 @@ test('Editing the details of an OpenMRS patient with a synced lab order edits th
 test('Editing a synced OpenMRS lab order edits the corresponding SENAITE analysis request.', async ({ page }) => {
   // replay
   await openmrs.goToLabOrderForm();
-  await page.getByRole('button', { name: 'Add', exact: true }).click();
-  await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  await page.getByPlaceholder('Search for a test type').fill('Blood urea nitrogen');
   await openmrs.saveLabOrder();
+
   await senaite.open();
   await expect(page).toHaveURL(/.*senaite/);
   await senaite.searchClient();
@@ -85,8 +83,7 @@ test('Editing a synced OpenMRS lab order edits the corresponding SENAITE analysi
 test('Voiding a synced OpenMRS lab order cancels the corresponding SENAITE analysis request.', async ({ page }) => {
   // replay
   await openmrs.goToLabOrderForm();
-  await page.getByRole('button', { name: 'Add', exact: true }).click();
-  await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  await page.getByPlaceholder('Search for a test type').fill('Blood urea nitrogen');
   await openmrs.saveLabOrder();
   await senaite.open();
   await expect(page).toHaveURL(/.*senaite/);
@@ -99,7 +96,7 @@ test('Voiding a synced OpenMRS lab order cancels the corresponding SENAITE analy
   await expect(analysisRequest).toHaveText('Blood urea nitrogen Template');
   await page.goto(`${O3_URL}`);
   await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
-  await openmrs.voidEncounter();
+  await openmrs.cancelLabOrder();
 
   // verify
   await page.goto(`${SENAITE_URL}`);
@@ -110,8 +107,7 @@ test('Voiding a synced OpenMRS lab order cancels the corresponding SENAITE analy
 test('Published coded lab results from SENAITE are viewable in the OpenMRS lab results viewer.', async ({ page }) => {
   // replay
   await openmrs.goToLabOrderForm();
-  await page.getByRole('button', { name: 'Add', exact: true }).click();
-  await page.locator('#tab select').selectOption('1325AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  await page.getByPlaceholder('Search for a test type').fill('Hepatitis C test - qualitative');
   await openmrs.saveLabOrder();
   await senaite.open();
   await expect(page).toHaveURL(/.*senaite/);
@@ -135,8 +131,7 @@ test('Published coded lab results from SENAITE are viewable in the OpenMRS lab r
 test('Published numeric lab results from SENAITE are viewable in the OpenMRS lab results viewer.', async ({ page }) => {
   // replay
   await openmrs.goToLabOrderForm();
-  await page.getByRole('button', { name: 'Add', exact: true }).click();
-  await page.locator('#tab select').selectOption('655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  await page.getByPlaceholder('Search for a test type').fill('Total bilirubin');
   await openmrs.saveLabOrder();
   await senaite.open();
   await expect(page).toHaveURL(/.*senaite/);
@@ -160,8 +155,7 @@ test('Published numeric lab results from SENAITE are viewable in the OpenMRS lab
 test('Published free text lab results from SENAITE are viewable in the OpenMRS lab results viewer.', async ({ page }) => {
   // replay
   await openmrs.goToLabOrderForm();
-  await page.getByRole('button', { name: 'Add', exact: true }).click();
-  await page.locator('#tab select').selectOption('161447AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  await page.getByPlaceholder('Search for a test type').fill('Stool microscopy with concentration');
   await openmrs.saveLabOrder();
   await senaite.open();
   await expect(page).toHaveURL(/.*senaite/);

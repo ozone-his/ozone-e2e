@@ -217,10 +217,12 @@ export class OpenMRS {
     await expect(this.page.getByText('Appointment cancelled successfully')).toBeVisible();
    }
 
-  async createLabOrder() {
+  async goToLabOrderForm() {
     await this.page.getByLabel('Order basket', { exact: true }).click();
     await this.page.getByRole('button', { name: 'Add', exact: true }).nth(1).click();
-    await this.page.getByPlaceholder('Search for a test type').fill('Urobilinogen');
+  }
+
+  async saveLabOrder() {
     await delay(3000);
     await this.page.getByRole('button', { name: 'Order form' }).click();
     await this.page.getByRole('button', { name: 'Save order' }).click();
@@ -229,29 +231,16 @@ export class OpenMRS {
     await delay(3000);
   }
 
-  async goToLabOrderForm() {
-    await this.page.getByLabel('Clinical forms').click();
-    await delay(3000);
-    await expect(this.page.getByText('Laboratory Test Orders')).toBeVisible();
-    await this.page.getByText('Laboratory Test Orders').click();
-  }
-
-  async saveLabOrder() {
-    await this.page.getByRole('button', { name: 'Save and close' }).click();
-    await expect(this.page.getByText('Lab order(s) generated')).toBeVisible();
-    await this.page.getByRole('button', { name: 'Close', exact: true }).click();
-    await delay(5000);
-  }
-
   async updateLabOrder() {
-    await this.page.getByRole('link', { name: 'Visits' }).click();
-    await this.page.getByRole('tab', { name: 'All encounters' }).click();
-    await this.page.getByRole('button', { name: 'Options', exact: true }).click();
-    await this.page.getByRole('menuitem', { name: 'Edit this encounter' }).click();
-    await this.page.locator('#tab select').selectOption('160225AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
-    await this.page.getByRole('button', { name: 'Save and close' }).click();
-    await expect(this.page.getByText('Lab order(s) generated')).toBeVisible();
-    await delay(5000);
+    await this.page.getByRole('link', { name: 'Orders' }).click();
+    await this.page.getByRole('button', { name: 'Options' }).nth(0).click();
+    await this.page.getByRole('menuitem', { name: 'Modify order' }).click();
+    await this.page.getByPlaceholder('Search for a test type').fill('Sickle cell screening test');
+    await delay(3000);
+    await this.page.getByRole('button', { name: 'Order form' }).click();
+    await this.page.getByRole('button', { name: 'Save order' }).click();
+    await this.page.getByRole('button', { name: 'Sign and close' }).click();
+    await delay(3000);
   }
 
   async voidEncounter() {
@@ -263,6 +252,14 @@ export class OpenMRS {
     await expect(this.page.getByText('Encounter deleted')).toBeVisible();
     await expect(this.page.getByText('Encounter successfully deleted')).toBeVisible();
     await delay(5000);
+  }
+
+  async cancelLabOrder() {
+    await this.page.getByRole('link', { name: 'Orders' }).click();
+    await this.page.getByRole('button', { name: 'Options' }).nth(0).click();
+    await this.page.getByRole('menuitem', { name: 'Cancel Order' }).click();
+    await this.page.getByRole('button', { name: 'Sign and close' }).click();
+    await delay(3000);
   }
 
   async viewTestResults() {

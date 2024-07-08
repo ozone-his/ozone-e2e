@@ -19,8 +19,7 @@ test.beforeEach(async ({ page }) => {
 test('Ordering a lab test for an OpenMRS patient creates the corresponding Odoo customer with a filled quotation.', async ({ page }) => {
   // replay
   await openmrs.goToLabOrderForm();
-  await page.getByRole('button', { name: 'Add', exact: true }).click();
-  await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  await page.getByPlaceholder('Search for a test type').fill('Blood urea nitrogen');
   await openmrs.saveLabOrder();
 
   // verify
@@ -37,8 +36,7 @@ test('Ordering a lab test for an OpenMRS patient creates the corresponding Odoo 
 test('Editing the details of an OpenMRS patient with a synced lab order edits the corresponding Odoo customer details.', async ({ page }) => {
   // replay
   await openmrs.goToLabOrderForm();
-  await page.getByRole('button', { name: 'Add', exact: true }).click();
-  await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  await page.getByPlaceholder('Search for a test type').fill('Blood urea nitrogen');
   await openmrs.saveLabOrder();
   await odoo.open();
   await expect(page).toHaveURL(/.*web/);
@@ -151,8 +149,7 @@ test('Discontinuing a synced OpenMRS drug order for an Odoo customer with a sing
 test('Discontinuing a synced OpenMRS drug order for an Odoo customer with multiple quotation lines removes the corresponding quoatation.', async ({ page }) => {
   // setup
   await openmrs.goToLabOrderForm();
-  await page.getByRole('button', { name: 'Add', exact: true }).click();
-  await page.locator('#tab select').selectOption('857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  await page.getByPlaceholder('Search for a test type').fill('Blood urea nitrogen');
   await openmrs.saveLabOrder();
   await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await openmrs.createDrugOrder();
