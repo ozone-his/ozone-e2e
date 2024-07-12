@@ -194,6 +194,30 @@ test('Ordering a drug with a free text medication dosage for an OpenMRS patient 
   await expect(quotation?.includes("Quotation")).toBeTruthy();
 });
 
+test('Discontinuing a synced OpenMRS lab order for an Odoo customer with a single quotation line cancels the corresponding quotation.', async ({ page }) => {
+  // replay
+  await openmrs.goToLabOrderForm();
+  await page.getByPlaceholder('Search for a test type').fill('Blood urea nitrogen');
+  await openmrs.saveLabOrder();
+  await odoo.open();
+  await expect(page).toHaveURL(/.*web/);
+  await odoo.searchCustomer();
+  const customer = await page.locator("tr.o_data_row:nth-child(1) td:nth-child(4)").textContent();
+  await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
+  const quotation = await page.locator("table tbody td.o_data_cell:nth-child(8)");
+  await expect(quotation).toHaveText('Quotation');
+
+  await page.goto(`${O3_URL}`);
+  await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
+  await openmrs.cancelLabOrder();
+
+  // verify
+  await page.goto(`${ODOO_URL}`);
+  await odoo.searchCustomer();
+  await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
+  await expect(quotation).toHaveText('Cancelled');
+});
+
 test.afterEach(async ({ page }) => {
   await openmrs.voidPatient();
   await page.close();

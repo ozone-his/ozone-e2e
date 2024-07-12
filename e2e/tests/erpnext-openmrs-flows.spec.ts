@@ -18,7 +18,9 @@ test.beforeEach(async ({ page }) => {
 
 test('Ordering a lab test for an OpenMRS patient creates the corresponding ERPNext customer.', async ({ page }) => {
   // replay
-  await openmrs.createLabOrder();
+  await openmrs.goToLabOrderForm();
+  await page.getByPlaceholder('Search for a test type').fill('Blood urea nitrogen');
+  await openmrs.saveLabOrder();
 
   // verify
   await erpnext.open();
