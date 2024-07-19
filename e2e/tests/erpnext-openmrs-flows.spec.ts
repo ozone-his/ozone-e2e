@@ -151,6 +151,7 @@ test('Revising a synced OpenMRS drug order edits the corresponding ERPNext quota
   await erpnext.searchQuotation();
   await page.getByRole('link', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
   await expect(quantity).toHaveText('8');
+  await erpnext.voidQuotation();
   await openmrs.voidPatient();
   await erpnext.deleteQuotation();
 });
