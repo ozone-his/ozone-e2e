@@ -219,6 +219,7 @@ test('Discontinuing a synced OpenMRS lab order for an Odoo customer with a singl
   await odoo.searchCustomer();
   const customer = await page.locator("tr.o_data_row:nth-child(1) td:nth-child(4)").textContent();
   await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
+
   const quotation = await page.locator("tr.o_data_row:nth-child(1) td:nth-child(8) span");
   await expect(quotation).toHaveText('Quotation');
 
