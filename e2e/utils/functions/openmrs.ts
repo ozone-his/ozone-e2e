@@ -268,10 +268,12 @@ export class OpenMRS {
     await this.page.getByRole('tab', { name: 'Panel' }).click();
   }
 
-  async createDrugOrder() {
+  async goToDrugOrderForm() {
     await this.page.getByLabel('Order basket', { exact: true }).click();
     await this.page.getByRole('button', { name: 'Add', exact: true }).nth(0).click();
-    await this.page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 325mg');
+  }
+
+  async fillDrugOrderForm() {
     await this.page.getByRole('button', { name: 'Order form' }).click();
     await delay(2000);
     await this.page.getByPlaceholder('Dose').fill('4');
@@ -284,13 +286,16 @@ export class OpenMRS {
     await this.page.getByLabel('Quantity to dispense').fill('12');
     await this.page.getByLabel('Prescription refills').fill('3');
     await this.page.getByPlaceholder('e.g. "Hypertension"').type('Hypertension');
+  }
+
+  async saveDrugOrder() {
     await this.page.getByRole('button', { name: 'Save order' }).focus();
     await expect(this.page.getByText('Save order')).toBeVisible();
     await this.page.getByRole('button', { name: 'Save order' }).click();
     await this.page.getByRole('button', { name: 'Sign and close' }).focus();
     await expect(this.page.getByText('Sign and close')).toBeVisible();
     await this.page.getByRole('button', { name: 'Sign and close' }).click();
-    await delay(5000);
+    await delay(3000);
   }
 
   async createDrugOrderWithFreeTextDosage() {
