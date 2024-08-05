@@ -115,7 +115,7 @@ test('Revising a synced OpenMRS drug order edits the corresponding Odoo quotatio
   await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
   const drugOrderItem = await page.locator("table tbody td.o_data_cell:nth-child(3) span");
   await expect(drugOrderItem).toContainText('4.0 Tablet');
-  await expect(drugOrderItem).toContainText('Twice daily - 5 Days');
+  await expect(drugOrderItem).toContainText('Twice daily - 5 day');
   await page.goto(`${O3_URL}`);
   await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await openmrs.editDrugOrder();
@@ -125,7 +125,7 @@ test('Revising a synced OpenMRS drug order edits the corresponding Odoo quotatio
   await odoo.searchCustomer();
   await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
   await expect(drugOrderItem).toContainText('8.0 Tablet');
-  await expect(drugOrderItem).toContainText('Thrice daily - 6 Days');
+  await expect(drugOrderItem).toContainText('Thrice daily - 6 day');
 });
 
 test('Discontinuing a synced OpenMRS drug order for an Odoo customer with a single quotation line removes the corresponding quotation.', async ({ page }) => {
