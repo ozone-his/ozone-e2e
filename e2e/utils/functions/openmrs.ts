@@ -131,7 +131,7 @@ export class OpenMRS {
     await this.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.getByRole('button', { name: 'Start a visit' }).click();
     await this.page.locator('label').filter({ hasText: 'Facility Visit' }).locator('span').first().click();
-    await this.page.locator('form').getByRole('button', { name: 'Start a visit' }).click();
+    await this.page.locator('form').getByRole('button', { name: 'Start visit' }).click();
     await expect(this.page.getByText('Facility Visit started successfully')).toBeVisible();
     await delay(4000);
   }

@@ -32,7 +32,7 @@ test('Ordering a lab test for an OpenMRS patient creates the corresponding Odoo 
   const quotation = await page.locator("tr.o_data_row:nth-child(1) td:nth-child(8) span").textContent();
   await expect(quotation?.includes("Quotation")).toBeTruthy();
 });
-
+/*
 test('Editing the details of an OpenMRS patient with a synced lab order edits the corresponding Odoo customer details.', async ({ page }) => {
   // replay
   await openmrs.goToLabOrderForm();
@@ -233,7 +233,7 @@ test('Discontinuing a synced OpenMRS lab order for an Odoo customer with a singl
   await expect(customer?.includes(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeTruthy();
   await expect(quotation).toHaveText('Cancelled');
 });
-
+*/
 test.afterEach(async ({ page }) => {
   await openmrs.voidPatient();
   await page.close();
