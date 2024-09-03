@@ -268,6 +268,7 @@ export class OpenMRS {
   async viewTestResults() {
     await this.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.getByRole('link', { name: 'Results Viewer' }).click();
+    await this.page.getByRole('button', { name: 'Refresh data' }).click();
     await this.page.getByRole('tab', { name: 'Panel' }).click();
   }
 
