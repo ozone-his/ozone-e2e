@@ -131,7 +131,7 @@ export class OpenMRS {
     await this.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.getByRole('button', { name: 'Start a visit' }).click();
     await this.page.locator('label').filter({ hasText: 'Facility Visit' }).locator('span').first().click();
-    await this.page.locator('form').getByRole('button', { name: 'Start a visit' }).click();
+    await this.page.locator('form').getByRole('button', { name: 'Start visit' }).click();
     await expect(this.page.getByText('Facility Visit started successfully')).toBeVisible();
     await delay(4000);
   }
@@ -324,6 +324,7 @@ export class OpenMRS {
     await this.page.getByRole('menuitem', { name: 'Modify', exact: true }).click();
     await this.page.getByPlaceholder('Dose').clear();
     await this.page.getByPlaceholder('Dose').fill('8');
+    await this.page.getByLabel('Clear selected item').nth(2).click();
     await this.page.getByPlaceholder('Frequency').click();
     await this.page.getByText('Thrice daily').click();
     await this.page.getByLabel('Duration', { exact: true }).clear();
