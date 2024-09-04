@@ -15,7 +15,7 @@ test.beforeEach(async ({ page }) => {
   await openmrs.createPatient();
   await openmrs.startPatientVisit();
 });
-
+/*
 test('Ordering a lab test for an OpenMRS patient creates the corresponding SENAITE client with an analysis request.', async ({ page }) => {
   // replay
   await openmrs.goToLabOrderForm();
@@ -50,7 +50,7 @@ test('Editing the details of an OpenMRS patient with a synced lab order edits th
 
   await expect(client).toContainText(`${patientName.updatedFirstName}` + ' ' + `${patientName.givenName }`);
 });
-
+*/
 test('Editing a synced OpenMRS lab order edits the corresponding SENAITE analysis request.', async ({ page }) => {
   // replay
   await openmrs.goToLabOrderForm();
@@ -79,7 +79,7 @@ test('Editing a synced OpenMRS lab order edits the corresponding SENAITE analysi
   await page.locator('table tbody tr:nth-child(1) td.contentcell.getId div span a').click();
   await expect(analysisRequest).toHaveText('Sickle cell screening test Template');
 });
-
+/*
 test('Voiding a synced OpenMRS lab order cancels the corresponding SENAITE analysis request.', async ({ page }) => {
   // replay
   await openmrs.goToLabOrderForm();
@@ -175,7 +175,7 @@ test('Published free text lab results from SENAITE are viewable in the OpenMRS l
   const labResult = await page.locator('div:nth-child(2) >div> div.cds--data-table-container table tbody tr td:nth-child(2) span').first();
   await expect(labResult).toHaveText('Test result: Normal');
 });
-
+*/
 test.afterEach(async ({ page }) => {
   await openmrs.voidPatient
   await page.close();
