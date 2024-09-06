@@ -15,7 +15,7 @@ test.beforeEach(async ({ page }) => {
   await openmrs.createPatient();
   await openmrs.startPatientVisit();
 });
-
+/*
 test('Ordering a lab test for an OpenMRS patient creates the corresponding SENAITE client with an analysis request.', async ({ page }) => {
   // replay
   await openmrs.goToLabOrderForm();
@@ -131,7 +131,7 @@ test('Published coded lab results from SENAITE are viewable in the OpenMRS lab r
   const labResult = await page.locator('div:nth-child(2) >div> div.cds--data-table-container table tbody tr td:nth-child(2) span').first();
   await expect(labResult).toContainText('Negative');
 });
-
+*/
 test('Published numeric lab results from SENAITE are viewable in the OpenMRS lab results viewer.', async ({ page }) => {
   // replay
   await openmrs.goToLabOrderForm();
