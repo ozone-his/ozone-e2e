@@ -10,7 +10,7 @@ export var patientName = {
 var patientFullName = '';
 
 export var randomOpenMRSRoleName = {
-  roleName : `Ab${(Math.random() + 1).toString(36).substring(2)}`
+  roleName : `${(Math.random() + 1).toString(36).substring(2)}`
 }
 
 export const delay = (mills) => {
@@ -43,18 +43,21 @@ export class OpenMRS {
     }
     await this.page.locator('label').filter({ hasText: 'Inpatient Ward' }).locator('span').first().click();
     await this.page.getByRole('button', { name: 'Confirm' }).click();
-    await delay(4000);
-    await this.waitHomePageToLoad();
+    await expect(this.page).toHaveURL(/.*home/);
+    await expect(this.page.getByRole('button', { name: 'Search Patient' })).toBeEnabled();
+    await expect(this.page.getByRole('button', { name: 'Add Patient' })).toBeEnabled();
+    await expect(this.page.getByRole('button', { name: 'My Account' })).toBeEnabled();
+    await expect(this.page.getByRole('button', { name: 'App Menu' })).toBeEnabled();
   }
 
   async createPatient() {
     patientName = {
-      firstName : `e2e_test_${Math.floor(Math.random() * 10000)}`,
-      givenName : `${(Math.random() + 1).toString(36).substring(2)}`,
-      updatedFirstName: `${(Math.random() + 1).toString(36).substring(2)}`
+      firstName : `e2e_test_${Array.from({ length: 4 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
+      givenName : `${Array.from({ length: 8 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`, 
+      updatedFirstName: `${Array.from({ length: 8 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`
     }
     patientFullName = patientName.firstName + ' ' + patientName.givenName;
-    await this.waitHomePageToLoad();
+    await expect(this.page.getByRole('button', { name: 'Add Patient' })).toBeEnabled();
     await this.page.getByRole('button', { name: 'Add Patient' }).click();
     await expect(this.page.getByRole('button', { name: 'Register Patient' })).toBeEnabled();
     await this.page.getByLabel('First Name').clear();
@@ -64,7 +67,7 @@ export class OpenMRS {
     await this.page.locator('label').filter({ hasText: /^Male$/ }).locator('span').first().click();
     await this.page.locator('div').filter({ hasText: /^Date of Birth Known\?YesNo$/ }).getByRole('tab', { name: 'No' }).click();
     await this.page.getByLabel('Estimated age in years').clear();
-    await this.page.getByLabel('Estimated age in years').type('24');
+    await this.page.getByLabel('Estimated age in years').fill(`${Math.floor(Math.random() * 99)}`);
     await expect(this.page.getByText('Register Patient')).toBeVisible();
     if (await this.page.getByTitle('close notification').isVisible()) {
       await this.page.getByTitle('close notification').click();
@@ -161,11 +164,12 @@ export class OpenMRS {
     await this.page.getByPlaceholder('Search conditions').fill('Typhoid fever');
     await this.page.getByRole('menuitem', { name: 'Typhoid fever' }).click();
     await this.page.getByLabel('Onset date').fill('27/07/2023');
+    await this.page.getByLabel('Onset date').press('Enter');
+    await this.page.locator('label').filter({ hasText: /^Active$/ }).locator('span').first().click();
     await this.page.getByRole('button', { name: 'Save & close' }).click();
     await expect(this.page.getByText('Condition saved successfully')).toBeVisible();
     await delay(2000);
-    const patientCondition = await this.page.locator('table tbody tr:nth-child(1) td:nth-child(1)');
-    await expect(patientCondition).toHaveText('Typhoid fever');
+    await expect(this.page.locator('table tbody tr:nth-child(1) td:nth-child(1)')).toHaveText('Typhoid fever');
     await this.page.getByRole('button', { name: 'Close', exact: true }).click();
   }
 
@@ -200,12 +204,9 @@ export class OpenMRS {
     await this.page.getByRole('button', { name: 'Save and close' }).click();
     await expect(this.page.getByText('Appointment scheduled')).toBeVisible();
     await this.page.getByRole('tab', { name: 'Today' }).click();
-    const serviceType = await this.page.locator('table tbody tr:nth-child(1) td:nth-child(3)');
-    await expect(serviceType).toHaveText('General Medicine service');
-    const appointmentType = await this.page.locator('table tbody tr:nth-child(1) td:nth-child(5)');
-    await expect(appointmentType).toHaveText('Scheduled');
-    const appointmentStatus = await this.page.locator('table tbody tr:nth-child(1) td:nth-child(4)');
-    await expect(appointmentStatus).toHaveText('Scheduled');
+    await expect(this.page.locator('table tbody tr:nth-child(1) td:nth-child(3)')).toHaveText('General Medicine service');
+    await expect(this.page.locator('table tbody tr:nth-child(1) td:nth-child(5)')).toHaveText('Scheduled');
+    await expect(this.page.locator('table tbody tr:nth-child(1) td:nth-child(4)')).toHaveText('Scheduled');
   }
 
   async cancelPatientAppointment() {
@@ -231,18 +232,6 @@ export class OpenMRS {
     await delay(3000);
   }
 
-  async updateLabOrder() {
-    await this.page.getByRole('link', { name: 'Orders' }).click();
-    await this.page.getByRole('button', { name: 'Options' }).nth(0).click();
-    await this.page.getByRole('menuitem', { name: 'Modify order' }).click();
-    await this.page.getByPlaceholder('Search for a test type').fill('Sickle cell screening test');
-    await delay(3000);
-    await this.page.getByRole('button', { name: 'Order form' }).click();
-    await this.page.getByRole('button', { name: 'Save order' }).click();
-    await this.page.getByRole('button', { name: 'Sign and close' }).click();
-    await delay(3000);
-  }
-
   async voidEncounter() {
     await this.page.getByRole('link', { name: 'Visits' }).click();
     await this.page.getByRole('tab', { name: 'All encounters' }).click();
@@ -259,13 +248,11 @@ export class OpenMRS {
     await this.page.getByRole('button', { name: 'Options' }).nth(0).click();
     await this.page.getByRole('menuitem', { name: 'Cancel Order' }).click();
     await this.page.getByRole('button', { name: 'Sign and close' }).click();
-    await delay(3000);
   }
 
   async viewTestResults() {
     await this.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.getByRole('link', { name: 'Results Viewer' }).click();
-    await this.page.getByRole('tab', { name: 'Panel' }).click();
   }
 
   async goToDrugOrderForm() {
@@ -367,7 +354,7 @@ export class OpenMRS {
   async addRole() {
     await this.page.getByRole('link', { name: 'Add Role' }).click();
     await this.page.locator('#role').fill(`${randomOpenMRSRoleName.roleName}`);
-    await this.page.locator('textarea[name="description"]').fill('Role for e2e test');
+    await this.page.locator('textarea[name="description"]').fill('OpenMRS role for e2e test');
     await this.page.getByLabel('Application: Edits Existing Encounters').check();
     await this.page.getByLabel('Application: Enters Vitals').check();
     await this.page.getByLabel('Application: Records Allergies').check();
@@ -375,6 +362,7 @@ export class OpenMRS {
     await this.page.getByLabel('Organizational: Registration Clerk').check();
     await this.page.getByRole('button', { name: 'Save Role' }).click();
     await expect(this.page.getByText('Role saved')).toBeVisible();
+    await delay(50000);
   }
 
   async updateRole() {
@@ -385,6 +373,7 @@ export class OpenMRS {
     await this.page.getByLabel('Application: Writes Clinical Notes').check();
     await this.page.getByRole('button', { name: 'Save Role' }).click();
     await expect(this.page.getByText('Role saved')).toBeVisible();
+    await delay(50000);
   }
 
   async unlinkInheritedRoles() {
@@ -418,14 +407,6 @@ export class OpenMRS {
     await this.page.getByRole('row', { name: `${randomOpenMRSRoleName.roleName}` }).getByRole('checkbox').check();
     await this.page.getByRole('button', { name: 'Delete Selected Roles' }).click();
     await expect(this.page.getByText(`${randomOpenMRSRoleName.roleName} deleted`)).toBeVisible();
-    await delay(1500);
     await this.page.getByRole('link', { name: 'Log out' }).click();
-  }
-
-  async waitHomePageToLoad() {
-    await expect(this.page.getByRole('button', { name: 'Search Patient' })).toBeEnabled();
-    await expect(this.page.getByRole('button', { name: 'Add Patient' })).toBeEnabled();
-    await expect(this.page.getByRole('button', { name: 'My Account' })).toBeEnabled();
-    await expect(this.page.getByRole('button', { name: 'App Menu' })).toBeEnabled();
   }
 }

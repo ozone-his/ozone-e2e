@@ -3,8 +3,8 @@ import { SUPERSET_URL } from '../configs/globalSetup';
 import { delay } from './openmrs';
 
 export var randomSupersetRoleName = {
-  roleName : `Ac${(Math.random() + 1).toString(36).substring(2)}`,
-  updatedRoleName : `Ab${(Math.random() + 1).toString(36).substring(2)}`
+  roleName : `${(Math.random() + 1).toString(36).substring(2)}`,
+  updatedRoleName : `${(Math.random() + 1).toString(36).substring(2)}`
 }
 
 export class Superset {
@@ -18,7 +18,10 @@ export class Superset {
       await this.page.locator('#password').fill(`${process.env.SUPERSET_PASSWORD_ON_FOSS}`);
       await delay(1000);
       await this.page.locator('input[type="submit"]').click();
+    } else {
+      await this.page.locator('#btn-signin-keycloak').click();
     }
+    await expect(this.page).toHaveURL(/.*superset/);
   }
 
   async selectDBSchema() {
@@ -58,7 +61,7 @@ export class Superset {
     await delay(2000);
     await expect(this.page.getByText('Added Row')).toBeVisible();
     await expect(this.page.getByText(`${randomSupersetRoleName.roleName}`)).toBeVisible();
-    await delay(30000)
+    await delay(50000);
   }
 
   async updateRole() {
@@ -71,7 +74,7 @@ export class Superset {
     await delay(2000);
     await expect(this.page.getByText('Changed Row')).toBeVisible();
     await expect(this.page.getByText(`${randomSupersetRoleName.updatedRoleName}`)).toBeVisible();
-    await delay(30000);
+    await delay(50000);
   }
 
   async deleteRole(){

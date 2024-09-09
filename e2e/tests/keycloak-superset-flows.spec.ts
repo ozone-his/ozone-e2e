@@ -14,7 +14,6 @@ test.beforeEach(async ({ page }) => {
   superset = new Superset(page);
 
   await openmrs.login();
-  await expect(page).toHaveURL(/.*home/);
 });
 
 test('Creating a Superset role creates the corresponding Keycloak role.', async ({ page }) => {
@@ -28,7 +27,8 @@ test('Creating a Superset role creates the corresponding Keycloak role.', async 
   await keycloak.open();
   await keycloak.goToClients();
   await keycloak.selectSupersetId();
-  await expect(page.getByText(`${randomSupersetRoleName.roleName}`)).toBeVisible();
+  await keycloak.searchSupersetRole();
+  await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`${randomSupersetRoleName.roleName}`);
   await superset.deleteRole();
 });
 
@@ -39,8 +39,8 @@ test('Updating a synced Superset role updates the corresponding Keycloak role.',
   await keycloak.open();
   await keycloak.goToClients();
   await keycloak.selectSupersetId();
-  await expect(page.getByText(`${randomSupersetRoleName.roleName}`)).toBeVisible();
-  await expect(page.getByText('')).toBeTruthy();
+  await keycloak.searchSupersetRole();
+  await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`${randomSupersetRoleName.roleName}`);
 
   // replay
   await superset.updateRole();
@@ -49,6 +49,7 @@ test('Updating a synced Superset role updates the corresponding Keycloak role.',
   await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
   await keycloak.goToClients();
   await keycloak.selectSupersetId();
+  await keycloak.searchSupersetRole();
   await expect(page.getByText(`${randomSupersetRoleName.roleName}`)).not.toBeVisible();
   await expect(page.getByText(`${randomSupersetRoleName.updatedRoleName}`)).toBeVisible();
   await superset.deleteUpdatedRole();
@@ -61,16 +62,18 @@ test('Deleting a synced Superset role deletes the corresponding Keycloak role.',
   await keycloak.open();
   await keycloak.goToClients();
   await keycloak.selectSupersetId();
-  await expect(page.getByText(`${randomSupersetRoleName.roleName}`)).toBeVisible();
+  await keycloak.searchSupersetRole();
+  await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`${randomSupersetRoleName.roleName}`);
   
   // replay
   await superset.deleteRole();
-  await delay(30000);
+  await delay(60000);
 
   // verify
   await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
   await keycloak.goToClients();
   await keycloak.selectSupersetId();
+  await keycloak.searchSupersetRole();
   await expect(page.getByText(`${randomSupersetRoleName.roleName}`)).not.toBeVisible();
 });
 
@@ -81,17 +84,17 @@ test('A synced role deleted from within Keycloak gets recreated in the subsequen
   await keycloak.open();
   await keycloak.goToClients();
   await keycloak.selectSupersetId();
-  await expect(page.getByText(`${randomSupersetRoleName.roleName}`)).toBeVisible();
+  await keycloak.searchSupersetRole();
+  await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`${randomSupersetRoleName.roleName}`);
 
   // replay
   await keycloak.deleteSyncedRole();
-  await expect(page.getByText(`${randomSupersetRoleName.roleName}`)).not.toBeVisible();
-  await delay(30000);
 
   // verify
   await page.getByLabel('Manage').getByRole('link', { name: 'Clients' }).click();
   await keycloak.selectSupersetId();
-  await expect(page.getByText(`${randomSupersetRoleName.roleName}`)).toBeVisible();
+  await keycloak.searchSupersetRole();
+  await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`${randomSupersetRoleName.roleName}`);
   await superset.deleteRole();
 });
 

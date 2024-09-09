@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
 import { patientName } from '../functions/openmrs';
 import { ODOO_URL } from '../configs/globalSetup';
 import { delay } from './openmrs';
@@ -17,12 +17,13 @@ export class Odoo {
       await delay(1000);
       await this.page.locator('button[type="submit"]').click();
     }
+    await expect(this.page).toHaveURL(/.*web/);
   }
 
   async searchCustomer() {
     await this.page.locator("//a[contains(@class, 'full')]").click();
     await this.page.getByRole('menuitem', { name: 'Sales' }).click();
-    await delay(1500);
+    await expect(this.page.locator('.breadcrumb-item')).toHaveText('Quotations');
     await this.page.getByPlaceholder('Search...').type(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.getByPlaceholder('Search...').press('Enter');
     await delay(2000);
