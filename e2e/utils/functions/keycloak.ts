@@ -16,6 +16,7 @@ export class Keycloak {
     await this.page.getByLabel('Username or email').fill(`${process.env.KEYCLOAK_USERNAME}`);
     await this.page.getByLabel('Password').fill(`${process.env.KEYCLOAK_PASSWORD}`);
     await this.page.getByRole('button', { name: 'Sign In' }).click();
+    await expect(this.page).toHaveURL(/.*console/);
     await delay(6000);
   }
 
@@ -36,8 +37,23 @@ export class Keycloak {
   }
 
   async selectOpenMRSId() {
+    await expect(this.page.getByPlaceholder('Search for client')).toBeVisible();
+    await this.page.getByPlaceholder('Search for client').fill('openmrs');
+    await this.page.getByRole('button', { name: 'Search' }).click();
     await this.page.getByRole('link', { name: 'openmrs', exact: true }).click();
     await this.page.getByTestId('rolesTab').click();
+    await delay(4000);
+    await this.page.reload();
+  }
+
+  async selectSupersetId() {
+    await expect(this.page.getByPlaceholder('Search for client')).toBeVisible();
+    await this.page.getByPlaceholder('Search for client').fill('superset');
+    await this.page.getByRole('button', { name: 'Search' }).click();
+    await this.page.getByRole('link', { name: 'superset', exact: true  }).click();
+    await this.page.getByTestId('rolesTab').click();
+    await delay(3000);
+    await this.page.reload();
   }
 
   async goToClientAttributes() {
@@ -45,12 +61,16 @@ export class Keycloak {
     await this.page.getByTestId('attributesTab').click();
   }
 
-  async selectSupersetId() {
-    if (await this.page. getByRole('link', { name: 'superset', exact: true }).isHidden()) {
-      await this.page.getByLabel('Pagination top').getByLabel('Go to next page').click();
-    }
-    await this.page.getByRole('link', { name: 'superset', exact: true }).click();
-    await this.page.getByTestId('rolesTab').click();
+  async searchOpenMRSRole() {
+    await expect(this.page.getByPlaceholder('Search role by name')).toBeVisible();
+    await this.page.getByPlaceholder('Search role by name').fill(`${randomOpenMRSRoleName.roleName}`);
+    await this.page.getByRole('button', { name: 'Search' }).press('Enter');
+  }
+
+  async searchSupersetRole() {
+    await expect(this.page.getByPlaceholder('Search role by name')).toBeVisible();
+    await this.page.getByPlaceholder('Search role by name').fill(`${randomSupersetRoleName.roleName}`);
+    await this.page.getByRole('button', { name: 'Search' }).press('Enter');
   }
 
   async deleteSyncedRole() {
@@ -58,5 +78,7 @@ export class Keycloak {
     await this.page.getByRole('menuitem', { name: 'Delete' }).click();
     await this.page.getByTestId('confirm').click();
     await expect(this.page.getByText(`The role has been deleted`)).toBeVisible();
+    await expect(this.page.getByText(`${randomSupersetRoleName.roleName}`)).not.toBeVisible();
+    await delay(60000);
   }
 }

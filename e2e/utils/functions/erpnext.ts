@@ -10,6 +10,7 @@ export class ERPNext {
     await this.page.locator('input#login_email').fill(`${process.env.ERPNEXT_USERNAME}`);
     await this.page.locator('input#login_password').fill(`${process.env.ERPNEXT_PASSWORD}`);
     await this.page.locator('button.btn-login').click();
+    await expect(this.page).toHaveURL(/.*home/);
   }
 
   async searchCustomer() {

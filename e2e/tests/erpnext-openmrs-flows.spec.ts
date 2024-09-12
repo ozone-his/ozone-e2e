@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { ERPNext } from '../utils/functions/erpnext';
-import { O3_URL, ERPNEXT_URL } from '../utils/configs/globalSetup';
 import { OpenMRS, patientName } from '../utils/functions/openmrs';
+import { O3_URL, ERPNEXT_URL } from '../utils/configs/globalSetup';
 
 let openmrs: OpenMRS;
 let erpnext: ERPNext;
@@ -11,7 +11,6 @@ test.beforeEach(async ({ page }) => {
   erpnext = new ERPNext(page);
 
   await openmrs.login();
-  await expect(page).toHaveURL(/.*home/);
   await openmrs.createPatient();
   await openmrs.startPatientVisit();
 });
@@ -24,10 +23,8 @@ test('Ordering a lab test for an OpenMRS patient creates the corresponding ERPNe
 
   // verify
   await erpnext.open();
-  await expect(page).toHaveURL(/.*home/);
   await erpnext.searchCustomer();
-  const customer = await page.locator("div.list-row-container:nth-child(3) span:nth-child(2) a");
-  await expect(customer).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
+  await expect(page.locator('div.list-row-container:nth-child(3) span:nth-child(2) a')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await openmrs.voidPatient();
   await erpnext.deleteQuotation();
 });
@@ -41,15 +38,12 @@ test('Ordering a drug for an OpenMRS patient creates the corresponding ERPNext c
 
   // verify
   await erpnext.open();
-  await expect(page).toHaveURL(/.*home/);
   await erpnext.searchCustomer();
-  const customer = await page.locator("div.list-row-container:nth-child(3) span:nth-child(2) a");
-  await expect(customer).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
+  await expect(page.locator('div.list-row-container:nth-child(3) span:nth-child(2) a')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await page.getByRole('link', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
   await page.locator('#customer-dashboard_tab-tab').click();
   await page.getByLabel('Dashboard').getByText('Quotation').click();
-  const quotationStatus = await page.locator('div.list-row-container:nth-child(3) div:nth-child(3) span:nth-child(1) span').nth(1);
-  await expect(quotationStatus).toHaveText('Draft');
+  await expect(page.locator('div.list-row-container:nth-child(3) div:nth-child(3) span:nth-child(1) span').nth(1)).toHaveText('Draft');
   await openmrs.voidPatient();
   await erpnext.deleteQuotation();
 });
@@ -61,8 +55,7 @@ test('Editing the details of an OpenMRS patient with a synced lab order edits th
   await openmrs.saveLabOrder();
   await erpnext.open();
   await erpnext.searchCustomer();
-  const customer = await page.locator("div.list-row-container:nth-child(3) span:nth-child(2) a");
-  await expect(customer).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
+  await expect(page.locator('div.list-row-container:nth-child(3) span:nth-child(2) a')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
 
   // replay
   await page.goto(`${O3_URL}`);
@@ -72,7 +65,7 @@ test('Editing the details of an OpenMRS patient with a synced lab order edits th
   // verify
   await page.goto(`${ERPNEXT_URL}/app/home`);
   await erpnext.searchCustomer();
-  await expect(customer).toContainText(`${patientName.updatedFirstName}` + ' ' + `${patientName.givenName}`);
+  await expect(page.locator('div.list-row-container:nth-child(3) span:nth-child(2) a')).toContainText(`${patientName.updatedFirstName}` + ' ' + `${patientName.givenName}`);
   await openmrs.voidPatient();
   await erpnext.deleteQuotation();
 });
@@ -85,8 +78,7 @@ test('Editing the details of an OpenMRS patient with a synced drug order edits t
   await openmrs.saveDrugOrder();
   await erpnext.open();
   await erpnext.searchCustomer();
-  const customer = await page.locator("div.list-row-container:nth-child(3) span:nth-child(2) a");
-  await expect(customer).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
+  await expect(page.locator('div.list-row-container:nth-child(3) span:nth-child(2) a')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
 
   // replay
   await page.goto(`${O3_URL}`);
@@ -96,7 +88,7 @@ test('Editing the details of an OpenMRS patient with a synced drug order edits t
   // verify
   await page.goto(`${ERPNEXT_URL}/app/home`);
   await erpnext.searchCustomer();
-  await expect(customer).toContainText(`${patientName.updatedFirstName}` + ' ' + `${patientName.givenName}`);
+  await expect(page.locator('div.list-row-container:nth-child(3) span:nth-child(2) a')).toContainText(`${patientName.updatedFirstName}` + ' ' + `${patientName.givenName}`);
   await openmrs.voidPatient();
   await erpnext.deleteQuotation();
 });
@@ -108,11 +100,8 @@ test('Ending an OpenMRS patient visit with a synced drug order updates the corre
   await openmrs.fillDrugOrderForm();
   await openmrs.saveDrugOrder();
   await erpnext.open();
-  await expect(page).toHaveURL(/.*home/);
   await erpnext.searchQuotation();
-
-  const quotationStatus = await page.locator('div.list-row-container:nth-child(3) div:nth-child(3) span:nth-child(1) span');
-  await expect(quotationStatus).toHaveText('Draft');
+  await expect(page.locator('div.list-row-container:nth-child(3) div:nth-child(3) span:nth-child(1) span')).toHaveText('Draft');
 
   // replay
   await page.goto(`${O3_URL}`);
@@ -122,7 +111,7 @@ test('Ending an OpenMRS patient visit with a synced drug order updates the corre
    // verify
   await page.goto(`${ERPNEXT_URL}/app/home`);
   await erpnext.searchQuotation();
-  await expect(quotationStatus).toHaveText('Open');
+  await expect(page.locator('div.list-row-container:nth-child(3) div:nth-child(3) span:nth-child(1) span')).toHaveText('Open');
   await erpnext.voidQuotation();
   await openmrs.voidPatient();
   await erpnext.deleteQuotation();
@@ -135,11 +124,9 @@ test('Revising a synced OpenMRS drug order edits the corresponding ERPNext quota
   await openmrs.fillDrugOrderForm();
   await openmrs.saveDrugOrder();
   await erpnext.open();
-  await expect(page).toHaveURL(/.*home/);
   await erpnext.searchQuotation();
   await page.getByRole('link', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
-  const quantity = await page.locator("div.bold:nth-child(4) div:nth-child(2) div");
-  await expect(quantity).toHaveText('12');
+  await expect(page.locator('div.bold:nth-child(4) div:nth-child(2) div')).toHaveText('12');
 
   // replay
   await page.goto(`${O3_URL}`);
@@ -150,7 +137,7 @@ test('Revising a synced OpenMRS drug order edits the corresponding ERPNext quota
   await page.goto(`${ERPNEXT_URL}/app/home`);
   await erpnext.searchQuotation();
   await page.getByRole('link', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
-  await expect(quantity).toHaveText('8');
+  await expect(page.locator('div.bold:nth-child(4) div:nth-child(2) div')).toHaveText('8');
   await erpnext.voidQuotation();
   await openmrs.voidPatient();
   await erpnext.deleteQuotation();
@@ -162,10 +149,8 @@ test('Ordering a drug with a free text medication dosage for an OpenMRS patient 
 
   // verify
   await erpnext.open();
-  await expect(page).toHaveURL(/.*home/);
   await erpnext.searchCustomer();
-  const customer = await page.locator("div.list-row-container:nth-child(3) span:nth-child(2) a");
-  await expect(customer).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
+  await expect(page.locator('div.list-row-container:nth-child(3) span:nth-child(2) a')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await page.getByRole('link', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
   await page.locator('#customer-dashboard_tab-tab').click();
   await page.getByLabel('Dashboard').getByText('Quotation').click();
@@ -182,7 +167,6 @@ test('Discontinuing a synced OpenMRS drug order for an ERPNext customer with a s
   await openmrs.fillDrugOrderForm();
   await openmrs.saveDrugOrder();
   await erpnext.open();
-  await expect(page).toHaveURL(/.*home/);
   await erpnext.searchQuotation();
   await expect(page.getByText(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeVisible();
 
@@ -207,9 +191,7 @@ test('Ordering a drug for an OpenMRS patient within a visit creates the correspo
   await openmrs.saveDrugOrder();
   await erpnext.open();
   await erpnext.searchQuotation();
-
-  const firstQuotationStatus = await page.locator('div.list-row-container:nth-child(3) div:nth-child(3) span:nth-child(1) span');
-  await expect(firstQuotationStatus).toHaveText('Draft');
+  await expect(page.locator('div.list-row-container:nth-child(3) div:nth-child(3) span:nth-child(1) span')).toHaveText('Draft');
 
   // replay
   await page.goto(`${O3_URL}`);
@@ -224,10 +206,8 @@ test('Ordering a drug for an OpenMRS patient within a visit creates the correspo
    // verify
   await page.goto(`${ERPNEXT_URL}/app/home`);
   await erpnext.searchQuotation();
-
-  const secondQuotationStatus = await page.locator('div.list-row-container:nth-child(4) div:nth-child(3) span:nth-child(1) span');
-  await expect(firstQuotationStatus).toHaveText('Draft');
-  await expect(secondQuotationStatus).toHaveText('Open');
+  await expect(page.locator('div.list-row-container:nth-child(3) div:nth-child(3) span:nth-child(1) span')).toHaveText('Draft');
+  await expect(page.locator('div.list-row-container:nth-child(4) div:nth-child(3) span:nth-child(1) span')).toHaveText('Open');
   await erpnext.voidQuotation();
   await openmrs.voidPatient();
   await erpnext.deleteQuotation();

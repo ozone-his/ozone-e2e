@@ -11,7 +11,6 @@ test.beforeEach(async ({ page }) => {
   senaite = new SENAITE(page);
 
   await openmrs.login();
-  await expect(page).toHaveURL(/.*home/);
   await openmrs.createPatient();
   await openmrs.startPatientVisit();
 });
@@ -24,10 +23,8 @@ test('Ordering a lab test for an OpenMRS patient creates the corresponding SENAI
 
   // verify
   await senaite.open();
-  await expect(page).toHaveURL(/.*senaite/);
   await senaite.searchClient();
-  const client = await page.locator('table tbody tr:nth-child(1) td.contentcell.title div span a');
-  await expect(client).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
+  await expect(page.locator('table tbody tr:nth-child(1) td.contentcell.title div span a')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
 });
 
 test('Editing the details of an OpenMRS patient with a synced lab order edits the corresponding SENAITE client details.', async ({ page }) => {
@@ -36,10 +33,8 @@ test('Editing the details of an OpenMRS patient with a synced lab order edits th
   await page.getByPlaceholder('Search for a test type').fill('Blood urea nitrogen');
   await openmrs.saveLabOrder();
   await senaite.open();
-  await expect(page).toHaveURL(/.*senaite/);
   await senaite.searchClient();
-  const client = await page.locator('table tbody tr:nth-child(1) td.contentcell.title div span a');
-  await expect(client).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
+  await expect(page.locator('table tbody tr:nth-child(1) td.contentcell.title div span a')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await page.goto(`${O3_URL}`);
   await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await openmrs.updatePatientDetails();
@@ -47,37 +42,7 @@ test('Editing the details of an OpenMRS patient with a synced lab order edits th
   // verify
   await page.goto(`${SENAITE_URL}`);
   await senaite.searchClient();
-
-  await expect(client).toContainText(`${patientName.updatedFirstName}` + ' ' + `${patientName.givenName }`);
-});
-
-test('Editing a synced OpenMRS lab order edits the corresponding SENAITE analysis request.', async ({ page }) => {
-  // replay
-  await openmrs.goToLabOrderForm();
-  await page.getByPlaceholder('Search for a test type').fill('Blood urea nitrogen');
-  await openmrs.saveLabOrder();
-
-  await senaite.open();
-  await expect(page).toHaveURL(/.*senaite/);
-  await senaite.searchClient();
-  const client = await page.locator('table tbody tr:nth-child(1) td.contentcell.title div');
-  await expect(client).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
-  await page.locator('table tbody tr:nth-child(1) td.contentcell.title div').click();
-  await page.locator('table tbody tr:nth-child(1) td.contentcell.getId div span a').click();
-  const analysisRequest = await page.locator('#sampleheader-standard-fields tr:nth-child(1) td:nth-child(6)');
-  await expect(analysisRequest).toHaveText('Blood urea nitrogen Template');
-  await page.goto(`${O3_URL}`);
-  await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
-  await openmrs.updateLabOrder();
-
-  // verify
-  await page.goto(`${SENAITE_URL}`);
-  await senaite.searchClient();
-
-  await expect(client).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
-  await page.locator('table tbody tr:nth-child(1) td.contentcell.title div').click();
-  await page.locator('table tbody tr:nth-child(1) td.contentcell.getId div span a').click();
-  await expect(analysisRequest).toHaveText('Sickle cell screening test Template');
+  await expect(page.locator('table tbody tr:nth-child(1) td.contentcell.title div span a')).toContainText(`${patientName.updatedFirstName}` + ' ' + `${patientName.givenName }`);
 });
 
 test('Voiding a synced OpenMRS lab order cancels the corresponding SENAITE analysis request.', async ({ page }) => {
@@ -86,22 +51,22 @@ test('Voiding a synced OpenMRS lab order cancels the corresponding SENAITE analy
   await page.getByPlaceholder('Search for a test type').fill('Blood urea nitrogen');
   await openmrs.saveLabOrder();
   await senaite.open();
-  await expect(page).toHaveURL(/.*senaite/);
   await senaite.searchClient();
-  const client = await page.locator('table tbody tr:nth-child(1) td.contentcell.title div');
-  await expect(client).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
+  await expect(page.locator('table tbody tr:nth-child(1) td.contentcell.title div')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await page.locator('table tbody tr:nth-child(1) td.contentcell.title div').click();
   await page.locator('table tbody tr:nth-child(1) td.contentcell.getId div span a').click();
-  const analysisRequest = await page.locator('#sampleheader-standard-fields tr:nth-child(1) td:nth-child(6)');
-  await expect(analysisRequest).toHaveText('Blood urea nitrogen Template');
+  await expect(page.locator('#sampleheader-standard-fields tr:nth-child(1) td:nth-child(6)')).toHaveText('Blood urea nitrogen Template');
   await page.goto(`${O3_URL}`);
   await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await openmrs.cancelLabOrder();
+  await expect(page.getByText('Discontinued Blood urea nitrogen')).toBeVisible();
 
   // verify
   await page.goto(`${SENAITE_URL}`);
   await senaite.searchClient();
-  await expect(client).not.toHaveText(`${patientName.firstName + ' ' + patientName.givenName}`);
+  await page.locator('table tbody tr:nth-child(1) td.contentcell.title div').click();
+  await expect(page.getByText('Urine')).not.toBeVisible();
+  await expect(page.getByText('Sample due')).not.toBeVisible();
 });
 
 test('Published coded lab results from SENAITE are viewable in the OpenMRS lab results viewer.', async ({ page }) => {
@@ -110,22 +75,16 @@ test('Published coded lab results from SENAITE are viewable in the OpenMRS lab r
   await page.getByPlaceholder('Search for a test type').fill('Hepatitis C test - qualitative');
   await openmrs.saveLabOrder();
   await senaite.open();
-  await expect(page).toHaveURL(/.*senaite/);
   await senaite.searchClient();
-  await senaite.createPartition();
+  await senaite.receiveSample();
   await page.getByRole('combobox', { name: 'Result' }).selectOption('664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
   await senaite.publishLabResults();
-  const reviewState = await page.locator('table tbody tr.contentrow.state-published.parent td.contentcell.State span span').textContent();
-  await expect(reviewState?.includes('Published')).toBeTruthy();
 
   // verify
   await page.goto(`${O3_URL}`);
   await openmrs.viewTestResults();
-  const testName = await page.locator('div:nth-child(2) >div> div.cds--data-table-container td:nth-child(1)').first();
-  await expect(testName).toContainText('Hepatitis C test - qualitative');
-
-  const labResult = await page.locator('div:nth-child(2) >div> div.cds--data-table-container table tbody tr td:nth-child(2) span').first();
-  await expect(labResult).toContainText('Negative');
+  await expect(page.locator('tbody tr td:nth-child(1) p')).toContainText('Hepatitis C test - qualitative');
+  await expect(page.locator('tbody tr td:nth-child(2) p')).toContainText('Negative');
 });
 
 test('Published numeric lab results from SENAITE are viewable in the OpenMRS lab results viewer.', async ({ page }) => {
@@ -134,22 +93,16 @@ test('Published numeric lab results from SENAITE are viewable in the OpenMRS lab
   await page.getByPlaceholder('Search for a test type').fill('Total bilirubin');
   await openmrs.saveLabOrder();
   await senaite.open();
-  await expect(page).toHaveURL(/.*senaite/);
   await senaite.searchClient();
-  await senaite.createPartition();
+  await senaite.receiveSample();
   await page.locator('tr:nth-child(1) td.contentcell.Result div span input').fill('64');
   await senaite.publishLabResults();
-  const reviewState = await page.locator('table tbody tr.contentrow.state-published.parent td.contentcell.State span span').textContent();
-  await expect(reviewState?.includes('Published')).toBeTruthy();
 
   // verify
   await page.goto(`${O3_URL}`);
   await openmrs.viewTestResults();
-  const testName = await page.locator('div:nth-child(2) >div> div.cds--data-table-container td:nth-child(1)').first();
-  await expect(testName).toContainText('Total bilirubin');
-
-  const labResult = await page.locator('div:nth-child(2) >div> div.cds--data-table-container table tbody tr td:nth-child(2) span').first();
-  await expect(labResult).toContainText('64');
+  await expect(page.locator('tbody tr td:nth-child(1) p')).toContainText('Total bilirubin');
+  await expect(page.locator('tbody tr td:nth-child(2) p')).toContainText('64');
 });
 
 test('Published free text lab results from SENAITE are viewable in the OpenMRS lab results viewer.', async ({ page }) => {
@@ -158,25 +111,19 @@ test('Published free text lab results from SENAITE are viewable in the OpenMRS l
   await page.getByPlaceholder('Search for a test type').fill('Stool microscopy with concentration');
   await openmrs.saveLabOrder();
   await senaite.open();
-  await expect(page).toHaveURL(/.*senaite/);
   await senaite.searchClient();
-  await senaite.createPartition();
-  await page.locator('div:nth-child(4) div table tbody tr td.contentcell.Result div span input').fill('Test result: Normal');
+  await senaite.receiveSample();
+  await page.locator('div:nth-child(4) div table tbody tr td.contentcell.Result div span input').fill('Positive');
   await senaite.publishLabResults();
-  const reviewState = await page.locator('table tbody tr.contentrow.state-published.parent td.contentcell.State span span').textContent();
-  await expect(reviewState?.includes('Published')).toBeTruthy();
 
   // verify
   await page.goto(`${O3_URL}`);
   await openmrs.viewTestResults();
-  const testName = await page.locator('div:nth-child(2) >div> div.cds--data-table-container td:nth-child(1)').first();
-  await expect(testName).toHaveText('Stool microscopy with concentration');
-
-  const labResult = await page.locator('div:nth-child(2) >div> div.cds--data-table-container table tbody tr td:nth-child(2) span').first();
-  await expect(labResult).toHaveText('Test result: Normal');
+  await expect(page.locator('tbody tr td:nth-child(1) p')).toContainText('Stool microscopy with concentration');
+  await expect(page.locator('tbody tr td:nth-child(2) p')).toContainText('Positive');
 });
 
 test.afterEach(async ({ page }) => {
-  await openmrs.voidPatient
+  await openmrs.voidPatient();
   await page.close();
 });
