@@ -18,7 +18,7 @@ test.beforeEach(async ({ page }) => {
   await openmrs.startPatientVisit();
 });
 
-test('Creating an Odoo sale order line generates an entry in Superset\'s sale_order_lines table', async ({ page }) => {
+test('Creating an Odoo sale order line generates an entry in Superset\'s sale_order_lines table.', async ({ page }) => {
   // setup
   await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await openmrs.goToLabOrderForm();
