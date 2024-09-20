@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { Odoo } from '../utils/functions/odoo';
-import { OpenMRS, patientName } from '../utils/functions/openmrs';
 import { Superset } from '../utils/functions/superset';
+import { OpenMRS, patientName } from '../utils/functions/openmrs';
 import { O3_URL, SUPERSET_URL } from '../utils/configs/globalSetup';
 
 let odoo: Odoo;
@@ -18,7 +18,7 @@ test.beforeEach(async ({ page }) => {
   await openmrs.startPatientVisit();
 });
 
-test('Creating an Odoo sale order line generates an entry in Superset\'s sale_order_lines table.', async ({ page }) => {
+test(`Creating an Odoo sale order line generates an entry in Superset's sale_order_lines table.`, async ({ page }) => {
   // setup
   await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await openmrs.goToLabOrderForm();
@@ -62,7 +62,7 @@ test('Creating an Odoo sale order line generates an entry in Superset\'s sale_or
   await expect(unitPrice).toBe(2);
 });
 
-test('A (synced) sale order line in Odoo generates an entry in Superset\'s sale_order_lines table.', async ({ page }) => {
+test(`A (synced) sale order line in Odoo generates an entry in Superset's sale_order_lines table.`, async ({ page }) => {
   // setup
   await superset.open();
   await superset.selectDBSchema();
