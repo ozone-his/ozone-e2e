@@ -14,7 +14,7 @@
     "!playwright-report/"
   ],
   "scripts": {
-    "e2e-tests-pro": "npx playwright test odoo-superset openmrs-superset",
+    "e2e-tests-pro": "npx playwright test",
     "e2e-tests-foss": "npx playwright test odoo-openmrs erpnext-openmrs openmrs-senaite"
   },
   "publishConfig": {
