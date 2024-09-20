@@ -23,6 +23,7 @@ test('Ordering a lab test for an OpenMRS patient creates the corresponding Odoo 
 
   // verify
   await odoo.open();
+  await odoo.navigateToSales();
   await odoo.searchCustomer();
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(4)')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Quotation');
@@ -34,6 +35,7 @@ test('Editing the details of an OpenMRS patient with a synced lab order edits th
   await page.getByPlaceholder('Search for a test type').fill('Blood urea nitrogen');
   await openmrs.saveLabOrder();
   await odoo.open();
+  await odoo.navigateToSales();
   await odoo.searchCustomer();
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(4)')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Quotation');
@@ -45,6 +47,7 @@ test('Editing the details of an OpenMRS patient with a synced lab order edits th
 
   // verify
   await page.goto(`${ODOO_URL}`);
+  await odoo.navigateToSales();
   await odoo.searchCustomer();
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(4)')).toHaveText(`${patientName.updatedFirstName}` + ' ' + `${patientName.givenName}`);
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Quotation');
@@ -59,6 +62,7 @@ test('Ordering a drug for an OpenMRS patient creates the corresponding Odoo cust
 
   // verify
   await odoo.open();
+  await odoo.navigateToSales();
   await odoo.searchCustomer();
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(4)')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Quotation');
@@ -71,6 +75,7 @@ test('Editing the details of an OpenMRS patient with a synced drug order edits t
   await openmrs.fillDrugOrderForm();
   await openmrs.saveDrugOrder();
   await odoo.open();
+  await odoo.navigateToSales();
   await odoo.searchCustomer();
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(4)')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Quotation');
@@ -82,6 +87,7 @@ test('Editing the details of an OpenMRS patient with a synced drug order edits t
 
   // verify
   await page.goto(`${ODOO_URL}`);
+  await odoo.navigateToSales();
   await odoo.searchCustomer();
   await expect(page.locator('table tbody td.o_data_cell:nth-child(4)')).toHaveText(`${patientName.updatedFirstName}` + ' ' + `${patientName.givenName }`);
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Quotation');
@@ -94,6 +100,7 @@ test('Revising a synced OpenMRS drug order edits the corresponding Odoo quotatio
   await openmrs.fillDrugOrderForm();
   await openmrs.saveDrugOrder();
   await odoo.open();
+  await odoo.navigateToSales();
   await odoo.searchCustomer();
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(4)')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
@@ -108,6 +115,7 @@ test('Revising a synced OpenMRS drug order edits the corresponding Odoo quotatio
 
   // verify
   await page.goto(`${ODOO_URL}`);
+  await odoo.navigateToSales();
   await odoo.searchCustomer();
   await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
   await expect(drugOrderItem).toContainText('8.0 Tablet');
@@ -121,6 +129,7 @@ test('Discontinuing a synced OpenMRS drug order for an Odoo customer with a sing
   await openmrs.fillDrugOrderForm();
   await openmrs.saveDrugOrder();
   await odoo.open();
+  await odoo.navigateToSales();
   await odoo.searchCustomer();
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(4)')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Quotation');
@@ -134,6 +143,7 @@ test('Discontinuing a synced OpenMRS drug order for an Odoo customer with a sing
 
   // verify
   await page.goto(`${ODOO_URL}`);
+  await odoo.navigateToSales();
   await odoo.searchCustomer();
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(4)')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Cancelled');
@@ -152,6 +162,7 @@ test('Discontinuing a synced OpenMRS drug order for an Odoo customer with multip
   await openmrs.fillDrugOrderForm();
   await openmrs.saveDrugOrder();
   await odoo.open();
+  await odoo.navigateToSales();
   await odoo.searchCustomer();
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(4)')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Quotation');
@@ -166,6 +177,7 @@ test('Discontinuing a synced OpenMRS drug order for an Odoo customer with multip
 
   // verify
   await page.goto(`${ODOO_URL}`);
+  await odoo.navigateToSales();
   await odoo.searchCustomer();
   await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(2) span:nth-child(1) span')).toHaveText('Blood urea nitrogen');
@@ -178,6 +190,7 @@ test('Ordering a drug with a free text medication dosage for an OpenMRS patient 
 
   // verify
   await odoo.open();
+  await odoo.navigateToSales();
   await odoo.searchCustomer();
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(4)')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Quotation');
@@ -189,6 +202,7 @@ test('Discontinuing a synced OpenMRS lab order for an Odoo customer with a singl
   await page.getByPlaceholder('Search for a test type').fill('Blood urea nitrogen');
   await openmrs.saveLabOrder();
   await odoo.open();
+  await odoo.navigateToSales();
   await odoo.searchCustomer();
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(4)')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Quotation');
@@ -201,6 +215,7 @@ test('Discontinuing a synced OpenMRS lab order for an Odoo customer with a singl
 
   // verify
   await page.goto(`${ODOO_URL}`);
+  await odoo.navigateToSales();
   await odoo.searchCustomer();
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(4)')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Cancelled');

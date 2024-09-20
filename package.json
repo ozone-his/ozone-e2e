@@ -9,6 +9,7 @@
     "!**/.git*/",
     "!*.gitignore",
     "!node_modules/",
+    "!tests/",
     "!test-results/",
     "!playwright-report/"
   ],

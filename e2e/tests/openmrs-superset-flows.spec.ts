@@ -13,7 +13,7 @@ test.beforeEach(async ({ page }) => {
   await openmrs.login();
 });
 
-test('Creating an OpenMRS patient creates the patient in Superset patients table.', async ({ page }) => {
+test(`Creating an OpenMRS patient creates the patient in Superset's patients table.`, async ({ page }) => {
   // setup
   await superset.open();
   await superset.selectDBSchema();
@@ -51,7 +51,7 @@ test('Creating an OpenMRS patient creates the patient in Superset patients table
   await openmrs.voidPatient();
 });
 
-test('Creating an OpenMRS visit creates the visit in Superset visits table.', async ({ page }) => {
+test(`Creating an OpenMRS visit creates the visit in Superset's visits table.`, async ({ page }) => {
   // setup
   await openmrs.createPatient();
   await superset.open();
@@ -90,7 +90,7 @@ test('Creating an OpenMRS visit creates the visit in Superset visits table.', as
   await openmrs.voidPatient();
 });
 
-test('Creating an OpenMRS order creates the order in Superset orders table.', async ({ page }) => {
+test(`Creating an OpenMRS order creates the order in Superset's orders table.`, async ({ page }) => {
   // setup
   await openmrs.createPatient();
   await openmrs.searchPatientId();
@@ -138,7 +138,7 @@ test('Creating an OpenMRS order creates the order in Superset orders table.', as
   await openmrs.voidPatient();
 });
 
-test('Creating an OpenMRS encounter creates the encounter in Superset encounters table.', async ({ page }) => {
+test(`Creating an OpenMRS encounter creates the encounter in Superset's encounters table.`, async ({ page }) => {
   // setup
   await openmrs.createPatient();
   await openmrs.searchPatientId();
@@ -186,7 +186,7 @@ test('Creating an OpenMRS encounter creates the encounter in Superset encounters
   await openmrs.voidPatient();
 });
 
-test('Creating an OpenMRS condition creates the condition in Superset conditions table.', async ({ page }) => {
+test(`Creating an OpenMRS condition creates the condition in Superset's conditions table.`, async ({ page }) => {
   // setup
   await openmrs.createPatient();
   await openmrs.searchPatientId();
@@ -232,7 +232,7 @@ test('Creating an OpenMRS condition creates the condition in Superset conditions
   await openmrs.voidPatient();
 });
 
-test('Creating an OpenMRS obs creates the observation in Superset observations table.', async ({ page }) => {
+test(`Creating an OpenMRS obs creates the observation in Superset's observations table.`, async ({ page }) => {
   // setup
   await openmrs.createPatient();
   await openmrs.startPatientVisit();
@@ -275,7 +275,7 @@ test('Creating an OpenMRS obs creates the observation in Superset observations t
   await openmrs.voidPatient();
 });
 
-test('Creating an OpenMRS appointment creates the appointment in Superset appointments table.', async ({ page }) => {
+test(`Creating an OpenMRS appointment creates the appointment in Superset's appointments table.`, async ({ page }) => {
   // setup
   await openmrs.createPatient();
   await openmrs.searchPatientId();
@@ -323,7 +323,7 @@ test('Creating an OpenMRS appointment creates the appointment in Superset appoin
   await openmrs.voidPatient();
 });
 
-test('Voiding an OpenMRS obs updates the observation in Superset observations table.', async ({ page }) => {
+test(`Voiding an OpenMRS obs updates the observation in Superset's observations table.`, async ({ page }) => {
   // setup
   await openmrs.createPatient();
   await openmrs.startPatientVisit();
@@ -357,7 +357,7 @@ test('Voiding an OpenMRS obs updates the observation in Superset observations ta
   await openmrs.voidPatient();
 });
 
-test('Voiding an OpenMRS patient updates the patient in Superset patients table.', async ({ page }) => {
+test(`Voiding an OpenMRS patient updates the patient in Superset's patients table.`, async ({ page }) => {
   // setup
   await openmrs.createPatient();
   await openmrs.searchPatientId();
@@ -382,7 +382,7 @@ test('Voiding an OpenMRS patient updates the patient in Superset patients table.
   await superset.clearSQLEditor();
 });
 
-test('Voiding an OpenMRS condition updates the condition in Superset conditions table.', async ({ page }) => {
+test(`Voiding an OpenMRS condition updates the condition in Superset's conditions table.`, async ({ page }) => {
   // setup
   await openmrs.createPatient();
   await openmrs.searchPatientId();
@@ -418,7 +418,7 @@ test('Voiding an OpenMRS condition updates the condition in Superset conditions 
   await openmrs.voidPatient();
 });
 
-test('Voiding an OpenMRS encounter updates the encounter in Superset encounters table.', async ({ page }) => {
+test(`Voiding an OpenMRS encounter updates the encounter in Superset's encounters table.`, async ({ page }) => {
   // setup
   await openmrs.createPatient();
   await openmrs.searchPatientId();
@@ -457,7 +457,7 @@ test('Voiding an OpenMRS encounter updates the encounter in Superset encounters 
   await openmrs.voidPatient();
 });
 
-test('Cancelling an OpenMRS appointment updates the appointment in Superset appointments table.', async ({ page }) => {
+test(`Cancelling an OpenMRS appointment updates the appointment in Superset's appointments table.`, async ({ page }) => {
   // setup
   await openmrs.createPatient();
   await openmrs.searchPatientId();
