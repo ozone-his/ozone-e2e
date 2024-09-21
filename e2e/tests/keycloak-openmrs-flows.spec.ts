@@ -13,7 +13,7 @@ test.beforeEach(async ({ page }) => {
   await openmrs.login();
   await expect(page.locator('div:nth-child(1)>a')).toHaveText(/home/i);
 });
-/*
+
 test('Creating an OpenMRS role creates the corresponding Keycloak role.', async ({ page }) => {
   // setup
   await page.goto(`${O3_URL}/openmrs/admin/users/role.list`);
@@ -126,7 +126,7 @@ test('A (non-synced) role created from within Keycloak gets deleted in the subse
   await page.getByRole('button', { name: 'Search' }).press('Enter');
   await expect(page.getByText(`${randomKeycloakRoleName.roleName}`)).not.toBeVisible();
 });
-*/
+
 test('Logging out from OpenMRS logs out the user from Keycloak.', async ({ page }) => {
   // setup
   await keycloak.open();

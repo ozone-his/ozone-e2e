@@ -13,7 +13,7 @@ test.beforeEach(async ({ page }) => {
   keycloak = new Keycloak(page);
   superset = new Superset(page);
 });
-/*
+
 test('Creating a Superset role creates the corresponding Keycloak role.', async ({ page }) => {
   // setup
   await openmrs.login();
@@ -106,7 +106,7 @@ test('A synced role deleted from within Keycloak gets recreated in the subsequen
   await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`${randomSupersetRoleName.roleName}`);
   await superset.deleteRole();
 });
-*/
+
 test('Logging out from Superset logs out the user from Keycloak.', async ({ page }) => {
   // setup
   await superset.open();
