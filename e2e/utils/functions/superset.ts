@@ -1,6 +1,6 @@
 import { Page, expect } from '@playwright/test';
-import { SUPERSET_URL } from '../configs/globalSetup';
 import { delay } from './openmrs';
+import { SUPERSET_URL } from '../configs/globalSetup';
 
 export var randomSupersetRoleName = {
   roleName : `${(Math.random() + 1).toString(36).substring(2)}`,
@@ -43,7 +43,7 @@ export class Superset {
   }
 
   async addRole() {
-    await this.page.getByRole('button', { name: 'triangle-down Settings' }).click();
+    await this.page.getByRole('button', { name: /settings/i }).click();
     await expect(this.page.getByText('List Roles')).toBeVisible();
     await this.page.getByRole('link', { name: 'List Roles' }).click();
     await this.page.getByRole('link', { name: 'Add' }).click();

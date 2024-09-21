@@ -1,11 +1,10 @@
 import { Page, expect } from '@playwright/test';
-import { randomOpenMRSRoleName } from '../functions/openmrs';
-import { randomSupersetRoleName } from '../functions/superset';
+import { randomSupersetRoleName } from './superset';
 import { KEYCLOAK_URL } from '../configs/globalSetup';
-import { delay } from './openmrs';
+import { delay, randomOpenMRSRoleName } from './openmrs';
 
 export var randomKeycloakRoleName = {
-  roleName : `Aa${(Math.random() + 1).toString(36).substring(2)}`
+  roleName : `${(Math.random() + 1).toString(36).substring(2)}`
 }
 
 export class Keycloak {
@@ -29,8 +28,9 @@ export class Keycloak {
     await delay(2000);
   }
 
-  async goToClients() {
+  async navigateToClients() {
     await this.page.getByTestId('realmSelectorToggle').click();
+    await expect(this.page.getByRole('menuitem', { name: 'ozone' })).toBeVisible();
     await this.page.getByRole('menuitem', { name: 'ozone' }).click();
     await this.page.getByRole('link', { name: 'Clients' }).click();
     await delay(2000);
@@ -41,9 +41,20 @@ export class Keycloak {
     await this.page.getByPlaceholder('Search for client').fill('openmrs');
     await this.page.getByRole('button', { name: 'Search' }).click();
     await this.page.getByRole('link', { name: 'openmrs', exact: true }).click();
-    await this.page.getByTestId('rolesTab').click();
-    await delay(4000);
-    await this.page.reload();
+  }
+
+  async selectOdooId() {
+    await expect(this.page.getByPlaceholder('Search for client')).toBeVisible();
+    await this.page.getByPlaceholder('Search for client').fill('odoo');
+    await this.page.getByRole('button', { name: 'Search' }).click();
+    await this.page.getByRole('link', { name: 'odoo', exact: true }).click();
+  }
+
+  async selectSENAITEId() {
+    await expect(this.page.getByPlaceholder('Search for client')).toBeVisible();
+    await this.page.getByPlaceholder('Search for client').fill('senaite');
+    await this.page.getByRole('button', { name: 'Search' }).click();
+    await this.page.getByRole('link', { name: 'senaite', exact: true }).click();
   }
 
   async selectSupersetId() {
@@ -51,14 +62,12 @@ export class Keycloak {
     await this.page.getByPlaceholder('Search for client').fill('superset');
     await this.page.getByRole('button', { name: 'Search' }).click();
     await this.page.getByRole('link', { name: 'superset', exact: true  }).click();
-    await this.page.getByTestId('rolesTab').click();
-    await delay(3000);
-    await this.page.reload();
   }
 
-  async goToClientAttributes() {
-    await this.page.getByRole('link', { name: `${randomOpenMRSRoleName.roleName}` }).click();
-    await this.page.getByTestId('attributesTab').click();
+  async selectRoles() {
+    await this.page.getByTestId('rolesTab').click();
+    await delay(4000);
+    await this.page.reload();
   }
 
   async searchOpenMRSRole() {
@@ -73,6 +82,15 @@ export class Keycloak {
     await this.page.getByRole('button', { name: 'Search' }).press('Enter');
   }
 
+  async navigateToClientAttributes() {
+    await this.page.getByRole('link', { name: `${randomOpenMRSRoleName.roleName}` }).click();
+    await this.page.getByTestId('attributesTab').click();
+  }
+
+  async selectSessions() {
+    await this.page.getByTestId('sessionsTab').click();
+  }
+
   async deleteSyncedRole() {
     await this.page.getByRole('row', { name: `${randomSupersetRoleName.roleName}` }).getByLabel('Actions').click();
     await this.page.getByRole('menuitem', { name: 'Delete' }).click();
@@ -80,5 +98,11 @@ export class Keycloak {
     await expect(this.page.getByText(`The role has been deleted`)).toBeVisible();
     await expect(this.page.getByText(`${randomSupersetRoleName.roleName}`)).not.toBeVisible();
     await delay(60000);
+  }
+
+  async confirmLogout() {
+    await expect(this.page.getByText(/do you want to log out?/i)).toBeVisible();
+    await expect(this.page.locator('#kc-logout')).toBeVisible();
+    await this.page.locator('#kc-logout').click();
   }
 }

@@ -1,7 +1,6 @@
 import { expect, Page } from '@playwright/test';
-import { patientName } from '../functions/openmrs';
+import { delay, patientName } from './openmrs';
 import { ODOO_URL } from '../configs/globalSetup';
-import { delay } from './openmrs';
 
 export class Odoo {
   constructor(readonly page: Page) {}
@@ -34,6 +33,7 @@ export class Odoo {
 
   async navigateToSales() {
     await this.page.locator("//a[contains(@class, 'full')]").click();
+    await expect(this.page.getByRole('menuitem', { name: 'Sales' })).toBeVisible();
     await this.page.getByRole('menuitem', { name: 'Sales' }).click();
     await expect(this.page.locator('.breadcrumb-item')).toHaveText('Quotations');
   }

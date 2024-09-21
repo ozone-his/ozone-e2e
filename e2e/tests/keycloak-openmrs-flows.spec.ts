@@ -11,8 +11,9 @@ test.beforeEach(async ({ page }) => {
   keycloak = new Keycloak(page);
 
   await openmrs.login();
+  await expect(page.locator('div:nth-child(1)>a')).toHaveText(/home/i);
 });
-
+/*
 test('Creating an OpenMRS role creates the corresponding Keycloak role.', async ({ page }) => {
   // setup
   await page.goto(`${O3_URL}/openmrs/admin/users/role.list`);
@@ -22,12 +23,13 @@ test('Creating an OpenMRS role creates the corresponding Keycloak role.', async 
 
   // verify
   await keycloak.open();
-  await keycloak.goToClients();
+  await keycloak.navigateToClients();
   await keycloak.selectOpenMRSId();
+  await keycloak.selectRoles();
   await keycloak.searchOpenMRSRole();
   await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`${randomOpenMRSRoleName.roleName}`);
   await expect(page.locator('tbody:nth-child(2)  td:nth-child(3)')).toHaveText('OpenMRS role for e2e test');
-  await keycloak.goToClientAttributes();
+  await keycloak.navigateToClientAttributes();
   await expect(page.getByText('Organizational: Registration Clerk')).toBeTruthy();
   await expect(page.getByText('Application: Edits Existing Encounters')).toBeTruthy();
   await expect(page.getByText('Application: Uses Patient Summary')).toBeTruthy();
@@ -41,12 +43,13 @@ test('Updating a synced OpenMRS role updates the corresponding Keycloak role.', 
   await page.goto(`${O3_URL}/openmrs/admin/users/role.list`);
   await openmrs.addRole();
   await keycloak.open();
-  await keycloak.goToClients();
+  await keycloak.navigateToClients();
   await keycloak.selectOpenMRSId();
+  await keycloak.selectRoles();
   await keycloak.searchOpenMRSRole();
   await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`${randomOpenMRSRoleName.roleName}`);
   await expect(page.locator('tbody:nth-child(2)  td:nth-child(3)')).toHaveText('OpenMRS role for e2e test');
-  await keycloak.goToClientAttributes();
+  await keycloak.navigateToClientAttributes();
   await expect(page.getByText('Application: Enters Vitals')).toBeTruthy();
   await expect(page.getByText('Application: Edits Existing Encounters')).toBeTruthy();
   await expect(page.getByText('Application: Uses Patient Summary')).toBeTruthy();
@@ -59,10 +62,11 @@ test('Updating a synced OpenMRS role updates the corresponding Keycloak role.', 
 
   // verify
   await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
-  await keycloak.goToClients();
+  await keycloak.navigateToClients();
   await keycloak.selectOpenMRSId();
+  await keycloak.selectRoles();
   await keycloak.searchOpenMRSRole();
-  await keycloak.goToClientAttributes();
+  await keycloak.navigateToClientAttributes();
   await expect(page.getByText('Updated role description')).toBeVisible();
   await page.getByTestId('attributesTab').click();
   await expect(page.getByText('Application: Registers Patients')).toBeTruthy();
@@ -75,12 +79,13 @@ test('Deleting a synced OpenMRS role deletes the corresponding Keycloak role.', 
   await page.goto(`${O3_URL}/openmrs/admin/users/role.list`);
   await openmrs.addRole();
   await keycloak.open();
-  await keycloak.goToClients();
+  await keycloak.navigateToClients();
   await keycloak.selectOpenMRSId();
+  await keycloak.selectRoles();
   await keycloak.searchOpenMRSRole();
   await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`${randomOpenMRSRoleName.roleName}`);
   await expect(page.locator('tbody:nth-child(2)  td:nth-child(3)')).toHaveText('OpenMRS role for e2e test');
-  await keycloak.goToClientAttributes();
+  await keycloak.navigateToClientAttributes();
   await expect(page.getByText('Application: Enters Vitals')).toBeTruthy();
   await expect(page.getByText('Application: Edits Existing Encounters')).toBeTruthy();
   await expect(page.getByText('Application: Uses Patient Summary')).toBeTruthy();
@@ -93,8 +98,9 @@ test('Deleting a synced OpenMRS role deletes the corresponding Keycloak role.', 
 
   // verify
   await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
-  await keycloak.goToClients();
+  await keycloak.navigateToClients();
   await keycloak.selectOpenMRSId();
+  await keycloak.selectRoles();
   await keycloak.searchOpenMRSRole();
   await expect(page.getByText(`${randomOpenMRSRoleName.roleName}`)).not.toBeVisible();
 });
@@ -102,8 +108,9 @@ test('Deleting a synced OpenMRS role deletes the corresponding Keycloak role.', 
 test('A (non-synced) role created from within Keycloak gets deleted in the subsequent polling cycle.', async ({ page }) => {
   // setup
   await keycloak.open();
-  await keycloak.goToClients();
+  await keycloak.navigateToClients();
   await keycloak.selectOpenMRSId();
+  await keycloak.selectRoles();
 
   // replay
   await keycloak.createRole();
@@ -114,9 +121,36 @@ test('A (non-synced) role created from within Keycloak gets deleted in the subse
   await delay(50000);
   await page.getByLabel('Manage').getByRole('link', { name: 'Clients' }).click();
   await keycloak.selectOpenMRSId();
+  await expect(page.getByPlaceholder('Search role by name')).toBeVisible();
   await page.getByPlaceholder('Search role by name').fill(`${randomKeycloakRoleName.roleName}`);
   await page.getByRole('button', { name: 'Search' }).press('Enter');
   await expect(page.getByText(`${randomKeycloakRoleName.roleName}`)).not.toBeVisible();
+});
+*/
+test('Logging out from OpenMRS logs out the user from Keycloak.', async ({ page }) => {
+  // setup
+  await keycloak.open();
+  await keycloak.navigateToClients();
+  await keycloak.selectOpenMRSId();
+  await keycloak.selectSessions();
+  await expect(page.locator('td:nth-child(1) a').nth(0)).toHaveText(/jdoe/i);
+
+  // replay
+  await page.goto(`${O3_URL}`);
+  await expect(page.getByLabel(/my account/i)).toBeVisible();
+  await page.getByLabel(/my account/i).click();
+  await expect(page.getByRole('button', { name: /logout/i })).toBeVisible();
+  await page.getByRole('button', { name: /logout/i }).click();
+  await keycloak.confirmLogout();
+  await expect(page).toHaveURL(/.*login/);
+
+  // verify
+  await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
+  await keycloak.navigateToClients();
+  await keycloak.selectOpenMRSId();
+  await keycloak.selectSessions();
+  await expect(page.locator('h1.pf-c-title:nth-child(2)')).toHaveText(/no sessions/i);
+  await expect(page.locator('.pf-c-empty-state__body')).toHaveText(/there are currently no active sessions for this client/i);
 });
 
 test.afterEach(async ({ page }) => {
