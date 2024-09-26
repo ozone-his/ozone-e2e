@@ -183,6 +183,29 @@ test('Discontinuing a synced OpenMRS drug order for an ERPNext customer with a s
   await openmrs.voidPatient();
 });
 
+test('Discontinuing a synced OpenMRS lab order for an ERPNext customer removes the corresponding quotation.', async ({ page }) => {
+  // setup
+  await openmrs.goToLabOrderForm();
+  await page.getByPlaceholder('Search for a test type').fill('Complete blood count');
+  await openmrs.saveLabOrder();
+
+  await erpnext.open();
+  await erpnext.searchQuotation();
+  await expect(page.getByText(`${patientName.firstName + ' ' + patientName.givenName}`)).toBeVisible();
+
+  // replay
+  await page.goto(`${O3_URL}`);
+  await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
+  await openmrs.cancelLabOrder();
+
+  // verify
+  await page.goto(`${ERPNEXT_URL}/app/home`);
+  await erpnext.searchQuotation();
+  await expect(page.getByText(`${patientName.firstName + ' ' + patientName.givenName}`)).not.toBeVisible();
+  await expect(page.getByText('No Quotation found')).toBeVisible();
+  await openmrs.voidPatient();
+});
+
 test('Ordering a drug for an OpenMRS patient within a visit creates the corresponding ERPNext customer with a filled quotation linked to the visit.', async ({ page }) => {
   // setup
   await openmrs.goToDrugOrderForm();
