@@ -1,27 +1,163 @@
-name: Publish to NPM repository
+name: Ozone E2E Tests
 
 on:
+  schedule:
+    - cron: '0 0 * * 1,3,5'
   push:
-    branches:
-      - main
-  release:
-    types:
-      - created
+    branches: [main]
+  pull_request:
+    branches: [main]
 
+  workflow_dispatch:
+    inputs:
+      o3_url:
+        description: 'O3 URL'
+        required: false
+      odoo_url:
+        description: 'Odoo URL'
+        required: false
+      senaite_url:
+        description: 'SENAITE URL'
+        required: false
+      superset_url:
+        description: 'Superset URL'
+        required: false
+      test_pro:
+        description: 'Running Ozone on Pro?'
+        required: false
+        default: 'true'
+        type: choice
+        options:
+          - true
+          - false
+      environment:
+        description: 'Choose test environment'
+        required: false
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - qa
+          - demo
+      test_profile:
+        description: 'Choose test profile'
+        required: false
+        default: 'e2e-tests-pro'
+        type: choice
+        options:
+          - e2e-tests-pro
+          - e2e-tests-foss
+          - e2e-tests-openmrs-his
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}
+
+      - name: Setup node
+        uses: actions/setup-node@v4
         with:
           node-version: 20
-          registry-url: 'https://nexus.mekomsolutions.net/repository/npm-public/'
+
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
 
       - name: Install dependencies
         run: yarn install
 
-      - name: Publish to NPM repository
-        run: yarn publish
+      - name: Install Playwright browsers
+        run: npx playwright install chromium
+
+      - name: Run E2E tests
+        id: jobStatusPretty
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+          O3_URL_DEV: '${{ github.event.inputs.o3_url }}'
+          ODOO_URL_DEV: '${{ github.event.inputs.odoo_url }}'
+          SENAITE_URL_DEV: '${{ github.event.inputs.senaite_url }}'
+          SUPERSET_URL_DEV: '${{ github.event.inputs.superset_url }}'
+          TEST_PRO: '${{ github.event.inputs.test_pro }}'
+          TEST_ENVIRONMENT: '${{ github.event.inputs.environment }}'
+          TEST_PROFILE: '${{ github.event.inputs.test_profile }}'
+          KEYCLOAK_USERNAME: '${{ secrets.KEYCLOAK_USERNAME }}'
+          KEYCLOAK_PASSWORD: '${{ secrets.KEYCLOAK_PASSWORD }}'
+
+        run: |
+          npm run ${{ github.event.inputs.test_profile }}
+
+        if: ${{ github.event_name != 'pull_request' }}
+          if [[ ${{ job.status }} == "success" ]]; then
+            jobStatusPretty="✅ Passing"
+          else
+            jobStatusPretty="❌ Failing"
+          fi
+          echo "jobStatusPretty=$jobStatusPretty" >> "$GITHUB_ENV"
+
+      - name: Notify Slack
+        if: ${{ github.event_name != 'pull_request' }}
+        id: slack
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "rich_text",
+                  "elements": [
+                    {
+                      "type": "rich_text_section",
+                      "elements": [
+                        {
+                          "type": "text",
+                          "text": "GitHub Actions report from "
+                        },
+                        {
+                          "type": "link",
+                          "url": "https://github.com/ozone-his/ozone-e2e",
+                          "text": "${{ github.repository }}",
+                          "style": {
+                            "bold": false
+                          }
+                        },
+                        {
+                          "type": "text",
+                          "text": ":\n"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "rich_text_quote",
+                      "elements": [
+                        {
+                          "type": "link",
+                          "url": "https://ozone-dev.mekomsolutions.net",
+                          "text": "Ozone Dev"
+                        },
+                        {
+                          "type": "text",
+                          "text": " server QA status: ${{ env.jobStatusPretty }}"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+      - name: Upload report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30

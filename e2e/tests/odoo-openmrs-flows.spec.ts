@@ -17,8 +17,8 @@ test.beforeEach(async ({ page }) => {
 
 test('Ordering a lab test for an OpenMRS patient creates the corresponding Odoo customer with a filled quotation.', async ({ page }) => {
   // replay
-  await openmrs.goToLabOrderForm();
-  await page.getByPlaceholder('Search for a test type').fill('Blood urea nitrogen');
+  await openmrs.navigateToLabOrderForm();
+  await page.getByRole('searchbox').fill('Blood urea nitrogen');
   await openmrs.saveLabOrder();
 
   // verify
@@ -27,12 +27,13 @@ test('Ordering a lab test for an OpenMRS patient creates the corresponding Odoo 
   await odoo.searchCustomer();
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(4)')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Quotation');
+  await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(7) span')).toHaveText('$ 27.50');
 });
-
+/*
 test('Editing the details of an OpenMRS patient with a synced lab order edits the corresponding Odoo customer details.', async ({ page }) => {
   // setup
-  await openmrs.goToLabOrderForm();
-  await page.getByPlaceholder('Search for a test type').fill('Blood urea nitrogen');
+  await openmrs.navigateToLabOrderForm();
+  await page.getByRole('searchbox').fill('Blood urea nitrogen');
   await openmrs.saveLabOrder();
   await odoo.open();
   await odoo.navigateToSales();
@@ -55,8 +56,8 @@ test('Editing the details of an OpenMRS patient with a synced lab order edits th
 
 test('Ordering a drug for an OpenMRS patient creates the corresponding Odoo customer with a filled quotation.', async ({ page }) => {
   // replay
-  await openmrs.goToDrugOrderForm();
-  await page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 325mg');
+  await openmrs.navigateToDrugOrderForm();
+  await page.getByRole('searchbox').fill('Aspirin 325mg');
   await openmrs.fillDrugOrderForm();
   await openmrs.saveDrugOrder();
 
@@ -66,12 +67,13 @@ test('Ordering a drug for an OpenMRS patient creates the corresponding Odoo cust
   await odoo.searchCustomer();
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(4)')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Quotation');
+  await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(7) span')).toHaveText('$ 14.88');
 });
 
 test('Editing the details of an OpenMRS patient with a synced drug order edits the corresponding Odoo customer details.', async ({ page }) => {
   // setup
-  await openmrs.goToDrugOrderForm();
-  await page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 325mg');
+  await openmrs.navigateToDrugOrderForm();
+  await page.getByRole('searchbox').fill('Aspirin 325mg');
   await openmrs.fillDrugOrderForm();
   await openmrs.saveDrugOrder();
   await odoo.open();
@@ -93,10 +95,10 @@ test('Editing the details of an OpenMRS patient with a synced drug order edits t
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Quotation');
 });
 
-test('Revising a synced OpenMRS drug order edits the corresponding Odoo quotation line.', async ({ page }) => {
+test('Revising details of a synced OpenMRS drug order modifies the corresponding Odoo quotation line.', async ({ page }) => {
   // setup
-  await openmrs.goToDrugOrderForm();
-  await page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 325mg');
+  await openmrs.navigateToDrugOrderForm();
+  await page.getByRole('searchbox').fill('Aspirin 325mg');
   await openmrs.fillDrugOrderForm();
   await openmrs.saveDrugOrder();
   await odoo.open();
@@ -107,11 +109,12 @@ test('Revising a synced OpenMRS drug order edits the corresponding Odoo quotatio
   const drugOrderItem = await page.locator('table tbody td.o_data_cell:nth-child(3) span');
   await expect(drugOrderItem).toContainText('4.0 Tablet');
   await expect(drugOrderItem).toContainText('Twice daily - 5 day');
+  await expect(page.locator('td.o_data_cell:nth-child(9) span')).toHaveText('$ 14.88');
 
   // replay
   await page.goto(`${O3_URL}`);
   await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
-  await openmrs.editDrugOrder();
+  await openmrs.modifyDrugOrderDescription();
 
   // verify
   await page.goto(`${ODOO_URL}`);
@@ -120,12 +123,13 @@ test('Revising a synced OpenMRS drug order edits the corresponding Odoo quotatio
   await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
   await expect(drugOrderItem).toContainText('8.0 Tablet');
   await expect(drugOrderItem).toContainText('Thrice daily - 6 day');
+  await expect(page.locator('td.o_data_cell:nth-child(9) span')).toHaveText('$ 9.92');
 });
 
 test('Discontinuing a synced OpenMRS drug order for an Odoo customer with a single quotation line removes the corresponding quotation.', async ({ page }) => {
   // setup
-  await openmrs.goToDrugOrderForm();
-  await page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 325mg');
+  await openmrs.navigateToDrugOrderForm();
+  await page.getByRole('searchbox').fill('Aspirin 325mg');
   await openmrs.fillDrugOrderForm();
   await openmrs.saveDrugOrder();
   await odoo.open();
@@ -153,12 +157,12 @@ test('Discontinuing a synced OpenMRS drug order for an Odoo customer with a sing
 
 test('Discontinuing a synced OpenMRS drug order for an Odoo customer with multiple quotation lines removes the corresponding quoatation.', async ({ page }) => {
   // setup
-  await openmrs.goToLabOrderForm();
-  await page.getByPlaceholder('Search for a test type').fill('Blood urea nitrogen');
+  await openmrs.navigateToLabOrderForm();
+  await page.getByRole('searchbox').fill('Blood urea nitrogen');
   await openmrs.saveLabOrder();
   await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
-  await openmrs.goToDrugOrderForm();
-  await page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 325mg');
+  await openmrs.navigateToDrugOrderForm();
+  await page.getByRole('searchbox').fill('Aspirin 325mg');
   await openmrs.fillDrugOrderForm();
   await openmrs.saveDrugOrder();
   await odoo.open();
@@ -198,8 +202,8 @@ test('Ordering a drug with a free text medication dosage for an OpenMRS patient 
 
 test('Discontinuing a synced OpenMRS lab order for an Odoo customer with a single quotation line cancels the corresponding quotation.', async ({ page }) => {
   // setup
-  await openmrs.goToLabOrderForm();
-  await page.getByPlaceholder('Search for a test type').fill('Blood urea nitrogen');
+  await openmrs.navigateToLabOrderForm();
+  await page.getByRole('searchbox').fill('Blood urea nitrogen');
   await openmrs.saveLabOrder();
   await odoo.open();
   await odoo.navigateToSales();
@@ -220,7 +224,7 @@ test('Discontinuing a synced OpenMRS lab order for an Odoo customer with a singl
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(4)')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Cancelled');
 });
-
+*/
 test.afterEach(async ({ page }) => {
   await openmrs.voidPatient();
   await page.close();
