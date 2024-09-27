@@ -42,6 +42,8 @@ test('Logging out from Odoo logs out the user from Keycloak.', async ({ page }) 
   await keycloak.selectSessions();
   await expect(page.locator('h1.pf-c-title:nth-child(2)')).toHaveText(/no sessions/i);
   await expect(page.locator('.pf-c-empty-state__body')).toHaveText(/there are currently no active sessions for this client/i);
+  await page.goto(`${ODOO_URL}/web`);
+  await expect(page).toHaveURL(/.*login/);
 });
 
 test.afterEach(async ({ page }) => {
