@@ -18,7 +18,7 @@ export class ERPNext {
     await this.page.getByRole('link', { name: 'Customer', exact: true }).click();
     await this.page.getByPlaceholder('Customer Name').clear();
     await this.page.getByPlaceholder('Customer Name').fill(`${patientName.givenName}`);
-    await delay(3000);
+    await delay(5000);
   }
 
   async searchQuotation() {
@@ -27,7 +27,7 @@ export class ERPNext {
     await this.page.getByPlaceholder(/title/i).clear();
     await this.page.getByPlaceholder(/party/i).clear();
     await this.page.getByPlaceholder(/title/i).fill(`${patientName.givenName}`);
-    await delay(3000);
+    await delay(5000);
   }
 
   async deleteQuotation() {

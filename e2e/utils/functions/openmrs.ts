@@ -136,7 +136,7 @@ export class OpenMRS {
     await this.page.locator('label').filter({ hasText: 'Facility Visit' }).locator('span').first().click();
     await this.page.locator('form').getByRole('button', { name: 'Start visit' }).click();
     await expect(this.page.getByText('Facility Visit started successfully')).toBeVisible();
-    await delay(4000);
+    await delay(5000);
   }
 
   async endPatientVisit() {
@@ -150,13 +150,12 @@ export class OpenMRS {
 
   async voidPatient() {
     await this.page.goto(`${O3_URL}/openmrs/admin/patients/index.htm`);
-    await expect(await this.page.getByPlaceholder(' ')).toBeVisible();
+    await expect(this.page.getByPlaceholder(' ')).toBeVisible();
     await this.page.getByPlaceholder(' ').type(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.locator('#openmrsSearchTable tbody tr.odd td:nth-child(1)').click();
     await this.page.locator('input[name="voidReason"]').fill('Void patient created by smoke test');
     await this.page.getByRole('button', { name: 'Delete Patient', exact: true }).click();
-    const message = await this.page.locator('//*[@id="patientFormVoided"]').textContent();
-    await expect(message?.includes('This patient has been deleted')).toBeTruthy();
+    await expect(this.page.locator('//*[@id="patientFormVoided"]')).toContainText('This patient has been deleted');
   }
 
   async addPatientCondition() {
@@ -219,8 +218,11 @@ export class OpenMRS {
     await expect(this.page.getByText('Appointment cancelled successfully')).toBeVisible();
    }
 
-  async goToLabOrderForm() {
-    await this.page.getByLabel('Order basket', { exact: true }).click();
+  async navigateToLabOrderForm() {
+    await expect(this.page.getByLabel('Order basket')).toBeVisible();
+    await this.page.getByLabel('Order basket').click();
+    await delay(2000);
+    await expect(this.page.getByRole('button', { name: 'Add', exact: true }).nth(1)).toBeVisible();
     await this.page.getByRole('button', { name: 'Add', exact: true }).nth(1).click();
   }
 
@@ -256,14 +258,16 @@ export class OpenMRS {
     await this.page.getByRole('link', { name: 'Results Viewer' }).click();
   }
 
-  async goToDrugOrderForm() {
-    await this.page.getByLabel('Order basket', { exact: true }).click();
+  async navigateToDrugOrderForm() {
+    await expect(this.page.getByLabel('Order basket')).toBeVisible();
+    await this.page.getByLabel('Order basket').click();
+    await delay(2000);
+    await expect(this.page.getByRole('button', { name: 'Add', exact: true }).nth(0)).toBeVisible();
     await this.page.getByRole('button', { name: 'Add', exact: true }).nth(0).click();
   }
 
   async fillDrugOrderForm() {
     await this.page.getByRole('button', { name: 'Order form' }).click();
-    await delay(2000);
     await this.page.getByPlaceholder('Dose').fill('4');
     await this.page.getByRole('button', { name: 'Open', exact: true }).nth(1).click();
     await this.page.getByText('Intravenous', {exact: true}).click();
@@ -273,7 +277,7 @@ export class OpenMRS {
     await this.page.getByLabel('Duration', { exact: true }).fill('5');
     await this.page.getByLabel('Quantity to dispense').fill('12');
     await this.page.getByLabel('Prescription refills').fill('3');
-    await this.page.getByPlaceholder('e.g. "Hypertension"').type('Hypertension');
+    await this.page.locator('#indication').fill('Hypertension');
   }
 
   async saveDrugOrder() {
@@ -287,17 +291,19 @@ export class OpenMRS {
   }
 
   async createDrugOrderWithFreeTextDosage() {
-    await this.page.getByLabel('Order basket', { exact: true }).click();
-    await this.page.getByRole('button', { name: 'Add', exact: true }).nth(0).click();
-    await this.page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 325mg');
-    await this.page.getByRole('button', { name: 'Order form' }).click();
+    await expect(this.page.getByLabel('Order basket')).toBeVisible();
+    await this.page.getByLabel('Order basket').click();
     await delay(2000);
+    await expect(this.page.getByRole('button', { name: 'Add', exact: true }).nth(0)).toBeVisible();
+    await this.page.getByRole('button', { name: 'Add', exact: true }).nth(0).click();
+    await this.page.getByRole('searchbox').fill('Aspirin 325mg');
+    await this.page.getByRole('button', { name: 'Order form' }).click();
     await this.page.locator('div').filter({ hasText: /^Off$/ }).locator('div').click();
     await this.page.getByPlaceholder('Free text dosage').fill('Take up to three tablets per day');
     await this.page.getByLabel('Duration', { exact: true }).fill('3');
     await this.page.getByLabel('Quantity to dispense').fill('9');
     await this.page.getByLabel('Prescription refills').fill('2');
-    await this.page.getByPlaceholder('e.g. "Hypertension"').type('Hypertension');
+    await this.page.locator('#indication').fill('Hypertension');
     await this.page.getByRole('button', { name: 'Save order' }).focus();
     await expect(this.page.getByText('Save order')).toBeVisible();
     await this.page.getByRole('button', { name: 'Save order' }).click();
@@ -307,7 +313,7 @@ export class OpenMRS {
     await delay(5000);
   }
 
-  async editDrugOrder() {
+  async modifyDrugOrderDescription() {
     await this.page.getByRole('button', { name: 'Options', exact: true }).click();
     await this.page.getByRole('menuitem', { name: 'Modify', exact: true }).click();
     await this.page.getByPlaceholder('Dose').clear();
@@ -340,7 +346,6 @@ export class OpenMRS {
     await this.page.getByRole('button', { name: 'Actions', exact: true }).click();
     await this.page.getByRole('menuitem', { name: 'Edit patient details' }).click();
     await delay(4000);
-    await this.page.getByLabel('First Name').click();
     await this.page.getByLabel('First Name').clear();
     await this.page.getByLabel('First Name').type(`${patientName.updatedFirstName}`);
     await delay(4000);
