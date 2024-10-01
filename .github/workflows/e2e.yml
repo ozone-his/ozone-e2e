@@ -17,7 +17,7 @@ on:
         description: 'Superset URL'
         required: false
       test_pro:
-        description: 'Running Ozone on Pro?'
+        description: 'Running Ozone Pro?'
         required: true
         default: 'true'
         type: choice
@@ -81,4 +81,4 @@ jobs:
         with:
           name: playwright-report
           path: playwright-report/
-          retention-days: 30
+          retention-days: 7
