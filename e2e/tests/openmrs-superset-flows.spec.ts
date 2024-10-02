@@ -109,8 +109,8 @@ test(`Creating an OpenMRS order creates the order in Superset's orders table.`, 
   // replay
   await page.goto(`${O3_URL}`);
   await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
-  await openmrs.goToLabOrderForm();
-  await page.getByPlaceholder('Search for a test type').fill('Blood urea nitrogen');
+  await openmrs.navigateToLabOrderForm();
+  await page.getByRole('searchbox').fill('Blood urea nitrogen');
   await openmrs.saveLabOrder();
 
   // verify
@@ -157,8 +157,8 @@ test(`Creating an OpenMRS encounter creates the encounter in Superset's encounte
   // replay
   await page.goto(`${O3_URL}`);
   await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
-  await openmrs.goToLabOrderForm();
-  await page.getByPlaceholder('Search for a test type').fill('Blood urea nitrogen');
+  await openmrs.navigateToLabOrderForm();
+  await page.getByRole('searchbox').fill('Blood urea nitrogen');
   await openmrs.saveLabOrder();
 
   // verify
@@ -424,8 +424,8 @@ test(`Voiding an OpenMRS encounter updates the encounter in Superset's encounter
   await openmrs.searchPatientId();
   const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
   await openmrs.startPatientVisit();
-  await openmrs.goToLabOrderForm();
-  await page.getByPlaceholder('Search for a test type').fill('Blood urea nitrogen');
+  await openmrs.navigateToLabOrderForm();
+  await page.getByRole('searchbox').fill('Blood urea nitrogen');
   await openmrs.saveLabOrder();
   await superset.open();
   await superset.selectDBSchema();

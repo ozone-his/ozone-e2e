@@ -21,8 +21,8 @@ test.beforeEach(async ({ page }) => {
 test(`Creating an Odoo sale order line generates an entry in Superset's sale_order_lines table.`, async ({ page }) => {
   // setup
   await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
-  await openmrs.goToLabOrderForm();
-  await page.getByPlaceholder('Search for a test type').fill('Complete blood count');
+  await openmrs.navigateToLabOrderForm();
+  await page.getByRole('searchbox').fill('Complete blood count');
   await openmrs.saveLabOrder();
   await superset.open();
   await superset.selectDBSchema();
@@ -75,8 +75,8 @@ test(`A (synced) sale order line in Odoo generates an entry in Superset's sale_o
   await superset.clearSQLEditor();
   await page.goto(`${O3_URL}`);
   await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
-  await openmrs.goToLabOrderForm();
-  await page.getByPlaceholder('Search for a test type').fill('Haemoglobin');
+  await openmrs.navigateToLabOrderForm();
+  await page.getByRole('searchbox').fill('Haemoglobin');
   await openmrs.saveLabOrder();
 
   // replay

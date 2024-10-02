@@ -17,8 +17,8 @@ test.beforeEach(async ({ page }) => {
 
 test('Ordering a lab test for an OpenMRS patient creates the corresponding ERPNext customer.', async ({ page }) => {
   // replay
-  await openmrs.goToLabOrderForm();
-  await page.getByPlaceholder('Search for a test type').fill('Blood urea nitrogen');
+  await openmrs.navigateToLabOrderForm();
+  await page.getByRole('searchbox').fill('Blood urea nitrogen');
   await openmrs.saveLabOrder();
 
   // verify
@@ -31,8 +31,8 @@ test('Ordering a lab test for an OpenMRS patient creates the corresponding ERPNe
 
 test('Ordering a drug for an OpenMRS patient creates the corresponding ERPNext customer with a filled quotation.', async ({ page }) => {
   // replay
-  await openmrs.goToDrugOrderForm();
-  await page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 325mg');
+  await openmrs.navigateToDrugOrderForm();
+  await page.getByRole('searchbox').fill('Aspirin 325mg');
   await openmrs.fillDrugOrderForm();
   await openmrs.saveDrugOrder();
 
@@ -50,8 +50,8 @@ test('Ordering a drug for an OpenMRS patient creates the corresponding ERPNext c
 
 test('Editing the details of an OpenMRS patient with a synced lab order edits the corresponding ERPNext customer details.', async ({ page }) => {
   // setup
-  await openmrs.goToLabOrderForm();
-  await page.getByPlaceholder('Search for a test type').fill('Blood urea nitrogen');
+  await openmrs.navigateToLabOrderForm();
+  await page.getByRole('searchbox').fill('Blood urea nitrogen');
   await openmrs.saveLabOrder();
   await erpnext.open();
   await erpnext.searchCustomer();
@@ -72,8 +72,8 @@ test('Editing the details of an OpenMRS patient with a synced lab order edits th
 
 test('Editing the details of an OpenMRS patient with a synced drug order edits the corresponding ERPNext customer details.', async ({ page }) => {
   // setup
-  await openmrs.goToDrugOrderForm();
-  await page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 325mg');
+  await openmrs.navigateToDrugOrderForm();
+  await page.getByRole('searchbox').fill('Aspirin 325mg');
   await openmrs.fillDrugOrderForm();
   await openmrs.saveDrugOrder();
   await erpnext.open();
@@ -95,8 +95,8 @@ test('Editing the details of an OpenMRS patient with a synced drug order edits t
 
 test('Ending an OpenMRS patient visit with a synced drug order updates the corresponding ERPNext draft quotation to an open state.', async ({ page }) => {
   // setup
-  await openmrs.goToDrugOrderForm();
-  await page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 325mg');
+  await openmrs.navigateToDrugOrderForm();
+  await page.getByRole('searchbox').fill('Aspirin 325mg');
   await openmrs.fillDrugOrderForm();
   await openmrs.saveDrugOrder();
   await erpnext.open();
@@ -117,10 +117,10 @@ test('Ending an OpenMRS patient visit with a synced drug order updates the corre
   await erpnext.deleteQuotation();
 });
 
-test('Revising a synced OpenMRS drug order edits the corresponding ERPNext quotation item.', async ({ page }) => {
+test('Revising details of a synced OpenMRS drug order modifies the corresponding ERPNext quotation item.', async ({ page }) => {
   // setup
-  await openmrs.goToDrugOrderForm();
-  await page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 325mg');
+  await openmrs.navigateToDrugOrderForm();
+  await page.getByRole('searchbox').fill('Aspirin 325mg');
   await openmrs.fillDrugOrderForm();
   await openmrs.saveDrugOrder();
   await erpnext.open();
@@ -131,7 +131,7 @@ test('Revising a synced OpenMRS drug order edits the corresponding ERPNext quota
   // replay
   await page.goto(`${O3_URL}`);
   await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
-  await openmrs.editDrugOrder();
+  await openmrs.modifyDrugOrderDescription();
 
   // verify
   await page.goto(`${ERPNEXT_URL}/app/home`);
@@ -162,8 +162,8 @@ test('Ordering a drug with a free text medication dosage for an OpenMRS patient 
 
 test('Discontinuing a synced OpenMRS drug order for an ERPNext customer with a single quotation line removes the corresponding quotation.', async ({ page }) => {
   // setup
-  await openmrs.goToDrugOrderForm();
-  await page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 325mg');
+  await openmrs.navigateToDrugOrderForm();
+  await page.getByRole('searchbox').fill('Aspirin 325mg');
   await openmrs.fillDrugOrderForm();
   await openmrs.saveDrugOrder();
   await erpnext.open();
@@ -185,8 +185,8 @@ test('Discontinuing a synced OpenMRS drug order for an ERPNext customer with a s
 
 test('Ordering a drug for an OpenMRS patient within a visit creates the corresponding ERPNext customer with a filled quotation linked to the visit.', async ({ page }) => {
   // setup
-  await openmrs.goToDrugOrderForm();
-  await page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 325mg');
+  await openmrs.navigateToDrugOrderForm();
+  await page.getByRole('searchbox').fill('Aspirin 325mg');
   await openmrs.fillDrugOrderForm();
   await openmrs.saveDrugOrder();
   await erpnext.open();
@@ -198,8 +198,8 @@ test('Ordering a drug for an OpenMRS patient within a visit creates the correspo
   await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await openmrs.endPatientVisit();
   await openmrs.startPatientVisit();
-  await openmrs.goToDrugOrderForm();
-  await page.getByPlaceholder('Search for a drug or orderset (e.g. "Aspirin")').fill('Aspirin 81mg');
+  await openmrs.navigateToDrugOrderForm();
+  await page.getByRole('searchbox').fill('Aspirin 81mg');
   await openmrs.fillDrugOrderForm();
   await openmrs.saveDrugOrder();
 

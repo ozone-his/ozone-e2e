@@ -1,0 +1,84 @@
+name: E2E Test Profile
+
+on:
+  workflow_dispatch:
+
+    inputs:
+      o3_url:
+        description: 'O3 URL'
+        required: true
+      odoo_url:
+        description: 'Odoo URL'
+        required: false
+      senaite_url:
+        description: 'SENAITE URL'
+        required: false
+      superset_url:
+        description: 'Superset URL'
+        required: false
+      test_pro:
+        description: 'Running Ozone Pro?'
+        required: true
+        default: 'true'
+        type: choice
+        options:
+          - true
+          - false
+      test_profile:
+        description: 'Choose test profile'
+        required: true
+        default: 'ozone-pro'
+        type: choice
+        options:
+          - ozone-pro
+          - ozone-foss
+          - openmrs-distro-his
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium
+
+      - name: Run E2E tests
+        id: jobStatusPretty
+        env:
+          O3_URL_DEV: '${{ github.event.inputs.o3_url }}'
+          ODOO_URL_DEV: '${{ github.event.inputs.odoo_url }}'
+          SENAITE_URL_DEV: '${{ github.event.inputs.senaite_url }}'
+          SUPERSET_URL_DEV: '${{ github.event.inputs.superset_url }}'
+          TEST_PRO: '${{ github.event.inputs.test_pro }}'
+          TEST_ENVIRONMENT: '${{ github.event.inputs.environment }}'
+          TEST_PROFILE: '${{ github.event.inputs.test_profile }}'
+
+        run: |
+          npm run $TEST_PROFILE
+
+      - name: Upload report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
