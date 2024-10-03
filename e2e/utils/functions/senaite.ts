@@ -1,7 +1,6 @@
 import { expect, Page } from '@playwright/test';
-import { patientName } from '../functions/openmrs';
+import { delay, patientName } from './openmrs';
 import { SENAITE_URL } from '../configs/globalSetup';
-import { delay } from './openmrs';
 
 export class SENAITE {
   constructor(readonly page: Page) {}

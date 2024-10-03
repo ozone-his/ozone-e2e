@@ -1,6 +1,6 @@
 import { expect, Page } from '@playwright/test';
-import { ODOO_URL } from '../configs/globalSetup';
 import { delay, patientName } from './openmrs';
+import { ODOO_URL } from '../configs/globalSetup';
 
 export class Odoo {
   constructor(readonly page: Page) {}

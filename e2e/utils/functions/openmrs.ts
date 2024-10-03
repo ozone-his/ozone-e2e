@@ -29,10 +29,7 @@ export class OpenMRS {
   async login() {
     await this.page.goto(`${O3_URL}`);
     if (`${process.env.TEST_PRO}` == 'true') {
-      await this.page.locator('#username').fill(`${process.env.OZONE_USERNAME}`);
-      await this.page.getByRole('button', { name: 'Continue' }).click();
-      await this.page.locator('#password').fill(`${process.env.OZONE_PASSWORD}`);
-      await this.page.getByRole('button', { name: 'Sign In' }).click();
+      await this.enterLoginCredentials();
     } else {
       await this.page.locator('#username').fill(`${process.env.O3_USERNAME_ON_FOSS}`);
       await delay(1000);
@@ -48,6 +45,13 @@ export class OpenMRS {
     await expect(this.page.getByRole('button', { name: 'Add Patient' })).toBeEnabled();
     await expect(this.page.getByRole('button', { name: 'My Account' })).toBeEnabled();
     await expect(this.page.getByRole('button', { name: 'App Menu' })).toBeEnabled();
+  }
+
+  async enterLoginCredentials() {
+    await this.page.locator('#username').fill(`${process.env.OZONE_USERNAME}`);
+    await this.page.getByRole('button', { name: 'Continue' }).click();
+    await this.page.locator('#password').fill(`${process.env.OZONE_PASSWORD}`);
+    await this.page.getByRole('button', { name: 'Sign In' }).click();
   }
 
   async createPatient() {
