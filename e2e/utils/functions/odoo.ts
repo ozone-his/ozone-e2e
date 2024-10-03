@@ -1,6 +1,7 @@
 import { expect, Page } from '@playwright/test';
-import { delay, patientName } from './openmrs';
 import { ODOO_URL } from '../configs/globalSetup';
+import { Keycloak } from './keycloak';
+import { delay, patientName } from './openmrs';
 
 export class Odoo {
   constructor(readonly page: Page) {}
@@ -52,5 +53,16 @@ export class Odoo {
     await expect(this.page.locator('td.o_data_cell:nth-child(4)')).toHaveText('8');
     await expect(this.page.locator('td.o_data_cell:nth-child(9)')).toHaveText('2.00');
     await expect(this.page.locator('td.o_data_cell:nth-child(11)')).toHaveText('$ 16.00');
+  }
+
+  async logout() {
+    await this.page.goto(`${ODOO_URL}`);
+    await expect(this.page.locator('.o_user_menu>a')).toBeVisible();
+    await this.page.locator('.o_user_menu>a').click();
+    await expect(this.page.getByRole('menuitem', { name: /log out/i })).toBeVisible();
+    await this.page.getByRole('menuitem', { name: /log out/i }).click();
+    let keycloak = new Keycloak(this.page);
+    await keycloak.confirmLogout();
+    await expect(this.page).toHaveURL(/.*login/);
   }
 }

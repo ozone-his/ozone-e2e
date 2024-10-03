@@ -1,6 +1,6 @@
 import { Page, expect } from '@playwright/test';
-import { randomSupersetRoleName } from './superset';
 import { KEYCLOAK_URL } from '../configs/globalSetup';
+import { randomSupersetRoleName } from './superset';
 import { delay, randomOpenMRSRoleName } from './openmrs';
 
 export var randomKeycloakRoleName = {
