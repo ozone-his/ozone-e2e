@@ -1,6 +1,6 @@
 import { Page, expect } from '@playwright/test';
-import { delay, patientName } from './openmrs';
 import { ERPNEXT_URL } from '../configs/globalSetup';
+import { delay, patientName } from './openmrs';
 
 export class ERPNext {
   constructor(readonly page: Page) {}

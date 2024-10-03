@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/test';
+import { KEYCLOAK_URL, SENAITE_URL } from '../utils/configs/globalSetup';
 import { Keycloak } from '../utils/functions/keycloak';
 import { OpenMRS } from '../utils/functions/openmrs';
 import { SENAITE } from '../utils/functions/senaite';
-import { KEYCLOAK_URL, SENAITE_URL } from '../utils/configs/globalSetup';
 
 let openmrs: OpenMRS;
 let senaite: SENAITE;
@@ -27,13 +27,7 @@ test('Logging out from SENAITE logs out the user from Keycloak.', async ({ page 
   await expect(page.locator('td:nth-child(1) a').nth(0)).toHaveText(/jdoe/i);
 
   // replay
-  await page.goto(`${SENAITE_URL}`);
-  await expect(page.locator('#navbarUserDropdown')).toBeVisible();
-  await page.locator('#navbarUserDropdown').click();
-  await expect(page.getByRole('link', { name: /log out/i })).toBeVisible();
-  await page.getByRole('link', { name: /log out/i }).click();
-  await keycloak.confirmLogout();
-  await expect(page.locator('#username')).toBeVisible();
+  await senaite.logout();
 
   // verify
   await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
@@ -43,7 +37,7 @@ test('Logging out from SENAITE logs out the user from Keycloak.', async ({ page 
   await expect(page.locator('h1.pf-c-title:nth-child(2)')).toHaveText(/no sessions/i);
   await expect(page.locator('.pf-c-empty-state__body')).toHaveText(/there are currently no active sessions for this client/i);
   await page.goto(`${SENAITE_URL}/senaite-dashboard`);
-  await expect(page).toHaveURL(/.*login/);
+  await expect(page.locator('#username')).toBeVisible();
 });
 
 test.afterEach(async ({ page }) => {
