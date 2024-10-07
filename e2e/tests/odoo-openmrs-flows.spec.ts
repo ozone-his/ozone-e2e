@@ -198,6 +198,8 @@ test('Ordering a drug with a free text medication dosage for an OpenMRS patient 
   await odoo.searchCustomer();
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(4)')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Quotation');
+  await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
+  await expect(page.locator("td.o_data_cell.o_field_cell.o_list_text.o_section_and_note_text_cell.o_required_modifier span")).toHaveText('Aspirin 325mg | 18.0 Tablet | 3 Days - 2 Tablets - Every after eight hours - To be taken after a meal. | Orderer: John Doe');
 });
 
 test('Discontinuing a synced OpenMRS lab order for an Odoo customer with a single quotation line cancels the corresponding quotation.', async ({ page }) => {
