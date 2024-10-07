@@ -1,5 +1,6 @@
 import { Page, expect } from '@playwright/test';
 import { O3_URL } from '../configs/globalSetup';
+import { Keycloak } from './keycloak';
 
 export var patientName = {
   firstName : '',
@@ -418,5 +419,16 @@ export class OpenMRS {
     await this.page.getByRole('button', { name: 'Delete Selected Roles' }).click();
     await expect(this.page.getByText(`${randomOpenMRSRoleName.roleName} deleted`)).toBeVisible();
     await this.page.getByRole('link', { name: 'Log out' }).click();
+  }
+
+  async logout() {
+    await this.page.goto(`${O3_URL}`);
+    await expect(this.page.getByLabel(/my account/i)).toBeVisible();
+    await this.page.getByLabel(/my account/i).click();
+    await expect(this.page.getByRole('button', { name: /logout/i })).toBeVisible();
+    await this.page.getByRole('button', { name: /logout/i }).click();
+    let keycloak = new Keycloak(this.page);
+    await keycloak.confirmLogout();
+    await expect(this.page).toHaveURL(/.*login/);
   }
 }

@@ -1,6 +1,7 @@
 import { expect, Page } from '@playwright/test';
-import { delay, patientName } from './openmrs';
 import { SENAITE_URL } from '../configs/globalSetup';
+import { delay, patientName } from './openmrs';
+import { Keycloak } from './keycloak';
 
 export class SENAITE {
   constructor(readonly page: Page) {}
@@ -53,5 +54,16 @@ export class SENAITE {
     await this.page.getByRole('button', { name: 'Send' }).click();
     await expect(this.page.locator('table tbody tr.contentrow.state-published.parent td.contentcell.State span span')).toHaveText('Published');
     await delay(30000);
+  }
+
+  async logout() {
+    await this.page.goto(`${SENAITE_URL}`);
+    await expect(this.page.locator('#navbarUserDropdown')).toBeVisible();
+    await this.page.locator('#navbarUserDropdown').click();
+    await expect(this.page.getByRole('link', { name: /log out/i })).toBeVisible();
+    await this.page.getByRole('link', { name: /log out/i }).click();
+    let keycloak = new Keycloak(this.page);
+    await keycloak.confirmLogout();
+    await expect(this.page.locator('#username')).toBeVisible();
   }
 }

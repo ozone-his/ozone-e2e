@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
+import { O3_URL, KEYCLOAK_URL } from '../utils/configs/globalSetup';
 import { Keycloak, randomKeycloakRoleName } from '../utils/functions/keycloak';
 import { OpenMRS, delay, randomOpenMRSRoleName } from '../utils/functions/openmrs';
-import { O3_URL, KEYCLOAK_URL } from '../utils/configs/globalSetup';
 
 let openmrs: OpenMRS;
 let keycloak: Keycloak;
@@ -36,6 +36,7 @@ test('Creating an OpenMRS role creates the corresponding Keycloak role.', async 
   await expect(page.getByText('Application: Has Super User Privileges')).toBeTruthy();
   await expect(page.getByText('Application: Administers System')).toBeTruthy();
   await openmrs.deleteRole();
+  await openmrs.logout();
 });
 
 test('Updating a synced OpenMRS role updates the corresponding Keycloak role.', async ({ page }) => {
@@ -72,6 +73,7 @@ test('Updating a synced OpenMRS role updates the corresponding Keycloak role.', 
   await expect(page.getByText('Application: Registers Patients')).toBeTruthy();
   await expect(page.getByText('Application: Writes Clinical Notes')).toBeTruthy();
   await openmrs.deleteRole();
+  await openmrs.logout();
 });
 
 test('Deleting a synced OpenMRS role deletes the corresponding Keycloak role.', async ({ page }) => {
@@ -103,6 +105,7 @@ test('Deleting a synced OpenMRS role deletes the corresponding Keycloak role.', 
   await keycloak.selectRoles();
   await keycloak.searchOpenMRSRole();
   await expect(page.getByText(`${randomOpenMRSRoleName.roleName}`)).not.toBeVisible();
+  await openmrs.logout();
 });
 
 test('A (non-synced) role created from within Keycloak gets deleted in the subsequent polling cycle.', async ({ page }) => {
@@ -125,6 +128,7 @@ test('A (non-synced) role created from within Keycloak gets deleted in the subse
   await page.getByPlaceholder('Search role by name').fill(`${randomKeycloakRoleName.roleName}`);
   await page.getByRole('button', { name: 'Search' }).press('Enter');
   await expect(page.getByText(`${randomKeycloakRoleName.roleName}`)).not.toBeVisible();
+  await openmrs.logout();
 });
 
 test('Logging out from OpenMRS logs out the user from Keycloak.', async ({ page }) => {
@@ -136,13 +140,7 @@ test('Logging out from OpenMRS logs out the user from Keycloak.', async ({ page 
   await expect(page.locator('td:nth-child(1) a').nth(0)).toHaveText(/jdoe/i);
 
   // replay
-  await page.goto(`${O3_URL}`);
-  await expect(page.getByLabel(/my account/i)).toBeVisible();
-  await page.getByLabel(/my account/i).click();
-  await expect(page.getByRole('button', { name: /logout/i })).toBeVisible();
-  await page.getByRole('button', { name: /logout/i }).click();
-  await keycloak.confirmLogout();
-  await expect(page).toHaveURL(/.*login/);
+  await openmrs.logout();
 
   // verify
   await page.goto(`${KEYCLOAK_URL}/admin/master/console`);

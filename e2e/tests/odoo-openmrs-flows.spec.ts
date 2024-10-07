@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
+import { O3_URL, ODOO_URL } from '../utils/configs/globalSetup';
 import { Odoo } from '../utils/functions/odoo';
 import { OpenMRS, patientName } from '../utils/functions/openmrs';
-import { O3_URL, ODOO_URL } from '../utils/configs/globalSetup';
 
 let odoo: Odoo;
 let openmrs: OpenMRS;
@@ -226,6 +226,8 @@ test('Discontinuing a synced OpenMRS lab order for an Odoo customer with a singl
 });
 
 test.afterEach(async ({ page }) => {
+  await odoo.logout();
   await openmrs.voidPatient();
+  await openmrs.logout();
   await page.close();
 });

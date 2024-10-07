@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/test';
+import { KEYCLOAK_URL, ODOO_URL } from '../utils/configs/globalSetup';
 import { Odoo } from '../utils/functions/odoo';
 import { OpenMRS } from '../utils/functions/openmrs';
 import { Keycloak } from '../utils/functions/keycloak';
-import { KEYCLOAK_URL, ODOO_URL } from '../utils/configs/globalSetup';
 
 let odoo: Odoo;
 let openmrs: OpenMRS;
@@ -27,13 +27,7 @@ test('Logging out from Odoo logs out the user from Keycloak.', async ({ page }) 
   await expect(page.locator('td:nth-child(1) a').nth(0)).toHaveText(/jdoe/i);
 
   // replay
-  await page.goto(`${ODOO_URL}`);
-  await expect(page.locator('.o_user_menu>a')).toBeVisible();
-  await page.locator('.o_user_menu>a').click();
-  await expect(page.getByRole('menuitem', { name: /log out/i })).toBeVisible();
-  await page.getByRole('menuitem', { name: /log out/i }).click();
-  await keycloak.confirmLogout();
-  await expect(page).toHaveURL(/.*login/);
+  await odoo.logout();
 
   // verify
   await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
