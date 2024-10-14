@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
+import { O3_URL, ERPNEXT_URL } from '../utils/configs/globalSetup';
 import { ERPNext } from '../utils/functions/erpnext';
 import { OpenMRS, patientName } from '../utils/functions/openmrs';
-import { O3_URL, ERPNEXT_URL } from '../utils/configs/globalSetup';
 
 let openmrs: OpenMRS;
 let erpnext: ERPNext;
@@ -215,5 +215,6 @@ test('Ordering a drug for an OpenMRS patient within a visit creates the correspo
 
 test.afterEach(async ({ page }) => {
   await erpnext.deleteCustomer();
+  await openmrs.logout();
   await page.close();
 });

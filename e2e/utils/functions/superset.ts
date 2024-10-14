@@ -1,6 +1,7 @@
 import { Page, expect } from '@playwright/test';
-import { delay } from './openmrs';
 import { SUPERSET_URL } from '../configs/globalSetup';
+import { delay } from './openmrs';
+import { Keycloak } from './keycloak';
 
 export var randomSupersetRoleName = {
   roleName : `${(Math.random() + 1).toString(36).substring(2)}`,
@@ -97,5 +98,15 @@ export class Superset {
     await delay(2500);
     await expect(this.page.getByText(`Deleted Row`)).toBeVisible();
     await expect(this.page.getByText(`${randomSupersetRoleName.updatedRoleName}`)).not.toBeVisible();
+  }
+
+  async logout() {
+    await this.page.goto(`${SUPERSET_URL}`);
+    await this.page.getByRole('button', { name: /settings/i }).click();
+    await expect(this.page.getByRole('link', { name: /logout/i })).toBeVisible();
+    await this.page.getByRole('link', { name: /logout/i }).click();
+    let keycloak = new Keycloak(this.page);
+    await keycloak.confirmLogout();
+    await expect(this.page).toHaveURL(/.*login/);
   }
 }

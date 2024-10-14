@@ -1,5 +1,6 @@
 import { Page, expect } from '@playwright/test';
 import { O3_URL } from '../configs/globalSetup';
+import { Keycloak } from './keycloak';
 
 export var patientName = {
   firstName : '',
@@ -350,14 +351,14 @@ export class OpenMRS {
     await this.page.getByRole('button', { name: 'Actions', exact: true }).click();
     await this.page.getByRole('menuitem', { name: 'Edit patient details' }).click();
     await delay(4000);
+    await expect(this.page.getByLabel('First Name')).toBeVisible();
     await this.page.getByLabel('First Name').clear();
     await this.page.getByLabel('First Name').type(`${patientName.updatedFirstName}`);
-    await delay(4000);
+    await delay(2000);
     await this.page.locator('label').filter({ hasText: 'Female' }).locator('span').first().click();
     await this.page.getByRole('button', { name: 'Update Patient' }).click();
     await expect(this.page.getByText('Patient Details Updated')).toBeVisible();
     patientName.firstName = `${patientName.updatedFirstName}`;
-    await this.page.getByRole('button', { name: 'Close', exact: true }).click();
     await delay(5000);
   }
 
@@ -418,5 +419,16 @@ export class OpenMRS {
     await this.page.getByRole('button', { name: 'Delete Selected Roles' }).click();
     await expect(this.page.getByText(`${randomOpenMRSRoleName.roleName} deleted`)).toBeVisible();
     await this.page.getByRole('link', { name: 'Log out' }).click();
+  }
+
+  async logout() {
+    await this.page.goto(`${O3_URL}`);
+    await expect(this.page.getByLabel(/my account/i)).toBeVisible();
+    await this.page.getByLabel(/my account/i).click();
+    await expect(this.page.getByRole('button', { name: /logout/i })).toBeVisible();
+    await this.page.getByRole('button', { name: /logout/i }).click();
+    let keycloak = new Keycloak(this.page);
+    await keycloak.confirmLogout();
+    await expect(this.page).toHaveURL(/.*login/);
   }
 }

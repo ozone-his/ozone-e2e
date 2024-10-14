@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/test';
+import { KEYCLOAK_URL, SUPERSET_URL } from '../utils/configs/globalSetup';
 import { Keycloak } from '../utils/functions/keycloak';
 import { OpenMRS, delay } from '../utils/functions/openmrs';
 import { Superset, randomSupersetRoleName} from '../utils/functions/superset';
-import { KEYCLOAK_URL, SUPERSET_URL } from '../utils/configs/globalSetup';
 
 let openmrs: OpenMRS;
 let keycloak: Keycloak;
@@ -30,6 +30,7 @@ test('Creating a Superset role creates the corresponding Keycloak role.', async 
   await keycloak.searchSupersetRole();
   await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`${randomSupersetRoleName.roleName}`);
   await superset.deleteRole();
+  await superset.logout();
 });
 
 test('Updating a synced Superset role updates the corresponding Keycloak role.', async ({ page }) => {
@@ -56,6 +57,7 @@ test('Updating a synced Superset role updates the corresponding Keycloak role.',
   await expect(page.getByText(`${randomSupersetRoleName.roleName}`)).not.toBeVisible();
   await expect(page.getByText(`${randomSupersetRoleName.updatedRoleName}`)).toBeVisible();
   await superset.deleteUpdatedRole();
+  await superset.logout();
 });
 
 test('Deleting a synced Superset role deletes the corresponding Keycloak role.', async ({ page }) => {
@@ -81,6 +83,7 @@ test('Deleting a synced Superset role deletes the corresponding Keycloak role.',
   await keycloak.selectRoles();
   await keycloak.searchSupersetRole();
   await expect(page.getByText(`${randomSupersetRoleName.roleName}`)).not.toBeVisible();
+  await superset.logout();
 });
 
 test('A synced role deleted from within Keycloak gets recreated in the subsequent polling cycle.', async ({ page }) => {
@@ -105,6 +108,7 @@ test('A synced role deleted from within Keycloak gets recreated in the subsequen
   await keycloak.searchSupersetRole();
   await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`${randomSupersetRoleName.roleName}`);
   await superset.deleteRole();
+  await superset.logout();
 });
 
 test('Logging out from Superset logs out the user from Keycloak.', async ({ page }) => {
@@ -120,12 +124,7 @@ test('Logging out from Superset logs out the user from Keycloak.', async ({ page
   await expect(page.locator('td:nth-child(1) a').nth(0)).toHaveText(/jdoe/i);
 
   // replay
-  await page.goto(`${SUPERSET_URL}`);
-  await page.getByRole('button', { name: /settings/i }).click();
-  await expect(page.getByRole('link', { name: /logout/i })).toBeVisible();
-  await page.getByRole('link', { name: /logout/i }).click();
-  await keycloak.confirmLogout();
-  await expect(page).toHaveURL(/.*login/);
+  await superset.logout();
 
   // verify
   await page.goto(`${KEYCLOAK_URL}/admin/master/console`);

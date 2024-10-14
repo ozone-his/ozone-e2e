@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/test';
+import { O3_URL, SUPERSET_URL } from '../utils/configs/globalSetup';
 import { Odoo } from '../utils/functions/odoo';
 import { Superset } from '../utils/functions/superset';
 import { OpenMRS, patientName } from '../utils/functions/openmrs';
-import { O3_URL, SUPERSET_URL } from '../utils/configs/globalSetup';
 
 let odoo: Odoo;
 let openmrs: OpenMRS;
@@ -114,6 +114,9 @@ test(`A (synced) sale order line in Odoo generates an entry in Superset's sale_o
 });
 
 test.afterEach(async ({ page }) => {
+  await superset.logout();
+  await odoo.logout();
   await openmrs.voidPatient();
+  await openmrs.logout();
   await page.close();
 });
