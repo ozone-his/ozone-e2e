@@ -28,6 +28,8 @@ test('Logging out from SENAITE logs out the user from Keycloak.', async ({ page 
 
   // replay
   await senaite.logout();
+  await keycloak.confirmLogout();
+  await expect(page.locator('#username')).toBeVisible();
 
   // verify
   await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
