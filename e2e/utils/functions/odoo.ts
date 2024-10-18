@@ -61,8 +61,5 @@ export class Odoo {
     await this.page.locator('.o_user_menu>a').click();
     await expect(this.page.getByRole('menuitem', { name: /log out/i })).toBeVisible();
     await this.page.getByRole('menuitem', { name: /log out/i }).click();
-    let keycloak = new Keycloak(this.page);
-    await keycloak.confirmLogout();
-    await expect(this.page).toHaveURL(/.*login/);
   }
 }
