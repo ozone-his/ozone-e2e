@@ -31,6 +31,9 @@ export class SENAITE {
     await this.page.locator('input[type=checkbox]').first().click();
     await expect(this.page.getByRole('button', { name: 'Receive' })).toBeEnabled();
     await this.page.locator('#receive_transition span:nth-child(1)').click();
+    await delay(2000)
+    await this.page.locator('th.select-column input[type=checkbox]').click();
+    await this.page.locator('#create_partitions_transition').click();
     await this.page.getByRole('button', { name: 'Create Partitions' }).click();
     await expect(this.page.locator('#samples td.contentcell.state_title div>span')).toHaveText('Received');
     await this.page.locator('table tbody tr:nth-child(1) td.contentcell.getId div span a').click();
