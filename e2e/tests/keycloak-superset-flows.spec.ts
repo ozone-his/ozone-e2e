@@ -125,6 +125,8 @@ test('Logging out from Superset logs out the user from Keycloak.', async ({ page
 
   // replay
   await superset.logout();
+  await keycloak.confirmLogout();
+  await expect(page).toHaveURL(/.*login/);
 
   // verify
   await page.goto(`${KEYCLOAK_URL}/admin/master/console`);

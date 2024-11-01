@@ -304,9 +304,9 @@ export class OpenMRS {
     await this.page.getByRole('searchbox').fill('Aspirin 325mg');
     await this.page.getByRole('button', { name: 'Order form' }).click();
     await this.page.locator('div').filter({ hasText: /^Off$/ }).locator('div').click();
-    await this.page.getByPlaceholder('Free text dosage').fill('Take up to three tablets per day');
+    await this.page.getByPlaceholder('Free text dosage').fill('2 Tablets - Every after eight hours - To be taken after a meal.');
     await this.page.getByLabel('Duration', { exact: true }).fill('3');
-    await this.page.getByLabel('Quantity to dispense').fill('9');
+    await this.page.getByLabel('Quantity to dispense').fill('18');
     await this.page.getByLabel('Prescription refills').fill('2');
     await this.page.locator('#indication').fill('Hypertension');
     await this.page.getByRole('button', { name: 'Save order' }).focus();

@@ -28,6 +28,8 @@ test('Logging out from Odoo logs out the user from Keycloak.', async ({ page }) 
 
   // replay
   await odoo.logout();
+  await keycloak.confirmLogout();
+  await expect(page).toHaveURL(/.*login/);
 
   // verify
   await page.goto(`${KEYCLOAK_URL}/admin/master/console`);

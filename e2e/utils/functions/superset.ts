@@ -105,8 +105,5 @@ export class Superset {
     await this.page.getByRole('button', { name: /settings/i }).click();
     await expect(this.page.getByRole('link', { name: /logout/i })).toBeVisible();
     await this.page.getByRole('link', { name: /logout/i }).click();
-    let keycloak = new Keycloak(this.page);
-    await keycloak.confirmLogout();
-    await expect(this.page).toHaveURL(/.*login/);
   }
 }
