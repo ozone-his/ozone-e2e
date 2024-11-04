@@ -204,7 +204,7 @@ test('Discontinuing a synced OpenMRS lab order for an ERPNext customer removes t
   await expect(page.getByText('No Quotation found')).toBeVisible();
   await openmrs.voidPatient();
 });
-/*
+
 test('Ordering a drug for an OpenMRS patient within a visit creates the corresponding ERPNext customer with a filled quotation linked to the visit.', async ({ page }) => {
   // setup
   await openmrs.navigateToDrugOrderForm();
@@ -234,7 +234,7 @@ test('Ordering a drug for an OpenMRS patient within a visit creates the correspo
   await openmrs.voidPatient();
   await erpnext.deleteQuotation();
 });
-*/
+
 test.afterEach(async ({ page }) => {
   await erpnext.deleteCustomer();
   await openmrs.logout();
