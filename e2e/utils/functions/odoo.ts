@@ -3,19 +3,28 @@ import { ODOO_URL } from '../configs/globalSetup';
 import { Keycloak } from './keycloak';
 import { delay, patientName } from './openmrs';
 
+export var randomOdooGroupName = {
+  groupName : `${Array.from({ length: 8 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
+  updatedGroupName : `${Array.from({ length: 8 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`
+}
+
 export class Odoo {
   constructor(readonly page: Page) {}
 
   async open() {
     await this.page.goto(`${ODOO_URL}`);
     if (`${process.env.TEST_PRO}` == 'true') {
-      await this.page.locator('div.o_login_auth div a').click();
+      await this.page.getByRole('link', { name: 'Login with Single Sign-On' }).click();
     } else {
-      await this.page.locator('#login').fill(`${process.env.ODOO_USERNAME_ON_FOSS}`);
-      await this.page.locator('#password').fill(`${process.env.ODOO_PASSWORD_ON_FOSS}`);
-      await this.page.locator('button[type="submit"]').click();
+      await this.enterLoginCredentials();
     }
     await expect(this.page).toHaveURL(/.*web/);
+  }
+
+  async enterLoginCredentials() {
+    await this.page.locator('#login').fill(`${process.env.ODOO_USERNAME_ON_FOSS}`);
+    await this.page.locator('#password').fill(`${process.env.ODOO_PASSWORD_ON_FOSS}`);
+    await this.page.locator('button[type="submit"]').click();
   }
 
   async searchCustomer() {
@@ -53,6 +62,66 @@ export class Odoo {
     await expect(this.page.locator('td.o_data_cell:nth-child(4)')).toHaveText('8');
     await expect(this.page.locator('td.o_data_cell:nth-child(9)')).toHaveText('2.00');
     await expect(this.page.locator('td.o_data_cell:nth-child(11)')).toHaveText('$ 16.00');
+  }
+
+  async activateDeveloperMode() {
+    await this.navigateToSettings();
+    await expect(this.page.locator('#devel_tool a:nth-child(1)')).toBeVisible();
+    await this.page.locator('#devel_tool a:nth-child(1)').click();
+  }
+
+  async navigateToGroups() {
+    await this.navigateToSettings();
+    await expect(this.page.locator('ul.o_menu_sections>:nth-child(2)>a')).toBeVisible();
+    await this.page.locator('ul.o_menu_sections>:nth-child(2)>a').click();
+    await expect(this.page.getByRole('menuitem', { name: /groups/i })).toBeVisible();
+    await this.page.getByRole('menuitem', { name: /groups/i }).click();
+  }
+
+  async navigateToSettings() {
+    await this.page.locator("//a[contains(@class, 'full')]").click();
+    await expect(this.page.getByRole('menuitem', { name: /settings/i })).toBeVisible();
+    await this.page.getByRole('menuitem', { name: /settings/i }).click();
+  }
+
+  async createGroup() {
+    await this.page.getByRole('button', { name: /create/i }).click();
+    await this.page.getByLabel(/application/i).click();
+    await expect(this.page.getByText(/accounting/i)).toBeVisible();
+    await this.page.getByText(/accounting/i).click();
+    await this.page.getByLabel(/name/i).fill(`${randomOdooGroupName.groupName}`);
+    await this.page.getByRole('button', { name: /save/i }).click();
+    await delay(240000);
+  }
+
+  async searchGroup() {
+    await this.page.getByLabel(/remove/i).click();
+    await expect(this.page.locator('div>div>input')).toBeVisible();
+    await this.page.locator('div>div>input').type(`${randomOdooGroupName.groupName}`);
+    await this.page.locator('div>div>input').press('Enter');
+    await this.page.getByRole('cell', { name: `${randomOdooGroupName.groupName}` }).click();
+  }
+
+  async updateGroup() {
+    await expect(this.page.getByRole('button', { name: /edit/i })).toBeVisible();
+    await this.page.getByRole('button', { name: /edit/i }).click();
+    await this.page.getByLabel(/name/i).clear();
+    await this.page.getByLabel(/name/i).fill(`${randomOdooGroupName.updatedGroupName}`);
+    await this.page.getByRole('button', { name: /save/i }).click();
+    randomOdooGroupName.groupName = `${randomOdooGroupName.updatedGroupName}`;
+    await delay(240000);
+  }
+
+  async deleteGroup() {
+    await expect(this.page.getByRole('button', { name: /action/i })).toBeVisible();
+    await this.page.getByRole('button', { name: /action/i }).click();
+    await expect(this.page.getByRole('menuitemcheckbox', { name: /delete/i })).toBeVisible();
+    await this.page.getByRole('menuitemcheckbox', { name: /delete/i }).click();
+    await expect(this.page.getByRole('button', { name: /ok/i })).toBeVisible();
+    await this.page.getByRole('button', { name: /ok/i }).click();
+    await delay(2000);
+    await expect(this.page.getByText(`${randomOdooGroupName.groupName}` )).not.toBeVisible();
+    await delay(240000);
   }
 
   async logout() {

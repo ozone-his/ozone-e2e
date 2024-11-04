@@ -14,6 +14,28 @@ test.beforeEach(async ({ page }) => {
   await expect(page.locator('div:nth-child(1)>a')).toHaveText(/home/i);
 });
 
+test('Logging out from OpenMRS logs out the user from Keycloak.', async ({ page }) => {
+  // setup
+  await keycloak.open();
+  await keycloak.navigateToClients();
+  await keycloak.selectOpenMRSId();
+  await keycloak.selectSessions();
+  await expect(page.locator('td:nth-child(1) a').nth(0)).toHaveText(/jdoe/i);
+
+  // replay
+  await openmrs.logout();
+
+  // verify
+  await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
+  await keycloak.navigateToClients();
+  await keycloak.selectOpenMRSId();
+  await keycloak.selectSessions();
+  await expect(page.locator('h1.pf-c-title:nth-child(2)')).toHaveText(/no sessions/i);
+  await expect(page.locator('.pf-c-empty-state__body')).toHaveText(/there are currently no active sessions for this client/i);
+  await page.goto(`${O3_URL}/openmrs/spa/home/`);
+  await expect(page).toHaveURL(/.*login/);
+});
+
 test('Creating an OpenMRS role creates the corresponding Keycloak role.', async ({ page }) => {
   // setup
   await page.goto(`${O3_URL}/openmrs/admin/users/role.list`);
@@ -36,7 +58,6 @@ test('Creating an OpenMRS role creates the corresponding Keycloak role.', async 
   await expect(page.getByText('Application: Has Super User Privileges')).toBeTruthy();
   await expect(page.getByText('Application: Administers System')).toBeTruthy();
   await openmrs.deleteRole();
-  await openmrs.logout();
 });
 
 test('Updating a synced OpenMRS role updates the corresponding Keycloak role.', async ({ page }) => {
@@ -73,7 +94,6 @@ test('Updating a synced OpenMRS role updates the corresponding Keycloak role.', 
   await expect(page.getByText('Application: Registers Patients')).toBeTruthy();
   await expect(page.getByText('Application: Writes Clinical Notes')).toBeTruthy();
   await openmrs.deleteRole();
-  await openmrs.logout();
 });
 
 test('Deleting a synced OpenMRS role deletes the corresponding Keycloak role.', async ({ page }) => {
@@ -96,7 +116,7 @@ test('Deleting a synced OpenMRS role deletes the corresponding Keycloak role.', 
 
   // replay
   await openmrs.deleteRole();
-  await delay(60000);
+  await delay(160000);
 
   // verify
   await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
@@ -105,7 +125,6 @@ test('Deleting a synced OpenMRS role deletes the corresponding Keycloak role.', 
   await keycloak.selectRoles();
   await keycloak.searchOpenMRSRole();
   await expect(page.getByText(`${randomOpenMRSRoleName.roleName}`)).not.toBeVisible();
-  await openmrs.logout();
 });
 
 test('A (non-synced) role created from within Keycloak gets deleted in the subsequent polling cycle.', async ({ page }) => {
@@ -120,8 +139,11 @@ test('A (non-synced) role created from within Keycloak gets deleted in the subse
 
   // verify
   await page.getByRole('link', { name: 'Client details' }).click();
+  await expect(page.getByPlaceholder('Search role by name')).toBeVisible();
+  await page.getByPlaceholder('Search role by name').fill(`${randomKeycloakRoleName.roleName}`);
+  await page.getByRole('button', { name: 'Search' }).press('Enter');
   await expect(page.getByText(`${randomKeycloakRoleName.roleName}`)).toBeVisible();
-  await delay(50000);
+  await delay(120000);
   await page.getByLabel('Manage').getByRole('link', { name: 'Clients' }).click();
   await keycloak.selectOpenMRSId();
   await expect(page.getByPlaceholder('Search role by name')).toBeVisible();
@@ -129,28 +151,6 @@ test('A (non-synced) role created from within Keycloak gets deleted in the subse
   await page.getByRole('button', { name: 'Search' }).press('Enter');
   await expect(page.getByText(`${randomKeycloakRoleName.roleName}`)).not.toBeVisible();
   await openmrs.logout();
-});
-
-test('Logging out from OpenMRS logs out the user from Keycloak.', async ({ page }) => {
-  // setup
-  await keycloak.open();
-  await keycloak.navigateToClients();
-  await keycloak.selectOpenMRSId();
-  await keycloak.selectSessions();
-  await expect(page.locator('td:nth-child(1) a').nth(0)).toHaveText(/jdoe/i);
-
-  // replay
-  await openmrs.logout();
-
-  // verify
-  await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
-  await keycloak.navigateToClients();
-  await keycloak.selectOpenMRSId();
-  await keycloak.selectSessions();
-  await expect(page.locator('h1.pf-c-title:nth-child(2)')).toHaveText(/no sessions/i);
-  await expect(page.locator('.pf-c-empty-state__body')).toHaveText(/there are currently no active sessions for this client/i);
-  await page.goto(`${O3_URL}/openmrs/spa/home/`);
-  await expect(page).toHaveURL(/.*login/);
 });
 
 test.afterEach(async ({ page }) => {

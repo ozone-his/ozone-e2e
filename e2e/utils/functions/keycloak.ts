@@ -2,6 +2,7 @@ import { Page, expect } from '@playwright/test';
 import { KEYCLOAK_URL } from '../configs/globalSetup';
 import { randomSupersetRoleName } from './superset';
 import { delay, randomOpenMRSRoleName } from './openmrs';
+import { randomOdooGroupName } from './odoo';
 
 export var randomKeycloakRoleName = {
   roleName : `${(Math.random() + 1).toString(36).substring(2)}`
@@ -79,6 +80,12 @@ export class Keycloak {
   async searchSupersetRole() {
     await expect(this.page.getByPlaceholder('Search role by name')).toBeVisible();
     await this.page.getByPlaceholder('Search role by name').fill(`${randomSupersetRoleName.roleName}`);
+    await this.page.getByRole('button', { name: 'Search' }).press('Enter');
+  }
+
+  async searchOdooRole() {
+    await expect(this.page.getByPlaceholder('Search role by name')).toBeVisible();
+    await this.page.getByPlaceholder('Search role by name').fill(`${randomOdooGroupName.groupName}`);
     await this.page.getByRole('button', { name: 'Search' }).press('Enter');
   }
 
