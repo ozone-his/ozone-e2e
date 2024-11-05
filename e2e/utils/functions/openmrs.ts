@@ -71,20 +71,12 @@ export class OpenMRS {
     await this.page.getByLabel('Family Name').fill(`${patientName.givenName}`);
     await this.page.locator('label').filter({ hasText: /^Male$/ }).locator('span').first().click();
     await this.page.locator('div').filter({ hasText: /^Date of Birth Known\?YesNo$/ }).getByRole('tab', { name: 'No' }).click();
+    await expect(this.page.getByLabel('Estimated age in years')).toBeVisible();
     await this.page.getByLabel('Estimated age in years').clear();
     await this.page.getByLabel('Estimated age in years').fill(`${Math.floor(Math.random() * 99)}`);
     await expect(this.page.getByText('Register Patient')).toBeVisible();
-    if (await this.page.getByTitle('close notification').isVisible()) {
-      await this.page.getByTitle('close notification').click();
-    }
     await this.page.getByRole('button', { name: 'Register Patient' }).click();
     await expect(this.page.getByText('New Patient Created')).toBeVisible();
-    if (await this.page.getByTitle('close notification').first().isVisible()) {
-      await this.page.getByTitle('close notification').first().click();
-    }
-    if (await this.page.getByTitle('close notification').isVisible()) {
-      await this.page.getByTitle('close notification').click();
-    }
     await this.page.getByRole('button', { name: 'Close', exact: true }).click();
     await delay(3000);
   }
@@ -141,7 +133,7 @@ export class OpenMRS {
     await this.page.locator('label').filter({ hasText: 'Facility Visit' }).locator('span').first().click();
     await this.page.locator('form').getByRole('button', { name: 'Start visit' }).click();
     await expect(this.page.getByText('Facility Visit started successfully')).toBeVisible();
-    await delay(5000);
+    await delay(4000);
   }
 
   async endPatientVisit() {
@@ -150,7 +142,7 @@ export class OpenMRS {
     await this.page.getByRole('menuitem', { name: 'End visit' }).click();
     await this.page.getByRole('button', { name: 'danger End Visit' }).click();
     await expect(this.page.getByText('Visit ended')).toBeVisible();
-    await this.page.getByRole('button', { name: 'Close', exact: true }).click();
+    await delay(3000);
   }
 
   async voidPatient() {
@@ -232,12 +224,12 @@ export class OpenMRS {
   }
 
   async saveLabOrder() {
-    await delay(3000);
+    await delay(2500);
     await this.page.getByRole('button', { name: 'Order form' }).click();
     await this.page.getByRole('button', { name: 'Save order' }).click();
     await this.page.getByRole('button', { name: 'Sign and close' }).click();
     await expect(this.page.getByText('Placed orders')).toBeVisible();
-    await delay(3000);
+    await delay(5000);
   }
 
   async voidEncounter() {
@@ -255,7 +247,9 @@ export class OpenMRS {
     await this.page.getByRole('link', { name: 'Orders' }).click();
     await this.page.getByRole('button', { name: 'Options' }).nth(0).click();
     await this.page.getByRole('menuitem', { name: 'Cancel Order' }).click();
+    await expect(this.page.getByRole('button', { name: 'Sign and close' })).toBeEnabled();
     await this.page.getByRole('button', { name: 'Sign and close' }).click();
+    await delay(3000);
   }
 
   async viewTestResults() {
