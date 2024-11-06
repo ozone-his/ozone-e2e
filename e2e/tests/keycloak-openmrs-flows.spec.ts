@@ -14,6 +14,27 @@ test.beforeEach(async ({ page }) => {
   await expect(page.locator('div:nth-child(1)>a')).toHaveText(/home/i);
 });
 
+test('Logging out from OpenMRS logs out the user from Keycloak.', async ({ page }) => {
+  // setup
+  await keycloak.open();
+  await keycloak.navigateToClients();
+  await keycloak.selectOpenMRSId();
+  await keycloak.selectSessions();
+  await expect(page.locator('td:nth-child(1) a').nth(0)).toHaveText(/jdoe/i);
+
+  // replay
+  await openmrs.logout();
+
+  // verify
+  await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
+  await keycloak.navigateToClients();
+  await keycloak.selectOpenMRSId();
+  await keycloak.selectSessions();
+  await expect(page.locator('h1.pf-c-title:nth-child(2)')).toHaveText(/no sessions/i);
+  await expect(page.locator('.pf-c-empty-state__body')).toHaveText(/there are currently no active sessions for this client/i);
+  await page.goto(`${O3_URL}/openmrs/spa/home/`);
+  await expect(page).toHaveURL(/.*login/);
+});
 test('Creating an OpenMRS role creates the corresponding Keycloak role.', async ({ page }) => {
   // setup
   await page.goto(`${O3_URL}/openmrs/admin/users/role.list`);
@@ -131,27 +152,6 @@ test('A (non-synced) role created from within Keycloak gets deleted in the subse
   await openmrs.logout();
 });
 
-test('Logging out from OpenMRS logs out the user from Keycloak.', async ({ page }) => {
-  // setup
-  await keycloak.open();
-  await keycloak.navigateToClients();
-  await keycloak.selectOpenMRSId();
-  await keycloak.selectSessions();
-  await expect(page.locator('td:nth-child(1) a').nth(0)).toHaveText(/jdoe/i);
-
-  // replay
-  await openmrs.logout();
-
-  // verify
-  await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
-  await keycloak.navigateToClients();
-  await keycloak.selectOpenMRSId();
-  await keycloak.selectSessions();
-  await expect(page.locator('h1.pf-c-title:nth-child(2)')).toHaveText(/no sessions/i);
-  await expect(page.locator('.pf-c-empty-state__body')).toHaveText(/there are currently no active sessions for this client/i);
-  await page.goto(`${O3_URL}/openmrs/spa/home/`);
-  await expect(page).toHaveURL(/.*login/);
-});
 
 test.afterEach(async ({ page }) => {
   await page.close();
