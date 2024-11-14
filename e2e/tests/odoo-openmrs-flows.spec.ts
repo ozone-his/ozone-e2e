@@ -229,7 +229,5 @@ test('Discontinuing a synced OpenMRS lab order for an Odoo customer with a singl
 
 test.afterEach(async ({ page }) => {
   await openmrs.voidPatient();
-  await openmrs.logout();
-  await odoo.logout();
   await page.close();
 });
