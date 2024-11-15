@@ -14,6 +14,34 @@ test.beforeEach(async ({ page }) => {
   superset = new Superset(page);
 });
 
+test('Logging out from Superset ends the session in Keycloak and logs out the user.', async ({ page }) => {
+  // setup
+  await superset.open();
+  await openmrs.enterLoginCredentials();
+  await expect(page).toHaveURL(/.*superset/);
+  await expect(page.locator('#app div.header')).toHaveText(/home/i);
+  await keycloak.open();
+  await keycloak.navigateToClients();
+  await keycloak.selectSupersetId();
+  await keycloak.selectSessions();
+  await expect(page.locator('td:nth-child(1) a').nth(0)).toHaveText(/jdoe/i);
+
+  // replay
+  await superset.logout();
+  await keycloak.confirmLogout();
+  await expect(page).toHaveURL(/.*login/);
+
+  // verify
+  await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
+  await keycloak.navigateToClients();
+  await keycloak.selectSupersetId();
+  await keycloak.selectSessions();
+  await expect(page.locator('h1.pf-c-title:nth-child(2)')).toHaveText(/no sessions/i);
+  await expect(page.locator('.pf-c-empty-state__body')).toHaveText(/there are currently no active sessions for this client/i);
+  await page.goto(`${SUPERSET_URL}/superset/welcome`);
+  await expect(page).toHaveURL(/.*login/);
+});
+
 test('Creating a Superset role creates the corresponding Keycloak role.', async ({ page }) => {
   // setup
   await openmrs.login();
@@ -109,34 +137,6 @@ test('A synced role deleted from within Keycloak gets recreated in the subsequen
   await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`${randomSupersetRoleName.roleName}`);
   await superset.deleteRole();
   await superset.logout();
-});
-
-test('Logging out from Superset logs out the user from Keycloak.', async ({ page }) => {
-  // setup
-  await superset.open();
-  await openmrs.enterLoginCredentials();
-  await expect(page).toHaveURL(/.*superset/);
-  await expect(page.locator('#app div.header')).toHaveText(/home/i);
-  await keycloak.open();
-  await keycloak.navigateToClients();
-  await keycloak.selectSupersetId();
-  await keycloak.selectSessions();
-  await expect(page.locator('td:nth-child(1) a').nth(0)).toHaveText(/jdoe/i);
-
-  // replay
-  await superset.logout();
-  await keycloak.confirmLogout();
-  await expect(page).toHaveURL(/.*login/);
-
-  // verify
-  await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
-  await keycloak.navigateToClients();
-  await keycloak.selectSupersetId();
-  await keycloak.selectSessions();
-  await expect(page.locator('h1.pf-c-title:nth-child(2)')).toHaveText(/no sessions/i);
-  await expect(page.locator('.pf-c-empty-state__body')).toHaveText(/there are currently no active sessions for this client/i);
-  await page.goto(`${SUPERSET_URL}/superset/welcome`);
-  await expect(page).toHaveURL(/.*login/);
 });
 
 test.afterEach(async ({ page }) => {

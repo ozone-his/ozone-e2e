@@ -4,8 +4,8 @@ import { delay } from './openmrs';
 import { Keycloak } from './keycloak';
 
 export var randomSupersetRoleName = {
-  roleName : `${(Math.random() + 1).toString(36).substring(2)}`,
-  updatedRoleName : `${(Math.random() + 1).toString(36).substring(2)}`
+  roleName : `${Array.from({ length: 8 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
+  updatedRoleName : `${Array.from({ length: 8 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`
 }
 
 export class Superset {

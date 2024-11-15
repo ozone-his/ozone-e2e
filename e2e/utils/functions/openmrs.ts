@@ -11,7 +11,7 @@ export var patientName = {
 var patientFullName = '';
 
 export var randomOpenMRSRoleName = {
-  roleName : `${(Math.random() + 1).toString(36).substring(2)}`
+  roleName : `${Array.from({ length: 8 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`
 }
 
 export const delay = (mills) => {
@@ -367,7 +367,7 @@ export class OpenMRS {
     await this.page.getByLabel('Organizational: Registration Clerk').check();
     await this.page.getByRole('button', { name: 'Save Role' }).click();
     await expect(this.page.getByText('Role saved')).toBeVisible();
-    await delay(50000);
+    await delay(160000);
   }
 
   async updateRole() {
@@ -378,7 +378,7 @@ export class OpenMRS {
     await this.page.getByLabel('Application: Writes Clinical Notes').check();
     await this.page.getByRole('button', { name: 'Save Role' }).click();
     await expect(this.page.getByText('Role saved')).toBeVisible();
-    await delay(50000);
+    await delay(160000);
   }
 
   async unlinkInheritedRoles() {

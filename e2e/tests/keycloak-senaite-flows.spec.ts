@@ -14,7 +14,7 @@ test.beforeEach(async ({ page }) => {
   keycloak = new Keycloak(page);
 });
 
-test('Logging out from SENAITE logs out the user from Keycloak.', async ({ page }) => {
+test('Logging out from SENAITE ends the session in Keycloak and logs out the user.', async ({ page }) => {
   // setup
   await senaite.open();
   await openmrs.enterLoginCredentials();
