@@ -14,7 +14,7 @@ test.beforeEach(async ({ page }) => {
   await expect(page.locator('div:nth-child(1)>a')).toHaveText(/home/i);
 });
 
-test('Logging out from OpenMRS logs out the user from Keycloak.', async ({ page }) => {
+test('Logging out from OpenMRS ends the session in Keycloak and logs out the user.', async ({ page }) => {
   // setup
   await keycloak.open();
   await keycloak.navigateToClients();

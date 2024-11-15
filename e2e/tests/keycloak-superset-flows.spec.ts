@@ -14,7 +14,7 @@ test.beforeEach(async ({ page }) => {
   superset = new Superset(page);
 });
 
-test('Logging out from Superset logs out the user from Keycloak.', async ({ page }) => {
+test('Logging out from Superset ends the session in Keycloak and logs out the user.', async ({ page }) => {
   // setup
   await superset.open();
   await openmrs.enterLoginCredentials();

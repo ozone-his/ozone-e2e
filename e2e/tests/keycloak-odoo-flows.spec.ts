@@ -14,7 +14,7 @@ test.beforeEach(async ({ page }) => {
   keycloak = new Keycloak(page);
 });
 
-test('Logging out from Odoo logs out the user from Keycloak.', async ({ page }) => {
+test('Logging out from Odoo ends the session in Keycloak and logs out the user.', async ({ page }) => {
   // setup
   await odoo.open();
   await openmrs.enterLoginCredentials();
