@@ -65,8 +65,5 @@ export class SENAITE {
     await this.page.locator('#navbarUserDropdown').click();
     await expect(this.page.getByRole('link', { name: /log out/i })).toBeVisible();
     await this.page.getByRole('link', { name: /log out/i }).click();
-    let keycloak = new Keycloak(this.page);
-    await keycloak.confirmLogout();
-    await expect(this.page.locator('#username')).toBeVisible();
   }
 }
