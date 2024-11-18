@@ -91,7 +91,7 @@ export class Odoo {
     await this.page.getByText(/accounting/i).click();
     await this.page.getByLabel(/name/i).fill(`${randomOdooGroupName.groupName}`);
     await this.page.getByRole('button', { name: /save/i }).click();
-    await delay(240000);
+    await delay(250000);
   }
 
   async searchGroup() {
@@ -109,7 +109,7 @@ export class Odoo {
     await this.page.getByLabel(/name/i).fill(`${randomOdooGroupName.updatedGroupName}`);
     await this.page.getByRole('button', { name: /save/i }).click();
     randomOdooGroupName.groupName = `${randomOdooGroupName.updatedGroupName}`;
-    await delay(240000);
+    await delay(250000);
   }
 
   async deleteGroup() {
