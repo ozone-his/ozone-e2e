@@ -42,6 +42,21 @@ test('Logging out from Odoo ends the session in Keycloak and logs out the user.'
   await expect(page).toHaveURL(/.*login/);
 });
 
+test('Odoo role assigned to a user in KC is applied upon login in OpenMRS.', async ({ page }) => {
+  // setup
+  await keycloak.open();
+
+  // replay
+  await keycloak.navigateToUsers();
+  await keycloak.searchUser();
+  await keycloak.searchRole();
+  await keycloak.assinOdooRole();
+
+  // verify
+  await odoo.open();
+  await openmrs.enterLoginCredentials();
+});
+
 test('Coded Odoo groups create corresponding Keycloak roles.', async ({ page }) => {
   // setup
   await page.goto(`${ODOO_URL}`);
