@@ -28,7 +28,6 @@ test('Logging out from Superset ends the session in Keycloak and logs out the us
 
   // replay
   await superset.logout();
-  await keycloak.confirmLogout();
   await expect(page).toHaveURL(/.*login/);
 
   // verify

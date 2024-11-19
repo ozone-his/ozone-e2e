@@ -43,16 +43,21 @@ export class SENAITE {
   async publishLabResults() {
     await this.page.locator('#ajax_save_selection').click();
     await this.page.getByRole('button', { name: 'Submit' }).click();
+    await delay(5000);
+    await expect(this.page.locator('input[name="uids\\:list"]').first()).toBeVisible();
     await this.page.locator('input[name="uids\\:list"]').first().check();
     await this.page.getByRole('button', { name: 'Verify' }).click();
+    await delay(5000);
     await this.page.getByRole('navigation', { name: 'breadcrumb' }).getByRole('link', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
     await expect(this.page.locator('#samples td.contentcell.state_title div>span')).toHaveText('Verified');
     await this.page.locator('input[name="uids\\:list"]').check();
     await expect(this.page.getByRole('button', { name: 'Publish' })).toBeEnabled();
     await this.page.locator('#publish_transition span:nth-child(1)').click();
     await delay(5000);
+    await expect(this.page.getByText(/loading preview/i)).not.toBeVisible();
     await this.page.getByRole('button', { name: 'Email' }).click();
     await delay(5000);
+    await expect(this.page.getByText(/generating pdf/i)).not.toBeVisible();
     await expect(this.page.getByRole('button', { name: 'Send' })).toBeVisible();
     await this.page.getByRole('button', { name: 'Send' }).click();
     await expect(this.page.locator('table tbody tr.contentrow.state-published.parent td.contentcell.State span span')).toHaveText('Published');
