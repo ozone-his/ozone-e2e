@@ -14,7 +14,7 @@ test.beforeEach(async ({ page }) => {
   await openmrs.createPatient();
   await openmrs.startPatientVisit();
 });
-/*
+
 test('Ordering a lab test for an OpenMRS patient creates the corresponding SENAITE client with an analysis request.', async ({ page }) => {
   // replay
   await openmrs.navigateToLabOrderForm();
@@ -86,7 +86,7 @@ test('Published coded lab results from SENAITE are viewable in the OpenMRS lab r
   await expect(page.locator('tr:nth-child(1) td:nth-child(1) p span span')).toContainText('Hepatitis C test - qualitative');
   await expect(page.locator('tr:nth-child(1) td:nth-child(2)')).toContainText('Negative');
 });
-*/
+
 test('Published numeric lab results from SENAITE are viewable in the OpenMRS lab results viewer.', async ({ page }) => {
   // replay
   await openmrs.navigateToLabOrderForm();
@@ -104,7 +104,7 @@ test('Published numeric lab results from SENAITE are viewable in the OpenMRS lab
   await expect(page.locator('tr:nth-child(1) td:nth-child(1) p span span')).toContainText('Total bilirubin');
   await expect(page.locator('tr:nth-child(1) td:nth-child(2)')).toContainText('64');
 });
-/*
+
 test('Published free text lab results from SENAITE are viewable in the OpenMRS lab results viewer.', async ({ page }) => {
   // replay
   await openmrs.navigateToLabOrderForm();
@@ -122,7 +122,7 @@ test('Published free text lab results from SENAITE are viewable in the OpenMRS l
   await expect(page.locator('tr:nth-child(1) td:nth-child(1) p span span')).toContainText('Stool microscopy with concentration');
   await expect(page.locator('tr:nth-child(1) td:nth-child(2)')).toContainText('Positive');
 });
-*/
+
 test.afterEach(async ({ page }) => {
   await openmrs.voidPatient();
   await openmrs.logout();
