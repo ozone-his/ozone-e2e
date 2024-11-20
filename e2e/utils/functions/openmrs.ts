@@ -254,7 +254,8 @@ export class OpenMRS {
 
   async viewTestResults() {
     await this.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
-    await this.page.getByRole('link', { name: 'Results Viewer' }).click();
+    await expect(this.page.getByRole('link', { name: 'Results' })).toBeVisible();
+    await this.page.getByRole('link', { name: 'Results' }).click();
   }
 
   async navigateToDrugOrderForm() {

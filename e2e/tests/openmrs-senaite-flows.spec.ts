@@ -83,8 +83,8 @@ test('Published coded lab results from SENAITE are viewable in the OpenMRS lab r
   // verify
   await page.goto(`${O3_URL}`);
   await openmrs.viewTestResults();
-  await expect(page.locator('tbody tr td:nth-child(1) p')).toContainText('Hepatitis C test - qualitative');
-  await expect(page.locator('tbody tr td:nth-child(2) p')).toContainText('Negative');
+  await expect(page.locator('tr:nth-child(1) td:nth-child(1) p span span')).toContainText('Hepatitis C test - qualitative');
+  await expect(page.locator('tr:nth-child(1) td:nth-child(2)')).toContainText('Negative');
 });
 
 test('Published numeric lab results from SENAITE are viewable in the OpenMRS lab results viewer.', async ({ page }) => {
@@ -101,8 +101,8 @@ test('Published numeric lab results from SENAITE are viewable in the OpenMRS lab
   // verify
   await page.goto(`${O3_URL}`);
   await openmrs.viewTestResults();
-  await expect(page.locator('tbody tr td:nth-child(1) p')).toContainText('Total bilirubin');
-  await expect(page.locator('tbody tr td:nth-child(2) p')).toContainText('64');
+  await expect(page.locator('tr:nth-child(1) td:nth-child(1) p span span')).toContainText('Total bilirubin');
+  await expect(page.locator('tr:nth-child(1) td:nth-child(2)')).toContainText('64');
 });
 
 test('Published free text lab results from SENAITE are viewable in the OpenMRS lab results viewer.', async ({ page }) => {
@@ -119,8 +119,8 @@ test('Published free text lab results from SENAITE are viewable in the OpenMRS l
   // verify
   await page.goto(`${O3_URL}`);
   await openmrs.viewTestResults();
-  await expect(page.locator('tbody tr td:nth-child(1) p')).toContainText('Stool microscopy with concentration');
-  await expect(page.locator('tbody tr td:nth-child(2) p')).toContainText('Positive');
+  await expect(page.locator('tr:nth-child(1) td:nth-child(1) p span span')).toContainText('Stool microscopy with concentration');
+  await expect(page.locator('tr:nth-child(1) td:nth-child(2)')).toContainText('Positive');
 });
 
 test.afterEach(async ({ page }) => {
