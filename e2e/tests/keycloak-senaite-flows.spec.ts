@@ -28,7 +28,6 @@ test('Logging out from SENAITE ends the session in Keycloak and logs out the use
 
   // replay
   await senaite.logout();
-  await keycloak.confirmLogout();
   await expect(page.locator('#username')).toBeVisible();
 
   // verify

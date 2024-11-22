@@ -28,7 +28,6 @@ test('Logging out from Odoo ends the session in Keycloak and logs out the user.'
 
   // replay
   await odoo.logout();
-  await keycloak.confirmLogout();
   await expect(page).toHaveURL(/.*login/);
 
   // verify
