@@ -28,7 +28,6 @@ test('Logging out from Odoo ends the session in Keycloak and logs out the user.'
 
   // replay
   await odoo.logout();
-  await keycloak.confirmLogout();
   await expect(page).toHaveURL(/.*login/);
 
   // verify
@@ -128,6 +127,37 @@ test('Updating a synced Odoo group updates the corresponding Keycloak role.', as
   await keycloak.selectRoles();
   await keycloak.searchOdooRole();
   await expect(page.getByText(`Accounting / ${randomOdooGroupName.updatedGroupName}`)).toBeVisible();
+});
+
+test('Deleting a synced Odoo group deletes the corresponding Keycloak role.', async ({ page }) => {
+  // setup
+  await page.goto(`${ODOO_URL}`);
+  await odoo.enterLoginCredentials();
+  await expect(page.locator('li.o_user_menu a span')).toHaveText(/administrator/i);
+  await odoo.activateDeveloperMode();
+  await odoo.navigateToGroups();
+  await odoo.createGroup();
+  await keycloak.open();
+  await keycloak.navigateToClients();
+  await keycloak.selectOdooId();
+  await keycloak.selectRoles();
+  await keycloak.searchOdooRole();
+  await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`Accounting / ${randomOdooGroupName.groupName}`);
+
+  // replay
+  await page.goto(`${ODOO_URL}`);
+  await odoo.navigateToSettings();
+  await odoo.navigateToGroups();
+  await odoo.searchGroup();
+  await odoo.deleteGroup();
+
+  // verify
+  await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
+  await keycloak.navigateToClients();
+  await keycloak.selectOdooId();
+  await keycloak.selectRoles();
+  await keycloak.searchOdooRole();
+  await expect(page.getByText(`Accounting / ${randomOdooGroupName.groupName}`)).not.toBeVisible();
 });
 
 test.afterEach(async ({ page }) => {
