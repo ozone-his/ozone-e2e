@@ -496,7 +496,7 @@ test(`Cancelling an OpenMRS appointment updates the appointment in Superset's ap
 });
 
 test.afterEach(async ({ page }) => {
-  await openmrs.logout();
+  //await openmrs.logout();
   await superset.logout();
   await page.close();
 });
