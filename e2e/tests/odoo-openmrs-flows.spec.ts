@@ -227,12 +227,17 @@ test('Discontinuing a synced OpenMRS lab order for an Odoo customer with a singl
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Cancelled');
 });
 
-test('Ordering a lab test for an OpenMRS patient with weight creates the corresponding Odoo customer, with a quotation that includes the weight.', async ({ page }) => {
+test('Ordering a lab test for an OpenMRS patient with weight creates the weight in the corresponding Odoo customer details.', async ({ page }) => {
+  // setup
+  await openmrs.recordWeight();
+
   // replay
-  await openmrs.captureBiometrics();
-  await openmrs.navigateToLabOrderForm();
-  await page.getByRole('searchbox').fill('Blood urea nitrogen');
-  await openmrs.saveLabOrder();
+  await page.getByLabel('Order basket').click();
+  await expect(page.getByRole('button', { name: 'Add', exact: true }).nth(1)).toBeVisible();
+  await page.getByRole('button', { name: 'Add', exact: true }).nth(1).click();
+  await page.getByRole('searchbox').fill('Aspirin 325mg');
+  await openmrs.fillDrugOrderForm();
+  await openmrs.saveDrugOrder();
 
   // verify
   await odoo.open();
@@ -240,8 +245,42 @@ test('Ordering a lab test for an OpenMRS patient with weight creates the corresp
   await odoo.searchCustomer();
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(4)')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Quotation');
-  await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(7) span')).toHaveText('$ 27.50');
+  await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(7) span')).toHaveText('$ 14.88');
   await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
+  await expect(page.locator('.o_group :nth-child(1) tbody :nth-child(3) :nth-child(2)>span')).toContainText('75');
+});
+
+test(`Recording a patient's weight in OpenMRS on the second order creates the weight in the corresponding Odoo customer details.`, async ({ page }) => {
+  // setup
+  await openmrs.navigateToDrugOrderForm();
+  await page.getByRole('searchbox').fill('Aspirin 325mg');
+  await openmrs.fillDrugOrderForm();
+  await openmrs.saveDrugOrder();
+  await odoo.open();
+  await odoo.navigateToSales();
+  await odoo.searchCustomer();
+  await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(4)')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
+  await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Quotation');
+  await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
+  await expect(page.locator('.o_group :nth-child(1) tbody :nth-child(3) :nth-child(2)>span')).toBeEmpty();
+
+  // replay
+  await page.goto(`${O3_URL}`);
+  await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
+  await openmrs.recordWeight();
+  await page.getByLabel('Order basket').click();
+  await expect(page.getByRole('button', { name: 'Add', exact: true }).nth(2)).toBeVisible();
+  await page.getByRole('button', { name: 'Add', exact: true }).nth(2).click();
+  await page.getByRole('searchbox').fill('Blood urea nitrogen');
+  await openmrs.saveLabOrder();
+
+  // verify
+  await page.goto(`${ODOO_URL}`);
+  await odoo.navigateToSales();
+  await odoo.searchCustomer();
+  await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
+  await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(2) span:nth-child(1) span')).toHaveText('Aspirin 325mg');
+  await expect(page.locator('tr.o_data_row:nth-child(2) td:nth-child(2) span:nth-child(1) span')).toHaveText('Blood urea nitrogen');
   await expect(page.locator('.o_group :nth-child(1) tbody :nth-child(3) :nth-child(2)>span')).toContainText('75');
 });
 
