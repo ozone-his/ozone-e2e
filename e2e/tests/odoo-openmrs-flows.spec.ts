@@ -40,6 +40,8 @@ test('Editing the details of an OpenMRS patient with a synced lab order edits th
   await odoo.searchCustomer();
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(4)')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Quotation');
+  await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
+  await expect(page.locator('.o_group>table:nth-child(1) :nth-child(2) td:nth-child(2)>span')).toHaveText('08/16/2002');
 
   // replay
   await page.goto(`${O3_URL}`);
@@ -52,6 +54,9 @@ test('Editing the details of an OpenMRS patient with a synced lab order edits th
   await odoo.searchCustomer();
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(4)')).toHaveText(`${patientName.updatedFirstName}` + ' ' + `${patientName.givenName}`);
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Quotation');
+  await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
+  await expect(page.locator('.o_group>table:nth-child(1) :nth-child(2) td:nth-child(2)>span')).not.toHaveText('08/16/2002');
+  await expect(page.locator('.o_group>table:nth-child(1) :nth-child(2) td:nth-child(2)>span')).toHaveText('08/18/2003');
 });
 
 test('Ordering a drug for an OpenMRS patient creates the corresponding Odoo customer with a filled quotation.', async ({ page }) => {
@@ -81,6 +86,8 @@ test('Editing the details of an OpenMRS patient with a synced drug order edits t
   await odoo.searchCustomer();
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(4)')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Quotation');
+  await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
+  await expect(page.locator('.o_group>table:nth-child(1) :nth-child(2) td:nth-child(2)>span')).toHaveText('08/16/2002');
 
   // replay
   await page.goto(`${O3_URL}`);
@@ -93,6 +100,9 @@ test('Editing the details of an OpenMRS patient with a synced drug order edits t
   await odoo.searchCustomer();
   await expect(page.locator('table tbody td.o_data_cell:nth-child(4)')).toHaveText(`${patientName.updatedFirstName}` + ' ' + `${patientName.givenName }`);
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Quotation');
+  await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
+  await expect(page.locator('.o_group>table:nth-child(1) :nth-child(2) td:nth-child(2)>span')).not.toHaveText('08/16/2002');
+  await expect(page.locator('.o_group>table:nth-child(1) :nth-child(2) td:nth-child(2)>span')).toHaveText('08/18/2003');
 });
 
 test('Revising details of a synced OpenMRS drug order modifies the corresponding Odoo quotation line.', async ({ page }) => {

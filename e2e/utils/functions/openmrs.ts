@@ -70,10 +70,9 @@ export class OpenMRS {
     await this.page.getByLabel('Family Name').clear();
     await this.page.getByLabel('Family Name').fill(`${patientName.givenName}`);
     await this.page.locator('label').filter({ hasText: /^Male$/ }).locator('span').first().click();
-    await this.page.locator('div').filter({ hasText: /^Date of Birth Known\?YesNo$/ }).getByRole('tab', { name: 'No' }).click();
-    await expect(this.page.getByLabel('Estimated age in years')).toBeVisible();
-    await this.page.getByLabel('Estimated age in years').clear();
-    await this.page.getByLabel('Estimated age in years').fill(`${Math.floor(Math.random() * 99)}`);
+    await this.page.locator('div[aria-label="day, "]').fill('16');
+    await this.page.locator('div[aria-label="month, "]').fill('08');
+    await this.page.locator('div[aria-label="year, "]').fill('2002');
     await expect(this.page.getByText('Register Patient')).toBeVisible();
     await this.page.getByRole('button', { name: 'Register Patient' }).click();
     await expect(this.page.getByText('New Patient Created')).toBeVisible();
@@ -351,6 +350,9 @@ export class OpenMRS {
     await this.page.getByLabel('First Name').type(`${patientName.updatedFirstName}`);
     await delay(2000);
     await this.page.locator('label').filter({ hasText: 'Female' }).locator('span').first().click();
+    await this.page.locator('div[aria-label="day, "]').fill('18');
+    await this.page.locator('div[aria-label="month, "]').fill('08');
+    await this.page.locator('div[aria-label="year, "]').fill('2003');
     await this.page.getByRole('button', { name: 'Update Patient' }).click();
     await expect(this.page.getByText('Patient Details Updated')).toBeVisible();
     patientName.firstName = `${patientName.updatedFirstName}`;
