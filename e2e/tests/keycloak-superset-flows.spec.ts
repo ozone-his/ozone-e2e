@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { KEYCLOAK_URL, SUPERSET_URL } from '../utils/configs/globalSetup';
+import { KEYCLOAK_URL, O3_URL, SUPERSET_URL } from '../utils/configs/globalSetup';
 import { Keycloak } from '../utils/functions/keycloak';
 import { OpenMRS, delay } from '../utils/functions/openmrs';
 import { Superset, randomSupersetRoleName} from '../utils/functions/superset';
@@ -39,6 +39,21 @@ test('Logging out from Superset ends the session in Keycloak and logs out the us
   await expect(page.locator('.pf-c-empty-state__body')).toHaveText(/there are currently no active sessions for this client/i);
   await page.goto(`${SUPERSET_URL}/superset/welcome`);
   await expect(page).toHaveURL(/.*login/);
+});
+
+test('Superset role assigned to a user in KC is applied upon login in Superset.', async ({ page }) => {
+  // setup
+  await keycloak.open();
+
+  // replay
+  await keycloak.navigateToUsers();
+  await keycloak.searchUser();
+  await keycloak.searchRole();
+  await keycloak.assinSupersetRole();
+
+  // verify
+  await page.goto(`${SUPERSET_URL}/users/list/`);
+  await expect(page.locator('tr td:nth-child(5) span')).toContainText('Inventory Reporting');
 });
 
 test('Creating a Superset role creates the corresponding Keycloak role.', async ({ page }) => {
