@@ -232,6 +232,15 @@ export class OpenMRS {
     await delay(5000);
   }
 
+  async recordWeight() {
+    await this.page.getByRole('link', { name: 'Vitals & Biometrics' }).click();
+    await this.page.getByRole('button', { name: 'Record biometrics' }).click();
+    await this.page.getByRole('spinbutton', { name: 'Weight' }).fill('75');
+    await this.page.getByRole('button', { name: 'Save and close' }).click();
+    await expect(this.page.getByText('Vitals and Biometrics saved')).toBeVisible();
+    await delay(2000);
+  }
+
   async voidEncounter() {
     await this.page.getByRole('link', { name: 'Visits' }).click();
     await this.page.getByRole('tab', { name: 'All encounters' }).click();
