@@ -41,16 +41,16 @@ export class OpenMRS {
     await this.page.getByRole('button', { name: /confirm/i }).click();
     await expect(this.page).toHaveURL(/.*home/);
     await expect(this.page.getByRole('button', { name: /search patient/i })).toBeEnabled();
-    await expect(this.page.getByRole('button', { name: /add Patient/i })).toBeEnabled();
+    await expect(this.page.getByRole('button', { name: /add patient/i })).toBeEnabled();
     await expect(this.page.getByRole('button', { name: /my account/i })).toBeEnabled();
-    await expect(this.page.getByRole('button', { name: /app Menu/i })).toBeEnabled();
+    await expect(this.page.getByRole('button', { name: /app menu/i })).toBeEnabled();
   }
 
   async enterLoginCredentials() {
     await this.page.locator('#username').fill(`${process.env.OZONE_USERNAME}`);
     await this.page.getByRole('button', { name: /continue/i }).click();
     await this.page.locator('#password').fill(`${process.env.OZONE_PASSWORD}`);
-    await this.page.getByRole('button', { name: /sign in/ }).click();
+    await this.page.getByRole('button', { name: /sign in/i }).click();
   }
 
   async createPatient() {
@@ -68,10 +68,8 @@ export class OpenMRS {
     await this.page.locator('div[aria-label="day, "]').fill('16');
     await this.page.locator('div[aria-label="month, "]').fill('08');
     await this.page.locator('div[aria-label="year, "]').fill('2002');
-    await this.page.getByRole('button', { name: /register patient/i }).click();
     await this.createPatientButton().click();
-    await expect(this.page.getByText(/new patient created/i)).toBeVisible(), delay(3000);;
-    await this.page.getByRole('button', { name: 'Close', exact: true }).click();
+    await expect(this.page.getByText(/new patient created/i)).toBeVisible(), delay(3000);
   }
 
   async goToHomePage() {
@@ -124,7 +122,7 @@ export class OpenMRS {
     await this.page.getByRole('button', { name: /start a visit/i }).click();
     await this.page.locator('label').filter({ hasText: /facility Visit/i }).locator('span').first().click();
     await this.page.locator('form').getByRole('button', { name: /start visit/i }).click();
-    await expect(this.page.getByText(/facility Visit started successfully/i)).toBeVisible(), delay(4000);
+    await expect(this.page.getByText(/facility visit started successfully/i)).toBeVisible(), delay(4000);
   }
 
   async endPatientVisit() {
@@ -167,7 +165,7 @@ export class OpenMRS {
   }
 
   async addPatientBiometrics() {
-    await this.page.getByRole('link', { name: /vitals & Biometrics/i }).click();
+    await this.page.getByRole('link', { name: /vitals & biometrics/i }).click();
     await this.page.getByText('Record biometrics').click();
     await this.page.getByRole('spinbutton', { name: /weight/i }).fill('78');
     await this.page.getByRole('spinbutton', { name: /height/i }).fill('165');
@@ -202,8 +200,8 @@ export class OpenMRS {
 
   async navigateToLabOrderForm() {
     await this.page.getByLabel(/order basket/i).click(), delay(2000);
-    await expect(this.page.getByRole('button', { name: /add/i, exact: true }).nth(1)).toBeVisible();
-    await this.page.getByRole('button', { name: /add/i, exact: true }).nth(1).click();
+    await expect(this.page.getByRole('button', { name: 'Add', exact: true }).nth(1)).toBeVisible();
+    await this.page.getByRole('button', { name: 'Add', exact: true }).nth(1).click();
   }
 
   async saveLabOrder() {
@@ -248,8 +246,8 @@ export class OpenMRS {
   async navigateToDrugOrderForm() {
     await expect(this.page.getByLabel(/order basket/i)).toBeVisible();
     await this.page.getByLabel(/order basket/i).click(), delay(2000);
-    await expect(this.page.getByRole('button', { name: /add/i, exact: true }).nth(0)).toBeVisible();
-    await this.page.getByRole('button', { name: /add/i, exact: true }).nth(0).click();
+    await expect(this.page.getByRole('button', { name: 'Add', exact: true }).nth(0)).toBeVisible();
+    await this.page.getByRole('button', { name: 'Add', exact: true }).nth(0).click();
   }
 
   async fillDrugOrderForm() {
@@ -278,15 +276,15 @@ export class OpenMRS {
   async createDrugOrderWithFreeTextDosage() {
     await expect(this.page.getByLabel(/order basket/i)).toBeVisible();
     await this.page.getByLabel(/order basket/i).click(), delay(2000);
-    await expect(this.page.getByRole('button', { name: /add/i, exact: true }).nth(0)).toBeVisible();
+    await expect(this.page.getByRole('button', { name: 'Add', exact: true }).nth(0)).toBeVisible();
     await this.page.getByRole('button', { name: 'Add', exact: true }).nth(0).click();
     await this.page.getByRole('searchbox').fill('Aspirin 325mg');
-    await this.page.getByRole('button', { name: 'Order form' }).click();
+    await this.page.getByRole('button', { name: /order form/i }).click();
     await this.page.locator('div').filter({ hasText: /^Off$/ }).locator('div').click();
-    await this.page.getByPlaceholder('Free text dosage').fill('2 Tablets - Every after eight hours - To be taken after a meal.');
+    await this.page.getByPlaceholder(/free text dosage/i).fill('2 Tablets - Every after eight hours - To be taken after a meal.');
     await this.page.getByLabel('Duration', { exact: true }).fill('3');
-    await this.page.getByLabel('Quantity to dispense').fill('18');
-    await this.page.getByLabel('Prescription refills').fill('2');
+    await this.page.getByLabel(/quantity to dispense/i).fill('18');
+    await this.page.getByLabel(/prescription refills/i).fill('2');
     await this.page.locator('#indication').fill('Hypertension');
     await this.page.getByRole('button', { name: /save order/i }).focus();
     await expect(this.page.getByText(/save order/i)).toBeVisible();
