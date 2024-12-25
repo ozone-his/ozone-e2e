@@ -115,8 +115,7 @@ test('Deleting a synced OpenMRS role deletes the corresponding Keycloak role.', 
   await expect(page.getByText('Application: Records Allergies')).toBeTruthy();
 
   // replay
-  await openmrs.deleteRole();
-  await delay(160000);
+  await openmrs.deleteRole(), delay(160000);
 
   // verify
   await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
@@ -142,8 +141,7 @@ test('A (non-synced) role created from within Keycloak gets deleted in the subse
   await expect(page.getByPlaceholder('Search role by name')).toBeVisible();
   await page.getByPlaceholder('Search role by name').fill(`${randomKeycloakRoleName.roleName}`);
   await page.getByRole('button', { name: 'Search' }).press('Enter');
-  await expect(page.getByText(`${randomKeycloakRoleName.roleName}`)).toBeVisible();
-  await delay(120000);
+  await expect(page.getByText(`${randomKeycloakRoleName.roleName}`)).toBeVisible(), delay(120000);
   await page.getByLabel('Manage').getByRole('link', { name: 'Clients' }).click();
   await keycloak.selectOpenMRSId();
   await expect(page.getByPlaceholder('Search role by name')).toBeVisible();

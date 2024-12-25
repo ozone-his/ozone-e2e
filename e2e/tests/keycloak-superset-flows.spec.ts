@@ -100,8 +100,7 @@ test('Deleting a synced Superset role deletes the corresponding Keycloak role.',
   await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`${randomSupersetRoleName.roleName}`);
   
   // replay
-  await superset.deleteRole();
-  await delay(60000);
+  await superset.deleteRole(), delay(60000);
 
   // verify
   await page.goto(`${KEYCLOAK_URL}/admin/master/console`);

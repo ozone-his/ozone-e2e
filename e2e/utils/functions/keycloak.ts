@@ -13,9 +13,9 @@ export class Keycloak {
 
   async open() {
     await this.page.goto(`${KEYCLOAK_URL}/admin/master/console`);
-    await this.page.getByLabel('Username or email').fill(`${process.env.KEYCLOAK_USERNAME}`);
-    await this.page.getByLabel('Password').fill(`${process.env.KEYCLOAK_PASSWORD}`);
-    await this.page.getByRole('button', { name: 'Sign In' }).click();
+    await this.page.getByLabel(/username or email/i).fill(`${process.env.KEYCLOAK_USERNAME}`);
+    await this.page.getByLabel(/password/i).fill(`${process.env.KEYCLOAK_PASSWORD}`);
+    await this.page.getByRole('button', { name: /sign in/i }).click();
     await expect(this.page).toHaveURL(/.*console/);
     await delay(6000);
   }
@@ -24,68 +24,65 @@ export class Keycloak {
     await this.page.getByTestId('create-role').click();
     await this.page.getByLabel('Role name').fill(`${randomKeycloakRoleName.roleName}`);
     await this.page.getByLabel('Description').fill('This is Keycloak test role');
-    await this.page.getByTestId('save').click();
-    await expect(this.page.getByText('Role created')).toBeVisible();
-    await delay(2000);
+    await this.page.getByTestId(/save/i).click();
+    await expect(this.page.getByText(/role created/i)).toBeVisible(), delay(2000);
   }
 
   async navigateToClients() {
     await this.page.getByTestId('realmSelectorToggle').click();
     await expect(this.page.getByRole('menuitem', { name: 'ozone' })).toBeVisible();
     await this.page.getByRole('menuitem', { name: 'ozone' }).click();
-    await this.page.getByRole('link', { name: 'Clients' }).click();
-    await delay(2000);
+    await this.page.getByRole('link', { name: 'Clients' }).click(), delay(2000);
   }
 
   async selectOpenMRSId() {
-    await expect(this.page.getByPlaceholder('Search for client')).toBeVisible();
-    await this.page.getByPlaceholder('Search for client').fill('openmrs');
-    await this.page.getByRole('button', { name: 'Search' }).click();
+    await expect(this.page.getByPlaceholder(/search for client/i)).toBeVisible();
+    await this.page.getByPlaceholder(/search for client/i).fill('openmrs');
+    await this.page.getByRole('button', { name: /search/i }).click();
     await this.page.getByRole('link', { name: 'openmrs', exact: true }).click();
   }
 
   async selectOdooId() {
-    await expect(this.page.getByPlaceholder('Search for client')).toBeVisible();
-    await this.page.getByPlaceholder('Search for client').fill('odoo');
-    await this.page.getByRole('button', { name: 'Search' }).click();
+    await expect(this.page.getByPlaceholder(/search for client/i)).toBeVisible();
+    await this.page.getByPlaceholder(/search for client/i).fill('odoo');
+    await this.page.getByRole('button', { name: /search/i }).click();
     await this.page.getByRole('link', { name: 'odoo', exact: true }).click();
   }
 
   async selectSENAITEId() {
-    await expect(this.page.getByPlaceholder('Search for client')).toBeVisible();
-    await this.page.getByPlaceholder('Search for client').fill('senaite');
-    await this.page.getByRole('button', { name: 'Search' }).click();
+    await expect(this.page.getByPlaceholder(/search for client/i)).toBeVisible();
+    await this.page.getByPlaceholder(/search for client/i).fill('senaite');
+    await this.page.getByRole('button', { name: /search/i }).click();
     await this.page.getByRole('link', { name: 'senaite', exact: true }).click();
   }
 
   async selectSupersetId() {
-    await expect(this.page.getByPlaceholder('Search for client')).toBeVisible();
-    await this.page.getByPlaceholder('Search for client').fill('superset');
-    await this.page.getByRole('button', { name: 'Search' }).click();
+    await expect(this.page.getByPlaceholder(/search for client/i)).toBeVisible();
+    await this.page.getByPlaceholder(/search for client/i).fill('superset');
+    await this.page.getByRole('button', { name: /search/i }).click();
     await this.page.getByRole('link', { name: 'superset', exact: true  }).click();
   }
 
   async selectRoles() {
-    await this.page.getByTestId('rolesTab').click();
-    await delay(4000);
+    await this.page.getByTestId('rolesTab').click(), delay(4000);
     await this.page.reload();
   }
 
   async searchOpenMRSRole() {
-    await expect(this.page.getByPlaceholder('Search role by name')).toBeVisible();
-    await this.page.getByPlaceholder('Search role by name').fill(`${randomOpenMRSRoleName.roleName}`);
+    await expect(this.page.getByPlaceholder(/search role by name/i)).toBeVisible();
+    await this.page.getByPlaceholder(/search role by name/i).fill(`${randomOpenMRSRoleName.roleName}`);
     await this.page.getByRole('button', { name: 'Search' }).press('Enter');
   }
 
   async searchSupersetRole() {
-    await expect(this.page.getByPlaceholder('Search role by name')).toBeVisible();
-    await this.page.getByPlaceholder('Search role by name').fill(`${randomSupersetRoleName.roleName}`);
+    await expect(this.page.getByPlaceholder(/search role by name/i)).toBeVisible();
+    await this.page.getByPlaceholder(/search role by name/i).fill(`${randomSupersetRoleName.roleName}`);
     await this.page.getByRole('button', { name: 'Search' }).press('Enter');
   }
 
   async searchOdooRole() {
-    await expect(this.page.getByPlaceholder('Search role by name')).toBeVisible();
-    await this.page.getByPlaceholder('Search role by name').fill(`${randomOdooGroupName.groupName}`);
+    await expect(this.page.getByPlaceholder(/search role by name/i)).toBeVisible();
+    await this.page.getByPlaceholder(/search role by name/i).fill(`${randomOdooGroupName.groupName}`);
     await this.page.getByRole('button', { name: 'Search' }).press('Enter');
   }
 
@@ -99,7 +96,7 @@ export class Keycloak {
   }
 
   async deleteSyncedRole() {
-    await this.page.getByRole('row', { name: `${randomSupersetRoleName.roleName}` }).getByLabel('Actions').click();
+    await this.page.getByRole('row', { name: `${randomSupersetRoleName.roleName}` }).getByLabel(/actions/i).click();
     await this.page.getByRole('menuitem', { name: 'Delete' }).click();
     await this.page.getByTestId('confirm').click();
     await expect(this.page.getByText(`The role has been deleted`)).toBeVisible();

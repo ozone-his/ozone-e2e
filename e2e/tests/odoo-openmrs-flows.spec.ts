@@ -237,7 +237,7 @@ test('Discontinuing a synced OpenMRS lab order for an Odoo customer with a singl
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Cancelled');
 });
 
-test('Ordering a lab test for an OpenMRS patient with weight creates the weight in the corresponding Odoo customer details.', async ({ page }) => {
+test('Ordering a lab test for an OpenMRS patient with weight creates the weight on the corresponding Odoo quotation.', async ({ page }) => {
   // setup
   await openmrs.recordWeight();
 
@@ -260,7 +260,7 @@ test('Ordering a lab test for an OpenMRS patient with weight creates the weight 
   await expect(page.locator('.o_group :nth-child(1) tbody :nth-child(3) :nth-child(2)>span')).toContainText('75');
 });
 
-test(`Recording a patient's weight in OpenMRS on the second order creates the weight in the corresponding Odoo customer details.`, async ({ page }) => {
+test(`Recording a patient's weight in OpenMRS on the second order creates the weight on the corresponding Odoo quotation.`, async ({ page }) => {
   // setup
   await openmrs.navigateToDrugOrderForm();
   await page.getByRole('searchbox').fill('Aspirin 325mg');
