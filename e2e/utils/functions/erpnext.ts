@@ -17,9 +17,7 @@ export class ERPNext {
     await this.page.getByRole('link', { name: /selling/i }).click();
     await this.page.getByRole('link', { name: 'Customer', exact: true }).click();
     await expect(this.page.getByPlaceholder('Customer Name')).toBeVisible();
-    await this.page.getByPlaceholder('Customer Name').clear();
-    await this.page.getByPlaceholder('Customer Name').fill(`${patientName.givenName}`);
-    await delay(3500);
+    await this.page.getByPlaceholder('Customer Name').fill(`${patientName.givenName}`), delay(3500);
   }
 
   async searchQuotation() {
@@ -28,27 +26,24 @@ export class ERPNext {
     await expect(this.page.getByPlaceholder(/title/i)).toBeVisible();
     await this.page.getByPlaceholder(/title/i).clear();
     await this.page.getByPlaceholder(/party/i).clear();
-    await this.page.getByPlaceholder(/title/i).fill(`${patientName.givenName}`);
-    await delay(3500);
+    await this.page.getByPlaceholder(/title/i).fill(`${patientName.givenName}`), delay(3500);
   }
 
   async deleteQuotation() {
     await this.page.goto(`${ERPNEXT_URL}/app/quotation`);
     await this.searchQuotation();
-    await this.page.getByRole('checkbox', { name: 'Select All' }).check();
-    await delay(2000);
+    await this.page.getByRole('checkbox', { name: 'Select All' }).check(), delay(2000);
     await this.page.getByRole('button', { name: 'Actions' }).click();
     await expect(this.page.getByRole('link', { name: 'Delete' })).toBeVisible();
     await this.page.getByRole('link', { name: 'Delete' }).click();
     await this.page.getByRole('button', { name: 'Yes' }).click();
-    await expect(this.page.getByText('No Quotation found')).toBeVisible();
+    await expect(this.page.getByText(/no quotation found/i)).toBeVisible();
   }
 
   async voidQuotation() {
     await this.page.goto(`${ERPNEXT_URL}/app/quotation`);
     await this.searchQuotation();
-    await this.page.getByRole('checkbox', { name: 'Select All' }).check();
-    await delay(2000);
+    await this.page.getByRole('checkbox', { name: 'Select All' }).check(), delay(2000);
     await this.page.getByRole('button', { name: 'Actions' }).click();
     await expect(this.page.getByRole('link', { name: 'Cancel' })).toBeVisible();
     await this.page.getByRole('link', { name: 'Cancel' }).click();
@@ -58,12 +53,11 @@ export class ERPNext {
   async deleteCustomer() {
     await this.page.goto(`${ERPNEXT_URL}/app/customer`);
     await this.searchCustomer();
-    await this.page.getByRole('checkbox', { name: 'Select All' }).check();
-    await delay(2000);
+    await this.page.getByRole('checkbox', { name: 'Select All' }).check(), delay(2000);
     await this.page.getByRole('button', { name: 'Actions' }).click();
     await expect(this.page.getByRole('link', { name: 'Delete' })).toBeVisible();
     await this.page.getByRole('link', { name: 'Delete' }).click();
     await this.page.getByRole('button', { name: 'Yes' }).click();
-    await expect(this.page.getByText('No Customer found')).toBeVisible();
+    await expect(this.page.getByText(/no customer found/i)).toBeVisible();
   }
 }

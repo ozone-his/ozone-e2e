@@ -1,6 +1,5 @@
 import { expect, Page } from '@playwright/test';
 import { ODOO_URL } from '../configs/globalSetup';
-import { Keycloak } from './keycloak';
 import { delay, patientName } from './openmrs';
 
 export var randomOdooGroupName = {
@@ -14,7 +13,7 @@ export class Odoo {
   async open() {
     await this.page.goto(`${ODOO_URL}`);
     if (`${process.env.TEST_PRO}` == 'true') {
-      await this.page.getByRole('link', { name: 'Login with Single Sign-On' }).click();
+      await this.page.getByRole('link', { name: /login with single sign-on/i }).click();
     } else {
       await this.enterLoginCredentials();
     }
@@ -49,15 +48,11 @@ export class Odoo {
     await this.page.getByRole('button', { name: 'Add a product' }).click();
     await this.page.locator('td.o_data_cell:nth-child(2) div:nth-child(1) input').fill('Acétaminophene Co 500mg');
     await this.page.getByText('Acétaminophene Co 500mg').first().click();
-    await this.page.locator('input[name="product_uom_qty"]').clear();
     await this.page.locator('input[name="product_uom_qty"]').fill('8');
-    await this.page.locator('td.o_data_cell:nth-child(7) input').clear();
     await this.page.locator('td.o_data_cell:nth-child(7) input').fill('2.00');
-    await this.page.locator('td.o_data_cell:nth-child(9)').click();
-    await delay(2000);
+    await this.page.locator('td.o_data_cell:nth-child(9)').click(), delay(2000);
     await expect(this.page.locator('td.o_data_cell:nth-child(9)')).toHaveText('$ 16.00');
-    await this.page.getByRole('button', { name: 'Confirm' }).click();
-    await delay(3000);
+    await this.page.getByRole('button', { name: 'Confirm' }).click(), delay(3000);
     await expect(this.page.locator('td.o_data_cell:nth-child(2) span:nth-child(1) span')).toHaveText('Acétaminophene Co 500mg');
     await expect(this.page.locator('td.o_data_cell:nth-child(4)')).toHaveText('8');
     await expect(this.page.locator('td.o_data_cell:nth-child(9)')).toHaveText('2.00');
@@ -90,8 +85,7 @@ export class Odoo {
     await expect(this.page.getByText(/accounting/i)).toBeVisible();
     await this.page.getByText(/accounting/i).click();
     await this.page.getByLabel(/name/i).fill(`${randomOdooGroupName.groupName}`);
-    await this.page.getByRole('button', { name: /save/i }).click();
-    await delay(250000);
+    await this.page.getByRole('button', { name: /save/i }).click(), delay(250000);
   }
 
   async searchGroup() {
@@ -105,11 +99,9 @@ export class Odoo {
   async updateGroup() {
     await expect(this.page.getByRole('button', { name: /edit/i })).toBeVisible();
     await this.page.getByRole('button', { name: /edit/i }).click();
-    await this.page.getByLabel(/name/i).clear();
     await this.page.getByLabel(/name/i).fill(`${randomOdooGroupName.updatedGroupName}`);
     await this.page.getByRole('button', { name: /save/i }).click();
-    randomOdooGroupName.groupName = `${randomOdooGroupName.updatedGroupName}`;
-    await delay(250000);
+    randomOdooGroupName.groupName = `${randomOdooGroupName.updatedGroupName}`, delay(250000);
   }
 
   async deleteGroup() {
@@ -118,10 +110,8 @@ export class Odoo {
     await expect(this.page.getByRole('menuitemcheckbox', { name: /delete/i })).toBeVisible();
     await this.page.getByRole('menuitemcheckbox', { name: /delete/i }).click();
     await expect(this.page.getByRole('button', { name: /ok/i })).toBeVisible();
-    await this.page.getByRole('button', { name: /ok/i }).click();
-    await delay(2000);
-    await expect(this.page.getByText(`${randomOdooGroupName.groupName}` )).not.toBeVisible();
-    await delay(240000);
+    await this.page.getByRole('button', { name: /ok/i }).click(), delay(2000);
+    await expect(this.page.getByText(`${randomOdooGroupName.groupName}` )).not.toBeVisible(), delay(240000);
   }
 
   async logout() {
