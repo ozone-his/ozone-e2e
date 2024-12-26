@@ -14,7 +14,7 @@
     "!playwright-report/"
   ],
   "scripts": {
-    "ozone-pro": "npx playwright test erpnext-openmrs",
+    "ozone-pro": "npx playwright test erpnext-openmrs keeycloak-odoo keycloak-openmrs openmrs-senaite odoo-openmrs keycloak-senaite",
     "ozone-foss": "npx playwright test odoo-openmrs erpnext-openmrs openmrs-senaite",
     "openmrs-distro-his": "npx playwright test odoo-openmrs openmrs-senaite"
   },
