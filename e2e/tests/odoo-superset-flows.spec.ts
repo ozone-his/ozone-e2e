@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { O3_URL, SUPERSET_URL } from '../utils/configs/globalSetup';
+import { O3_URL, ODOO_URL, SUPERSET_URL } from '../utils/configs/globalSetup';
 import { Odoo } from '../utils/functions/odoo';
 import { Superset } from '../utils/functions/superset';
 import { OpenMRS, patientName } from '../utils/functions/openmrs';
@@ -60,6 +60,128 @@ test(`Creating an Odoo sale order line generates an entry in Superset's sale_ord
   let unitPrice = Number(await page.locator('div.virtual-table-cell:nth-child(5)').textContent());
   await expect(quantity).toBe(8);
   await expect(unitPrice).toBe(2);
+});
+
+test(`Revising an Odoo sale order line modifies the corresponding entry in Superset's sale_order_lines table.`, async ({ page }) => {
+  // setup
+  await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
+  await openmrs.navigateToLabOrderForm();
+  await page.getByRole('searchbox').fill('Complete blood count');
+  await openmrs.saveLabOrder();
+  await odoo.open();
+  await odoo.navigateToSales();
+  await odoo.createSaleOrderLine();
+  const salesOrderId = await page.locator('.oe_title h1:nth-child(1) span').textContent();
+  await expect(page.locator('table tbody td.o_data_cell:nth-child(2) span:nth-child(1) span')).toHaveText('Acétaminophene Co 500mg');
+  await superset.open();
+  await superset.selectDBSchema();
+  await superset.clearSQLEditor();
+  let saleOrderLinesQuery = `SELECT sale_order_name, customer_name, product_name, quantity, unit_price FROM sale_order_lines WHERE sale_order_name like '${salesOrderId}';`;
+  await page.getByRole('textbox').first().fill(saleOrderLinesQuery);
+  await superset.runSQLQuery();
+  await expect(page.locator('div.virtual-table-cell:nth-child(1)')).toHaveText(`${salesOrderId}`);
+  await expect(page.locator('div.virtual-table-cell:nth-child(2)')).toHaveText(`${patientName.firstName + ' ' + patientName.givenName}`);
+  await expect(page.locator('div.virtual-table-cell:nth-child(3)')).toHaveText('Acétaminophene Co 500mg');
+  await expect(page.locator('div.virtual-table-cell:nth-child(4)')).toHaveText('8');
+  await expect(page.locator('div.virtual-table-cell:nth-child(5)')).toHaveText('2');
+
+  // replay
+  await page.goto(`${ODOO_URL}`);
+  await odoo.navigateToSales();
+  await odoo.searchCustomer();
+  await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).nth(0).click();
+  await odoo.modifySaleOrderLine();
+
+  // verify
+  await page.goto(`${SUPERSET_URL}/sqllab`);
+  await superset.clearSQLEditor();
+  await page.getByRole('textbox').first().fill(saleOrderLinesQuery);
+  await superset.runSQLQuery();
+  await expect(page.locator('div.virtual-table-cell:nth-child(1)')).toHaveText(`${salesOrderId}`);
+  await expect(page.locator('div.virtual-table-cell:nth-child(2)')).toHaveText(`${patientName.firstName + ' ' + patientName.givenName}`);
+  await expect(page.locator('div.virtual-table-cell:nth-child(3)')).toHaveText('Acétaminophene Co 500mg');
+  await expect(page.locator('div.virtual-table-cell:nth-child(4)')).toHaveText('10');
+  await expect(page.locator('div.virtual-table-cell:nth-child(5)')).toHaveText('3');
+});
+
+test(`Voiding an Odoo sale order line updates the corresponding entry in Superset's sale_order_lines table.`, async ({ page }) => {
+  // setup
+  await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
+  await openmrs.navigateToLabOrderForm();
+  await page.getByRole('searchbox').fill('Complete blood count');
+  await openmrs.saveLabOrder();
+  await odoo.open();
+  await odoo.navigateToSales();
+  await odoo.createSaleOrderLine();
+  const salesOrderId = await page.locator('.oe_title h1:nth-child(1) span').textContent();
+  await expect(page.locator('table tbody td.o_data_cell:nth-child(2) span:nth-child(1) span')).toHaveText('Acétaminophene Co 500mg');
+  await superset.open();
+  await superset.selectDBSchema();
+  await superset.clearSQLEditor();
+  let saleOrderLinesQuery = `SELECT sale_order_name, customer_name, product_name, quantity, unit_price FROM sale_order_lines WHERE sale_order_name like '${salesOrderId}';`;
+  await page.getByRole('textbox').first().fill(saleOrderLinesQuery);
+  await superset.runSQLQuery();
+  await expect(page.locator('div.virtual-table-cell:nth-child(1)')).toHaveText(`${salesOrderId}`);
+  await expect(page.locator('div.virtual-table-cell:nth-child(2)')).toHaveText(`${patientName.firstName + ' ' + patientName.givenName}`);
+  await expect(page.locator('div.virtual-table-cell:nth-child(3)')).toHaveText('Acétaminophene Co 500mg');
+  await expect(page.locator('div.virtual-table-cell:nth-child(4)')).toHaveText('8');
+  await expect(page.locator('div.virtual-table-cell:nth-child(5)')).toHaveText('2');
+
+  // replay
+  await page.goto(`${ODOO_URL}`);
+  await odoo.navigateToSales();
+  await odoo.searchCustomer();
+  await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).nth(0).click();
+  await odoo.voidSaleOrderLine();
+
+  // verify
+  await page.goto(`${SUPERSET_URL}/sqllab`);
+  await superset.clearSQLEditor();
+  await page.getByRole('textbox').first().fill(saleOrderLinesQuery);
+  await superset.runSQLQuery();
+  await expect(page.locator('div.virtual-table-cell:nth-child(1)')).toHaveText(`${salesOrderId}`);
+  await expect(page.locator('div.virtual-table-cell:nth-child(2)')).toHaveText(`${patientName.firstName + ' ' + patientName.givenName}`);
+  await expect(page.locator('div.virtual-table-cell:nth-child(3)')).toHaveText('Acétaminophene Co 500mg');
+  await expect(page.locator('div.virtual-table-cell:nth-child(4)')).not.toHaveText('8');
+  await expect(page.locator('div.virtual-table-cell:nth-child(4)')).toHaveText('0');
+});
+
+test(`Deleting an Odoo quotation line removes the corresponding entry in Superset's sale_order_lines table.`, async ({ page }) => {
+  // setup
+  await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
+  await openmrs.navigateToLabOrderForm();
+  await page.getByRole('searchbox').fill('Complete blood count');
+  await openmrs.saveLabOrder();
+  await odoo.open();
+  await odoo.navigateToSales();
+  await odoo.createQuotationLine();
+  const salesOrderId = await page.locator('.oe_title h1:nth-child(1) span').textContent();
+  await expect(page.locator('table tbody td.o_data_cell:nth-child(2) span:nth-child(1) span')).toHaveText(/acyclovir Sirop 200mg/i);
+  await superset.open();
+  await superset.selectDBSchema();
+  await superset.clearSQLEditor();
+  let saleOrderLinesQuery = `SELECT sale_order_name, customer_name, product_name, quantity, unit_price FROM sale_order_lines WHERE sale_order_name like '${salesOrderId}';`;
+  await page.getByRole('textbox').first().fill(saleOrderLinesQuery);
+  await superset.runSQLQuery();
+  await expect(page.locator('div.virtual-table-cell:nth-child(1)')).toHaveText(`${salesOrderId}`);
+  await expect(page.locator('div.virtual-table-cell:nth-child(2)')).toHaveText(`${patientName.firstName + ' ' + patientName.givenName}`);
+  await expect(page.locator('div.virtual-table-cell:nth-child(3)')).toHaveText(/acyclovir Sirop 200mg/i);
+  await expect(page.locator('div.virtual-table-cell:nth-child(4)')).toHaveText('6');
+  await expect(page.locator('div.virtual-table-cell:nth-child(5)')).toHaveText('2');
+
+  // replay
+  await page.goto(`${ODOO_URL}`);
+  await odoo.navigateToSales();
+  await odoo.searchCustomer();
+  await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).nth(0).click();
+  await odoo.deleteQuotationLine();
+
+  // verify
+  await page.goto(`${SUPERSET_URL}/sqllab`);
+  await superset.clearSQLEditor();
+  await page.getByRole('textbox').first().fill(saleOrderLinesQuery);
+  await superset.runSQLQuery();
+  await expect(page.locator('div.ant-alert-message')).toHaveText(/the query returned no data/i);
 });
 
 test(`A (synced) sale order line in Odoo generates an entry in Superset's sale_order_lines table.`, async ({ page }) => {

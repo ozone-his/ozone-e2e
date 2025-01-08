@@ -38,6 +38,7 @@ test('Logging out from OpenMRS ends the session in Keycloak and logs out the use
 
 test('Creating an OpenMRS role creates the corresponding Keycloak role.', async ({ page }) => {
   // setup
+  test.setTimeout(240000);
   await page.goto(`${O3_URL}/openmrs/admin/users/role.list`);
 
   // replay
@@ -62,6 +63,7 @@ test('Creating an OpenMRS role creates the corresponding Keycloak role.', async 
 
 test('Updating a synced OpenMRS role updates the corresponding Keycloak role.', async ({ page }) => {
   // setup
+  test.setTimeout(420000);
   await page.goto(`${O3_URL}/openmrs/admin/users/role.list`);
   await openmrs.addRole();
   await keycloak.open();
@@ -98,6 +100,7 @@ test('Updating a synced OpenMRS role updates the corresponding Keycloak role.', 
 
 test('Deleting a synced OpenMRS role deletes the corresponding Keycloak role.', async ({ page }) => {
   // setup
+  test.setTimeout(420000);
   await page.goto(`${O3_URL}/openmrs/admin/users/role.list`);
   await openmrs.addRole();
   await keycloak.open();

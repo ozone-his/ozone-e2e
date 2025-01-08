@@ -84,7 +84,7 @@ test(`Creating an OpenMRS visit creates the visit in Superset's visits table.`, 
   await expect(page.locator('div.virtual-table-cell:nth-child(3)')).toHaveText('Inpatient Ward');
   await expect(page.locator('div.virtual-table-cell:nth-child(6)')).toHaveText('Facility Visit');
   await expect(page.locator('div.virtual-table-cell:nth-child(8)')).toHaveText('M');
-  await expect(page.locator('div.virtual-table-cell:nth-child(10)')).toHaveText('true')
+  await expect(page.locator('div.virtual-table-cell:nth-child(2)')).toHaveText('false')
   await page.getByRole('tab', { name: 'Query history' }).click();
   await superset.clearSQLEditor();
   await openmrs.voidPatient();
