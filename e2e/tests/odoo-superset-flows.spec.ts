@@ -62,7 +62,7 @@ test(`Creating an Odoo sale order line generates an entry in Superset's sale_ord
   await expect(unitPrice).toBe(2);
 });
 
-test(`Revising an Odoo sale order line modifies the corresponding entry in Superset's sale_order_lines table.`, async ({ page }) => {
+test(`Revising an Odoo sale order line updates the corresponding entry in Superset's sale_order_lines table.`, async ({ page }) => {
   // setup
   await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await openmrs.navigateToLabOrderForm();
@@ -146,7 +146,7 @@ test(`Voiding an Odoo sale order line updates the corresponding entry in Superse
   await expect(page.locator('div.virtual-table-cell:nth-child(4)')).toHaveText('0');
 });
 
-test(`Deleting an Odoo quotation line removes the corresponding entry in Superset's sale_order_lines table.`, async ({ page }) => {
+test(`Deleting an Odoo quotation line deletes the corresponding entry in Superset's sale_order_lines table.`, async ({ page }) => {
   // setup
   await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
   await openmrs.navigateToLabOrderForm();
