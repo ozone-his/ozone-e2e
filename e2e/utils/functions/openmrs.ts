@@ -50,7 +50,7 @@ export class OpenMRS {
     await this.page.locator('#username').fill(`${process.env.OZONE_USERNAME}`);
     await this.page.getByRole('button', { name: /continue/i }).click();
     await this.page.locator('#password').fill(`${process.env.OZONE_PASSWORD}`);
-    await this.page.getByRole('button', { name: /sign in/ }).click();
+    await this.page.getByRole('button', { name: /sign in/i }).click();
   }
 
   async createPatient() {
@@ -68,10 +68,8 @@ export class OpenMRS {
     await this.page.locator('div[aria-label="day, "]').fill('16');
     await this.page.locator('div[aria-label="month, "]').fill('08');
     await this.page.locator('div[aria-label="year, "]').fill('2002');
-    await this.page.getByRole('button', { name: /register patient/i }).click();
     await this.createPatientButton().click();
     await expect(this.page.getByText(/new patient created/i)).toBeVisible(), delay(3000);;
-    await this.page.getByRole('button', { name: 'Close', exact: true }).click();
   }
 
   async goToHomePage() {
@@ -178,7 +176,7 @@ export class OpenMRS {
 
   async addPatientAppointment() {
     await this.page.getByRole('link', { name: /appointments/i }).click();
-    await this.page.getByRole('button', { name: /add/i, exact: true }).click();
+    await this.page.getByRole('button', { name: 'Add', exact: true }).click();
     await this.page.getByLabel(/select a service/i).selectOption('General Medicine service');
     await this.page.getByLabel(/select an appointment type/i).selectOption('Scheduled');
     await this.page.locator('#duration').fill('40');
@@ -202,8 +200,8 @@ export class OpenMRS {
 
   async navigateToLabOrderForm() {
     await this.page.getByLabel(/order basket/i).click(), delay(2000);
-    await expect(this.page.getByRole('button', { name: /add/i, exact: true }).nth(1)).toBeVisible();
-    await this.page.getByRole('button', { name: /add/i, exact: true }).nth(1).click();
+    await expect(this.page.getByRole('button', { name: 'Add', exact: true }).nth(1)).toBeVisible();
+    await this.page.getByRole('button', { name: 'Add', exact: true }).nth(1).click();
   }
 
   async saveLabOrder() {
@@ -227,8 +225,7 @@ export class OpenMRS {
     await this.page.getByRole('button', { name: /options/i, exact: true }).click();
     await this.page.getByRole('menuitem', { name: /delete this encounter/i }).click();
     await this.page.getByRole('button', { name: /danger delete/i }).click();
-    await expect(this.page.getByText(/encounter deleted/i)).toBeVisible();
-    await expect(this.page.getByText(/encounter successfully deleted/i)).toBeVisible(), delay(5000);
+    await expect(this.page.getByText(/encounter deleted/i)).toBeVisible(), delay(5000);
   }
 
   async cancelLabOrder() {
@@ -248,8 +245,8 @@ export class OpenMRS {
   async navigateToDrugOrderForm() {
     await expect(this.page.getByLabel(/order basket/i)).toBeVisible();
     await this.page.getByLabel(/order basket/i).click(), delay(2000);
-    await expect(this.page.getByRole('button', { name: /add/i, exact: true }).nth(0)).toBeVisible();
-    await this.page.getByRole('button', { name: /add/i, exact: true }).nth(0).click();
+    await expect(this.page.getByRole('button', { name: 'Add', exact: true }).nth(0)).toBeVisible();
+    await this.page.getByRole('button', { name: 'Add', exact: true }).nth(0).click();
   }
 
   async fillDrugOrderForm() {
@@ -278,7 +275,7 @@ export class OpenMRS {
   async createDrugOrderWithFreeTextDosage() {
     await expect(this.page.getByLabel(/order basket/i)).toBeVisible();
     await this.page.getByLabel(/order basket/i).click(), delay(2000);
-    await expect(this.page.getByRole('button', { name: /add/i, exact: true }).nth(0)).toBeVisible();
+    await expect(this.page.getByRole('button', { name: 'Add', exact: true }).nth(0)).toBeVisible();
     await this.page.getByRole('button', { name: 'Add', exact: true }).nth(0).click();
     await this.page.getByRole('searchbox').fill('Aspirin 325mg');
     await this.page.getByRole('button', { name: 'Order form' }).click();

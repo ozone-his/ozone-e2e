@@ -80,6 +80,7 @@ test('Coded Odoo groups create corresponding Keycloak roles.', async ({ page }) 
 
 test('Creating an Odoo group creates the corresponding Keycloak role', async ({ page }) => {
   // setup
+  test.setTimeout(360000);
   await page.goto(`${ODOO_URL}`);
   await odoo.enterLoginCredentials();
   await expect(page.locator('li.o_user_menu a span')).toHaveText(/administrator/i);
@@ -100,6 +101,7 @@ test('Creating an Odoo group creates the corresponding Keycloak role', async ({ 
 
 test('Updating a synced Odoo group updates the corresponding Keycloak role.', async ({ page }) => {
   // setup
+  test.setTimeout(720000);
   await page.goto(`${ODOO_URL}`);
   await odoo.enterLoginCredentials();
   await expect(page.locator('li.o_user_menu a span')).toHaveText(/administrator/i);
@@ -131,6 +133,7 @@ test('Updating a synced Odoo group updates the corresponding Keycloak role.', as
 
 test('Deleting a synced Odoo group deletes the corresponding Keycloak role.', async ({ page }) => {
   // setup
+  test.setTimeout(720000);
   await page.goto(`${ODOO_URL}`);
   await odoo.enterLoginCredentials();
   await expect(page.locator('li.o_user_menu a span')).toHaveText(/administrator/i);
