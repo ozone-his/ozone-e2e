@@ -25,8 +25,6 @@ test('Ordering a lab test for an OpenMRS patient creates the corresponding ERPNe
   await erpnext.open();
   await erpnext.searchCustomer();
   await expect(page.locator('div.list-row-container:nth-child(3) span:nth-child(2) a')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
-  await openmrs.voidPatient();
-  await erpnext.deleteQuotation();
 });
 
 test('Ordering a drug for an OpenMRS patient creates the corresponding ERPNext customer with a filled quotation.', async ({ page }) => {
@@ -44,8 +42,6 @@ test('Ordering a drug for an OpenMRS patient creates the corresponding ERPNext c
   await page.locator('#customer-dashboard_tab-tab').click();
   await page.getByLabel('Dashboard').getByText('Quotation').click();
   await expect(page.locator('div.list-row-container:nth-child(3) div:nth-child(3) span:nth-child(1) span').nth(1)).toHaveText('Draft');
-  await openmrs.voidPatient();
-  await erpnext.deleteQuotation();
 });
 
 test('Editing the details of an OpenMRS patient with a synced lab order edits the corresponding ERPNext customer details.', async ({ page }) => {
@@ -66,8 +62,6 @@ test('Editing the details of an OpenMRS patient with a synced lab order edits th
   await page.goto(`${ERPNEXT_URL}/app/home`);
   await erpnext.searchCustomer();
   await expect(page.locator('div.list-row-container:nth-child(3) span:nth-child(2) a')).toContainText(`${patientName.updatedFirstName}` + ' ' + `${patientName.givenName}`);
-  await openmrs.voidPatient();
-  await erpnext.deleteQuotation();
 });
 
 test('Editing the details of an OpenMRS patient with a synced drug order edits the corresponding ERPNext customer details.', async ({ page }) => {
@@ -89,8 +83,6 @@ test('Editing the details of an OpenMRS patient with a synced drug order edits t
   await page.goto(`${ERPNEXT_URL}/app/home`);
   await erpnext.searchCustomer();
   await expect(page.locator('div.list-row-container:nth-child(3) span:nth-child(2) a')).toContainText(`${patientName.updatedFirstName}` + ' ' + `${patientName.givenName}`);
-  await openmrs.voidPatient();
-  await erpnext.deleteQuotation();
 });
 
 test('Ending an OpenMRS patient visit with a synced drug order updates the corresponding ERPNext draft quotation to an open state.', async ({ page }) => {
@@ -112,9 +104,6 @@ test('Ending an OpenMRS patient visit with a synced drug order updates the corre
   await page.goto(`${ERPNEXT_URL}/app/home`);
   await erpnext.searchQuotation();
   await expect(page.locator('div.list-row-container:nth-child(3) div:nth-child(3) span:nth-child(1) span')).toHaveText('Open');
-  await erpnext.voidQuotation();
-  await openmrs.voidPatient();
-  await erpnext.deleteQuotation();
 });
 
 test('Revising details of a synced OpenMRS drug order modifies the corresponding ERPNext quotation item.', async ({ page }) => {
@@ -138,8 +127,6 @@ test('Revising details of a synced OpenMRS drug order modifies the corresponding
   await erpnext.searchQuotation();
   await page.getByRole('link', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
   await expect(page.locator('div.bold:nth-child(4) div:nth-child(2) div')).toHaveText('8');
-  await openmrs.voidPatient();
-  await erpnext.deleteQuotation();
 });
 
 test('Ordering a drug with a free text medication dosage for an OpenMRS patient creates the corresponding ERPNext customer with a filled quotation.', async ({ page }) => {
@@ -155,8 +142,6 @@ test('Ordering a drug with a free text medication dosage for an OpenMRS patient 
   await page.getByLabel('Dashboard').getByText('Quotation').click();
   await erpnext.searchQuotation();
   await expect(page.locator('div.list-row-container:nth-child(3) div:nth-child(3) span:nth-child(1) span').nth(1)).toHaveText('Draft');
-  await openmrs.voidPatient();
-  await erpnext.deleteQuotation();
 });
 
 test('Discontinuing a synced OpenMRS drug order for an ERPNext customer with a single quotation line removes the corresponding quotation.', async ({ page }) => {
@@ -179,7 +164,6 @@ test('Discontinuing a synced OpenMRS drug order for an ERPNext customer with a s
   await erpnext.searchQuotation();
   await expect(page.getByText(`${patientName.firstName + ' ' + patientName.givenName}`)).not.toBeVisible();
   await expect(page.getByText('No Quotation found')).toBeVisible();
-  await openmrs.voidPatient();
 });
 
 test('Discontinuing a synced OpenMRS lab order for an ERPNext customer removes the corresponding quotation.', async ({ page }) => {
@@ -202,7 +186,6 @@ test('Discontinuing a synced OpenMRS lab order for an ERPNext customer removes t
   await erpnext.searchQuotation();
   await expect(page.getByText(`${patientName.firstName + ' ' + patientName.givenName}`)).not.toBeVisible();
   await expect(page.getByText('No Quotation found')).toBeVisible();
-  await openmrs.voidPatient();
 });
 
 test('Ordering a drug for an OpenMRS patient within a visit creates the corresponding ERPNext customer with a filled quotation linked to the visit.', async ({ page }) => {
@@ -230,13 +213,10 @@ test('Ordering a drug for an OpenMRS patient within a visit creates the correspo
   await erpnext.searchQuotation();
   await expect(page.locator('div.list-row-container:nth-child(3) div:nth-child(3) span:nth-child(1) span')).toHaveText('Draft');
   await expect(page.locator('div.list-row-container:nth-child(4) div:nth-child(3) span:nth-child(1) span')).toHaveText('Open');
-  await erpnext.voidQuotation();
-  await openmrs.voidPatient();
-  await erpnext.deleteQuotation();
 });
 
 test.afterEach(async ({ page }) => {
-  await erpnext.deleteCustomer();
+  await openmrs.voidPatient();
   await openmrs.logout();
   await page.close();
 });
