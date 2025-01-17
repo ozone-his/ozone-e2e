@@ -321,7 +321,7 @@ export class OpenMRS {
     await this.page.getByRole('button', { name: /actions/i, exact: true }).click();
     await this.page.getByRole('menuitem', { name: /edit patient details/i }).click(), delay(4000);
     await expect(this.page.locator('#givenName')).toBeVisible();
-    await this.page.locator('#givenName').type(`${patientName.updatedFirstName}`), delay(2000);
+    await this.page.locator('#givenName').fill(`${patientName.updatedFirstName}`), delay(2000);
     await this.page.locator('label').filter({ hasText: /female/i }).locator('span').first().click();
     await this.page.locator('div[aria-label="day, "]').fill('18');
     await this.page.locator('div[aria-label="month, "]').fill('08');
@@ -346,7 +346,6 @@ export class OpenMRS {
 
   async updateRole() {
     await this.page.getByRole('link', { name: `${randomOpenMRSRoleName.roleName}` }).click();
-    await this.page.locator('textarea[name="description"]').clear();
     await this.page.locator('textarea[name="description"]').fill('Updated role description');
     await this.page.getByLabel('Application: Registers Patients').check();
     await this.page.getByLabel('Application: Writes Clinical Notes').check();
