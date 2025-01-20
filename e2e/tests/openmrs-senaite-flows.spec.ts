@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { O3_URL, SENAITE_URL } from '../utils/configs/globalSetup';
-import { OpenMRS, patientName } from '../utils/functions/openmrs';
+import { delay, OpenMRS, patientName } from '../utils/functions/openmrs';
 import { SENAITE } from '../utils/functions/senaite';
 
 let openmrs: OpenMRS;
@@ -37,7 +37,7 @@ test('Editing the details of an OpenMRS patient with a synced lab order edits th
   await expect(page.locator('table tbody tr:nth-child(1) td.contentcell.title div span a')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await page.goto(`${O3_URL}`);
   await openmrs.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
-  await openmrs.updatePatientDetails();
+  await openmrs.updatePatientDetails(), delay(8000);
 
   // verify
   await page.goto(`${SENAITE_URL}`);
