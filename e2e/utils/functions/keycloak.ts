@@ -35,6 +35,51 @@ export class Keycloak {
     await this.page.getByRole('link', { name: 'Clients' }).click(), delay(2000);
   }
 
+  async navigateToUsers() {
+    await this.page.getByTestId('realmSelectorToggle').click();
+    await expect(this.page.getByRole('menuitem', { name: 'ozone' })).toBeVisible();
+    await this.page.getByRole('menuitem', { name: 'ozone' }).click();
+    await this.page.getByRole('link', { name: 'Users' }).click();
+    await delay(2000);//
+  }
+
+  async searchUser() {
+    await expect(this.page.getByPlaceholder('Search user')).toBeVisible();
+    await this.page.getByPlaceholder('Search user').fill('jdoe');
+    await this.page.getByPlaceholder('Search user').press('Enter');
+    await this.page.locator('tr td:nth-child(2) a').click();
+    await this.page.getByTestId('role-mapping-tab').click();
+  }
+
+  async searchRole() {
+    await this.page.getByTestId('assignRole').click();
+    await this.page.getByRole('button', { name: 'Filter by realm roles' }).click();
+    await this.page.getByTestId('roles').click();
+    await expect(this.page.getByPlaceholder('Search by role name')).toBeVisible();
+  }
+
+  async assinOdooRole() {
+    await this.page.getByPlaceholder('Search by role name').fill('Inventory Reporting');//Application: Enters Vitals');
+    await this.page.getByRole('checkbox', { name: 'Select row' }).check();
+    await this.page.getByTestId('assign').click();
+    await expect(this.page.getByText('User role mapping successfully updated')).toBeVisible();
+  }
+
+  async assinOpenMRSRole() {
+    await this.page.getByPlaceholder('Search by role name').fill('Inventory Reporting');
+    await delay(3000);
+    await this.page.getByRole('checkbox', { name: 'Select row' }).check();
+    await this.page.getByTestId('assign').click();
+    await expect(this.page.getByText('User role mapping successfully updated')).toBeVisible();
+  }
+
+  async assinSupersetRole() {
+    await this.page.getByPlaceholder('Search by role name').fill('Inventory Reporting');//Application: Enters Vitals');
+    await this.page.getByRole('checkbox', { name: 'Select row' }).check();
+    await this.page.getByTestId('assign').click();
+    await expect(this.page.getByText('User role mapping successfully updated')).toBeVisible();
+  }
+
   async selectOpenMRSId() {
     await expect(this.page.getByPlaceholder(/search for client/i)).toBeVisible();
     await this.page.getByPlaceholder(/search for client/i).fill('openmrs');

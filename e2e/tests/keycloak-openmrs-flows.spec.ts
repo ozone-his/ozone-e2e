@@ -36,6 +36,21 @@ test('Logging out from OpenMRS ends the session in Keycloak and logs out the use
   await expect(page).toHaveURL(/.*login/);
 });
 
+test('OpenMRS role assigned to a user in KC is applied upon login in OpenMRS.', async ({ page }) => {
+  // setup
+  await keycloak.open();
+
+  // replay
+  await keycloak.navigateToUsers();
+  await keycloak.searchUser();
+  await keycloak.searchRole();
+  await keycloak.assinOpenMRSRole();
+
+  // verify
+  await page.goto(`${O3_URL}/openmrs/admin/users/users.list`);
+  await expect(page.locator('tr td:nth-child(5) span')).toContainText('Inventory Reporting');
+});
+
 test('Creating an OpenMRS role creates the corresponding Keycloak role.', async ({ page }) => {
   // setup
   test.setTimeout(240000);
