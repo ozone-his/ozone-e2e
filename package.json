@@ -1,6 +1,6 @@
 {
   "name": "ozone-e2e",
-  "version": "1.0.0-alpha.13",
+  "version": "next",
   "license": "MPL-2.0",
   "description": "These are end-to-end automated tests covering all Ozone HIS workflows",
   "main": "index.js",
@@ -22,7 +22,7 @@
     "registry": "https://nexus.mekomsolutions.net/repository/npm-public/"
   },
   "keywords": [],
-  "author": "",
+  "author": "", 
   "devDependencies": {
     "@playwright/test": "^1.51.1",
     "@types/node": "^22.10.2",
