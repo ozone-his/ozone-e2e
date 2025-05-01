@@ -1,5 +1,5 @@
-import { test, expect } from '@playwright/test';
-import { O3_URL, SENAITE_URL } from '../utils/configs/globalSetup';
+import { expect } from '@playwright/test';
+import { test, O3_URL, SENAITE_URL } from '../utils/configs/globalSetup';
 import { delay, OpenMRS, patientName } from '../utils/functions/openmrs';
 import { SENAITE } from '../utils/functions/senaite';
 
@@ -126,6 +126,5 @@ test('Published free text lab results from SENAITE are viewable in the OpenMRS l
 test.afterEach(async ({ page }) => {
   await openmrs.voidPatient();
   await openmrs.logout();
-  await senaite.logout();
   await page.close();
 });

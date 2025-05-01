@@ -51,6 +51,7 @@ export const api: WorkerFixture<APIRequestContext, PlaywrightWorkerArgs> = async
 
 export interface CustomTestFixtures {
   loginAsAdmin: Page;
+  page: Page;
 }
 
 export interface CustomWorkerFixtures {
@@ -59,6 +60,14 @@ export interface CustomWorkerFixtures {
 
 export const test = base.extend<CustomTestFixtures, CustomWorkerFixtures>({
   api: [api, { scope: 'worker' }],
+  page: async ({ browser }, use) => {
+    const context = await browser.newContext({
+      storageState: 'tests/storageState.json',
+    });
+    const page = await context.newPage();
+    await use(page);
+    await context.close();
+  },
 });
 
 export default globalSetup;

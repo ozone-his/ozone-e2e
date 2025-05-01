@@ -1,5 +1,5 @@
-import { test, expect } from '@playwright/test';
-import { O3_URL, ERPNEXT_URL } from '../utils/configs/globalSetup';
+import { expect } from '@playwright/test';
+import { test, O3_URL, ERPNEXT_URL } from '../utils/configs/globalSetup';
 import { ERPNext } from '../utils/functions/erpnext';
 import { OpenMRS, patientName } from '../utils/functions/openmrs';
 

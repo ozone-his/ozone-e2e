@@ -1,8 +1,8 @@
-import { test, expect } from '@playwright/test';
+import { expect } from '@playwright/test';
+import { test, KEYCLOAK_URL, ODOO_URL } from '../utils/configs/globalSetup';
 import { Odoo, randomOdooGroupName } from '../utils/functions/odoo';
 import { OpenMRS } from '../utils/functions/openmrs';
 import { Keycloak } from '../utils/functions/keycloak';
-import { KEYCLOAK_URL, ODOO_URL } from '../utils/configs/globalSetup';
 
 let odoo: Odoo;
 let openmrs: OpenMRS;

@@ -1,5 +1,5 @@
-import { test, expect } from '@playwright/test';
-import { O3_URL, ODOO_URL, SUPERSET_URL } from '../utils/configs/globalSetup';
+import { expect } from '@playwright/test';
+import { test, O3_URL, ODOO_URL, SUPERSET_URL } from '../utils/configs/globalSetup';
 import { Odoo } from '../utils/functions/odoo';
 import { Superset } from '../utils/functions/superset';
 import { OpenMRS, patientName } from '../utils/functions/openmrs';

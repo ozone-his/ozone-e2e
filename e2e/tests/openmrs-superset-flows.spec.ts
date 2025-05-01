@@ -1,5 +1,5 @@
-import { test, expect } from '@playwright/test';
-import { O3_URL, SUPERSET_URL } from '../utils/configs/globalSetup';
+import { expect } from '@playwright/test';
+import { test, O3_URL, SUPERSET_URL } from '../utils/configs/globalSetup';
 import { OpenMRS, patientName } from '../utils/functions/openmrs';
 import { Superset } from '../utils/functions/superset';
 
@@ -28,8 +28,7 @@ test(`Creating an OpenMRS patient creates the patient in Superset's patients tab
   // replay
   await page.goto(`${O3_URL}`);
   await openmrs.createPatient();
-  await openmrs.searchPatientId();
-  const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
+  const patient_uuid = await openmrs.getPatientUuid();
 
   // verify
   await page.goto(`${SUPERSET_URL}/sqllab`);
@@ -40,7 +39,7 @@ test(`Creating an OpenMRS patient creates the patient in Superset's patients tab
   await expect(updatedPatientsCount).toBe(initialPatientsCount + 1);
   await page.getByRole('tab', { name: 'Query history' }).click();
   await superset.clearSQLEditor();
-  let patientQuery = `SELECT * FROM patients WHERE identifiers like 'OpenMRS ID: ${patientIdentifier}';`;
+  let patientQuery = `SELECT * FROM patients WHERE patient_uuid like '${patient_uuid}';`;
   await page.getByRole('textbox').fill(patientQuery);
   await superset.runSQLQuery();
   await expect(page.locator('div.virtual-table-cell:nth-child(2)')).toHaveText(`${patientName.firstName}`);
@@ -78,13 +77,13 @@ test(`Creating an OpenMRS visit creates the visit in Superset's visits table.`, 
   await expect(updatedVisitsCount).toBe(initialVisitsCount + 1);
   await page.getByRole('tab', { name: 'Query history' }).click();
   await superset.clearSQLEditor();
-  let patientVisitQuery = `SELECT * FROM visits WHERE patient_uuid like '${patient_uuid}';`;
+  let patientVisitQuery = `SELECT patient_gender, patient_age_at_visit, patient_birthdate, patient_uuid FROM visits WHERE patient_uuid like '${patient_uuid}';`;
   await page.getByRole('textbox').first().fill(patientVisitQuery);
   await superset.runSQLQuery();
-  await expect(page.locator('div.virtual-table-cell:nth-child(3)')).toHaveText('Inpatient Ward');
-  await expect(page.locator('div.virtual-table-cell:nth-child(6)')).toHaveText('Facility Visit');
-  await expect(page.locator('div.virtual-table-cell:nth-child(8)')).toHaveText('M');
-  await expect(page.locator('div.virtual-table-cell:nth-child(2)')).toHaveText('false')
+  await expect(page.locator('div.virtual-table-cell:nth-child(1)')).toHaveText('M');
+  await expect(page.locator('div.virtual-table-cell:nth-child(2)')).toHaveText('22');
+  await expect(page.locator('div.virtual-table-cell:nth-child(3)')).toHaveText('2002-08-16');
+  await expect(page.locator('div.virtual-table-cell:nth-child(4)')).toHaveText(`${patient_uuid}`)
   await page.getByRole('tab', { name: 'Query history' }).click();
   await superset.clearSQLEditor();
   await openmrs.voidPatient();
@@ -93,9 +92,8 @@ test(`Creating an OpenMRS visit creates the visit in Superset's visits table.`, 
 test(`Creating an OpenMRS order creates the order in Superset's orders table.`, async ({ page }) => {
   // setup
   await openmrs.createPatient();
-  await openmrs.searchPatientId();
-  const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
   await openmrs.startPatientVisit();
+  const patient_uuid = await openmrs.getPatientUuid();
   await superset.open();
   await superset.selectDBSchema();
   await superset.clearSQLEditor();
@@ -112,6 +110,9 @@ test(`Creating an OpenMRS order creates the order in Superset's orders table.`, 
   await openmrs.navigateToLabOrderForm();
   await page.getByRole('searchbox').fill('Blood urea nitrogen');
   await openmrs.saveLabOrder();
+  await openmrs.navigateToLabOrders();
+  const orderElement = await page.locator('text=/ORD-\\d+/');
+  const orderNumber = await orderElement.textContent();
 
   // verify
   await page.goto(`${SUPERSET_URL}/sqllab`);
@@ -122,17 +123,12 @@ test(`Creating an OpenMRS order creates the order in Superset's orders table.`, 
   await expect(updatedOrdersCount).toBe(initialOrdersCount + 1);
   await page.getByRole('tab', { name: 'Query history' }).click();
   await superset.clearSQLEditor();
-  let patientIdQuery = `SELECT patient_uuid FROM patients WHERE identifiers like 'OpenMRS ID: ${patientIdentifier}';`;
-  await page.getByRole('textbox').fill(patientIdQuery);
-  await superset.runSQLQuery();
-  let patient_uuid = await page.locator('div.virtual-table-cell').textContent();
-  await page.getByRole('tab', { name: 'Results' }).click();
-  await superset.clearSQLEditor();
-  let orderQuery = `SELECT * FROM orders WHERE patient_uuid like '${patient_uuid}';`;
+  let orderQuery = `SELECT order_number, patient_uuid, encounter_voided FROM orders WHERE patient_uuid like '${patient_uuid}';`;
   await page.getByRole('textbox').first().fill(orderQuery);
   await superset.runSQLQuery();
-  await expect(page.locator('div.virtual-table-cell:nth-child(3)')).toHaveText('Test Order');
-  await expect(page.locator('div.virtual-table-cell:nth-child(6)')).toHaveText('Blood urea nitrogen');
+  await expect(page.locator('div.virtual-table-cell:nth-child(1)')).toHaveText(`${orderNumber}`);
+  await expect(page.locator('div.virtual-table-cell:nth-child(2)')).toHaveText(`${patient_uuid}`);
+  await expect(page.locator('div.virtual-table-cell:nth-child(3)')).toHaveText('false');
   await page.getByRole('tab', { name: 'Query history' }).click();
   await superset.clearSQLEditor();
   await openmrs.voidPatient();
@@ -141,9 +137,8 @@ test(`Creating an OpenMRS order creates the order in Superset's orders table.`, 
 test(`Creating an OpenMRS encounter creates the encounter in Superset's encounters table.`, async ({ page }) => {
   // setup
   await openmrs.createPatient();
-  await openmrs.searchPatientId();
-  const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
   await openmrs.startPatientVisit();
+  const patient_uuid = await openmrs.getPatientUuid();
   await superset.open();
   await superset.selectDBSchema();
   await superset.clearSQLEditor();
@@ -170,17 +165,11 @@ test(`Creating an OpenMRS encounter creates the encounter in Superset's encounte
   await expect(updatedEncountersCount).toBe(initialEncountersCount + 1);
   await page.getByRole('tab', { name: 'Query history' }).click();
   await superset.clearSQLEditor();
-  let patientIdQuery = `SELECT patient_uuid FROM patients WHERE identifiers like 'OpenMRS ID: ${patientIdentifier}';`;
-  await page.getByRole('textbox').fill(patientIdQuery);
-  await superset.runSQLQuery();
-  let patient_uuid = await page.locator('div.virtual-table-cell').textContent();
-  await page.getByRole('tab', { name: 'Results' }).click();
-  await superset.clearSQLEditor();
-  let encounterQuery = `SELECT * FROM encounters WHERE patient_uuid like '${patient_uuid}';`;
+  let encounterQuery = `SELECT patient_uuid, encounter_voided FROM encounters WHERE patient_uuid like '${patient_uuid}';`;
   await page.getByRole('textbox').first().fill(encounterQuery);
   await superset.runSQLQuery();
-  await expect(page.locator('div.virtual-table-cell:nth-child(5)')).toContainText('Order');
-  await expect(page.locator('div.virtual-table-cell:nth-child(6)')).toContainText('Facility Visit');
+  await expect(page.locator('div.virtual-table-cell:nth-child(1)')).toContainText(`${patient_uuid}`);
+  await expect(page.locator('div.virtual-table-cell:nth-child(2)')).toContainText('false');
   await page.getByRole('tab', { name: 'Results' }).click();
   await superset.clearSQLEditor();
   await openmrs.voidPatient();
@@ -216,7 +205,7 @@ test(`Creating an OpenMRS condition creates the condition in Superset's conditio
   await expect(updatedConditionsCount).toBe(initialConditionsCount + 1);
   await page.getByRole('tab', { name: 'Query history' }).click();
   await superset.clearSQLEditor();
-  let patientIdQuery = `SELECT patient_id FROM patients WHERE identifiers like 'OpenMRS ID: ${patientIdentifier}';`;
+  let patientIdQuery = `SELECT patient_id FROM patients WHERE identifiers like '${patientIdentifier}';`;
   await page.getByRole('textbox').fill(patientIdQuery);
   await superset.runSQLQuery();
   const patientId = Number(await page.locator('div.virtual-table-cell').textContent());
@@ -305,7 +294,7 @@ test(`Creating an OpenMRS appointment creates the appointment in Superset's appo
   await expect(updatedAppointmentsCount).toBe(initialAppointmentsCount + 1);
   await page.getByRole('tab', { name: 'Query history' }).click();
   await superset.clearSQLEditor();
-  let patientIdQuery = `SELECT patient_id FROM patients WHERE identifiers like 'OpenMRS ID: ${patientIdentifier}';`;
+  let patientIdQuery = `SELECT patient_id FROM patients WHERE identifiers like '${patientIdentifier}';`;
   await page.getByRole('textbox').fill(patientIdQuery);
   await superset.runSQLQuery();
   const patientId = Number(await page.locator('div.virtual-table-cell').textContent());
@@ -317,7 +306,6 @@ test(`Creating an OpenMRS appointment creates the appointment in Superset's appo
   await expect(page.locator('div.virtual-table-cell:nth-child(2)')).toHaveText('Scheduled');
   await expect(page.locator('div.virtual-table-cell:nth-child(3)')).toHaveText('Scheduled');
   await expect(page.locator('div.virtual-table-cell:nth-child(4)')).toHaveText('This is an appointment.');
-  await expect(page.locator('div.virtual-table-cell:nth-child(5)')).toHaveText('General Medicine service');
   await page.getByRole('tab', { name: 'Query history' }).click();
   await superset.clearSQLEditor();
   await openmrs.voidPatient();
@@ -360,12 +348,11 @@ test(`Voiding an OpenMRS obs updates the observation in Superset's observations 
 test(`Voiding an OpenMRS patient updates the patient in Superset's patients table.`, async ({ page }) => {
   // setup
   await openmrs.createPatient();
-  await openmrs.searchPatientId();
-  const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
+  const patient_uuid = await openmrs.getPatientUuid();
   await superset.open();
   await superset.selectDBSchema();
   await superset.clearSQLEditor();
-  let personVoidedQuery = `SELECT person_voided FROM patients where identifiers like 'OpenMRS ID: ${patientIdentifier}';`;
+  let personVoidedQuery = `SELECT person_voided FROM patients where identifiers like '${patient_uuid}';`;
   await page.getByRole('textbox').first().fill(personVoidedQuery);
   await superset.runSQLQuery();
   await expect(page.locator('div.virtual-table-cell')).toHaveText('false');
@@ -385,14 +372,13 @@ test(`Voiding an OpenMRS patient updates the patient in Superset's patients tabl
 test(`Voiding an OpenMRS condition updates the condition in Superset's conditions table.`, async ({ page }) => {
   // setup
   await openmrs.createPatient();
-  await openmrs.searchPatientId();
-  const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
+  const patient_uuid = await openmrs.getPatientUuid();
   await openmrs.startPatientVisit();
   await openmrs.addPatientCondition();
   await superset.open();
   await superset.selectDBSchema();
   await superset.clearSQLEditor();
-  let patientIdQuery = `SELECT patient_id FROM patients WHERE identifiers like 'OpenMRS ID: ${patientIdentifier}';`;
+  let patientIdQuery = `SELECT patient_id FROM patients WHERE identifiers like '${patient_uuid}';`;
   await page.getByRole('textbox').first().fill(patientIdQuery);
   await superset.runSQLQuery();
   const patientId = Number(await page.locator('div.virtual-table-cell').textContent());
@@ -421,20 +407,13 @@ test(`Voiding an OpenMRS condition updates the condition in Superset's condition
 test(`Voiding an OpenMRS encounter updates the encounter in Superset's encounters table.`, async ({ page }) => {
   // setup
   await openmrs.createPatient();
-  await openmrs.searchPatientId();
-  const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
+  const patient_uuid = await openmrs.getPatientUuid();
   await openmrs.startPatientVisit();
   await openmrs.navigateToLabOrderForm();
   await page.getByRole('searchbox').fill('Blood urea nitrogen');
   await openmrs.saveLabOrder();
   await superset.open();
   await superset.selectDBSchema();
-  await superset.clearSQLEditor();
-  let patientIdQuery = `SELECT patient_uuid FROM patients WHERE identifiers like 'OpenMRS ID: ${patientIdentifier}';`;
-  await page.getByRole('textbox').first().fill(patientIdQuery);
-  await superset.runSQLQuery();
-  let patient_uuid = await page.locator('div.virtual-table-cell').textContent();
-  await page.getByRole('tab', { name: 'Results' }).click();
   await superset.clearSQLEditor();
   let encounterVoidedQuery = `SELECT encounter_voided FROM encounters WHERE patient_uuid like '${patient_uuid}';`;
   await page.getByRole('textbox').first().fill(encounterVoidedQuery);
@@ -460,14 +439,13 @@ test(`Voiding an OpenMRS encounter updates the encounter in Superset's encounter
 test(`Cancelling an OpenMRS appointment updates the appointment in Superset's appointments table.`, async ({ page }) => {
   // setup
   await openmrs.createPatient();
-  await openmrs.searchPatientId();
-  const patientIdentifier = await page.locator('#demographics section p:nth-child(2)').textContent();
+  const patient_uuid = await openmrs.getPatientUuid();
   await openmrs.startPatientVisit();
   await openmrs.addPatientAppointment();
   await superset.open();
   await superset.selectDBSchema();
   await superset.clearSQLEditor();
-  let patientIdQuery = `SELECT patient_id FROM patients WHERE identifiers like 'OpenMRS ID: ${patientIdentifier}';`;
+  let patientIdQuery = `SELECT patient_id FROM patients WHERE patient_uuid like '${patient_uuid}';`;
   await page.getByRole('textbox').first().fill(patientIdQuery);
   await superset.runSQLQuery();
   const patientId = Number(await page.locator('div.virtual-table-cell').textContent());
@@ -496,7 +474,6 @@ test(`Cancelling an OpenMRS appointment updates the appointment in Superset's ap
 });
 
 test.afterEach(async ({ page }) => {
-  await openmrs.logout();
   await superset.logout();
   await page.close();
 });

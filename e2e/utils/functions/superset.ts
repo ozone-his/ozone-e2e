@@ -88,5 +88,6 @@ export class Superset {
     await this.page.getByRole('button', { name: /settings/i }).click();
     await expect(this.page.getByRole('link', { name: /logout/i })).toBeVisible();
     await this.page.getByRole('link', { name: /logout/i }).click();
+    await expect(this.page).toHaveURL(/.*login/), delay(2000);
   }
 }

@@ -1,7 +1,7 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { KEYCLOAK_URL, SUPERSET_URL } from '../utils/configs/globalSetup';
 import { Keycloak } from '../utils/functions/keycloak';
-import { OpenMRS, delay } from '../utils/functions/openmrs';
+import { OpenMRS } from '../utils/functions/openmrs';
 import { Superset, randomSupersetRoleName} from '../utils/functions/superset';
 
 let openmrs: OpenMRS;
@@ -28,7 +28,6 @@ test('Logging out from Superset ends the session in Keycloak and logs out the us
 
   // replay
   await superset.logout();
-  await expect(page).toHaveURL(/.*login/);
 
   // verify
   await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
