@@ -13,7 +13,7 @@ on:
       environment:
         description: 'Choose test environment'
         required: true
-        default: 'dev'
+        default: 'demo'
         type: choice
         options:
           - dev
