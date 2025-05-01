@@ -109,10 +109,6 @@ export class OpenMRS {
   }
 
   async getPatientUuid() {
-    await this.page.goto(`${O3_URL}/openmrs/spa/home`);
-    await this.patientSearchIcon().click();
-    await this.patientSearchBar().type(`${patientName.firstName + ' ' + patientName.givenName}`);
-    await this.page.getByRole('link', { name: `${patientFullName}` }).first().click();
     let url = await this.page.url();
     return this.extractUuidFromURL(url);
   }
@@ -209,6 +205,10 @@ export class OpenMRS {
     await this.page.getByRole('button', { name: /save order/i }).click();
     await this.page.getByRole('button', { name: /sign and close/i }).click();
     await expect(this.page.getByText(/placed orders/i)).toBeVisible(), delay(5000);
+  }
+
+  async navigateToLabOrders() {
+    await this.page.getByRole('link', { name: /orders/i }).click();
   }
 
   async recordWeight() {
