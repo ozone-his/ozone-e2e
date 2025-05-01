@@ -198,6 +198,10 @@ export class OpenMRS {
     await expect(this.page.getByText(/appointment cancelled successfully/i)).toBeVisible();
    }
 
+   async navigateToAttachments() {
+    await (this.page.getByRole('link', { name: /attachments/i })).click();
+  }
+
   async navigateToLabOrderForm() {
     await this.page.getByLabel(/order basket/i).click(), delay(2000);
     await expect(this.page.getByRole('button', { name: 'Add', exact: true }).nth(1)).toBeVisible();
