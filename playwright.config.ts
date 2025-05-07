@@ -17,7 +17,6 @@ const config: PlaywrightTestConfig = {
   globalSetup: require.resolve('./e2e/utils/configs/globalSetup'),
   use: {
     baseURL: `${O3_URL}/spa/`,
-    storageState: 'e2e/storageState.json',
   },
   projects: [
     {
