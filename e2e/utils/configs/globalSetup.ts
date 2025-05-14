@@ -14,6 +14,7 @@ dotenv.config();
 export const O3_URL = `${process.env.TEST_ENVIRONMENT}` == 'demo' ? `${process.env.O3_URL_DEMO}` : `${process.env.TEST_ENVIRONMENT}` == 'qa' ? `${process.env.O3_URL_QA}`: `${process.env.O3_URL_DEV}`;
 export const ERPNEXT_URL = `${process.env.TEST_ENVIRONMENT}` == 'demo' ? `${process.env.ERPNEXT_URL_DEMO}` : `${process.env.TEST_ENVIRONMENT}` == 'qa' ? `${process.env.ERPNEXT_URL_QA}`: `${process.env.ERPNEXT_URL_DEV}`;
 export const ODOO_URL = `${process.env.TEST_ENVIRONMENT}` == 'demo' ? `${process.env.ODOO_URL_DEMO}` : `${process.env.TEST_ENVIRONMENT}` == 'qa' ? `${process.env.ODOO_URL_QA}`: `${process.env.ODOO_URL_DEV}`;
+export const ORTHANC_URL = `${process.env.TEST_ENVIRONMENT}` == 'demo' ? `${process.env.ORTHANC_URL_DEMO}` : `${process.env.TEST_ENVIRONMENT}` == 'qa' ? `${process.env.ORTHANC_URL_QA}`: `${process.env.ORTHANC_URL_DEV}`;
 export const SENAITE_URL = `${process.env.TEST_ENVIRONMENT}` == 'demo' ? `${process.env.SENAITE_URL_DEMO}` : `${process.env.TEST_ENVIRONMENT}` == 'qa' ? `${process.env.SENAITE_URL_QA}`: `${process.env.SENAITE_URL_DEV}`;
 export const KEYCLOAK_URL = `${process.env.TEST_ENVIRONMENT}` == 'demo' ? `${process.env.KEYCLOAK_URL_DEMO}` : `${process.env.TEST_ENVIRONMENT}` == 'qa' ? `${process.env.KEYCLOAK_URL_QA}`: `${process.env.KEYCLOAK_URL_DEV}`;
 export const SUPERSET_URL = `${process.env.TEST_ENVIRONMENT}` == 'demo' ? `${process.env.SUPERSET_URL_DEMO}` : `${process.env.TEST_ENVIRONMENT}` == 'qa' ? `${process.env.SUPERSET_URL_QA}`: `${process.env.SUPERSET_URL_DEV}`;
@@ -51,6 +52,7 @@ export const api: WorkerFixture<APIRequestContext, PlaywrightWorkerArgs> = async
 
 export interface CustomTestFixtures {
   loginAsAdmin: Page;
+  orthancPage: Page;
 }
 
 export interface CustomWorkerFixtures {
@@ -59,6 +61,17 @@ export interface CustomWorkerFixtures {
 
 export const test = base.extend<CustomTestFixtures, CustomWorkerFixtures>({
   api: [api, { scope: 'worker' }],
+  orthancPage: async ({ browser }, use) => {
+    const context = await browser.newContext({
+      httpCredentials: {
+        username: process.env.ORTHANC_USERNAME || '',
+        password: process.env.ORTHANC_PASSWORD || '',
+      },
+    });
+    const page = await context.newPage();
+    await use(page);
+    await context.close();
+  },
 });
 
 export default globalSetup;

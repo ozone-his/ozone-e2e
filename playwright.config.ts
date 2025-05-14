@@ -9,7 +9,7 @@ const config: PlaywrightTestConfig = {
   expect: {
     timeout: 40 * 1000,
   },
-  fullyParallel: true,
+  fullyParallel: false,
   forbidOnly: !!process.env.CI,
   workers: process.env.CI ? 1 : 1,
   retries: 0,
@@ -17,7 +17,6 @@ const config: PlaywrightTestConfig = {
   globalSetup: require.resolve('./e2e/utils/configs/globalSetup'),
   use: {
     baseURL: `${O3_URL}/spa/`,
-    storageState: 'e2e/storageState.json',
   },
   projects: [
     {
@@ -25,6 +24,7 @@ const config: PlaywrightTestConfig = {
       use: {
         ...devices['Desktop Chromium'],
         viewport: { width: 1920, height: 1080 },
+        storageState: undefined
       },
       
     },
