@@ -41,6 +41,25 @@ test('Logging out from Superset ends the session in Keycloak and logs out the us
   await expect(page).toHaveURL(/.*login/);
 });
 
+test('Superset role assigned to a user in Keycloak is applied upon login in Superset.', async ({ page }) => {
+  // setup
+  await keycloak.open();
+
+  // replay
+  await keycloak.navigateToUsers();
+  await keycloak.searchUser();
+  await expect(page.getByText('Admin')).toBeVisible();
+
+  // verify
+  await superset.open();
+  await openmrs.enterLoginCredentials();
+  await superset.navigateToUsers();
+  await page.locator('tr:has-text("jdoe") a[data-original-title="Show record"]').click();
+  const roleText = await page.locator('th:has-text("Role") + td span').textContent();
+  await expect(roleText).toBe('[Admin]');
+  await superset.logout();
+});
+
 test('Creating a Superset role creates the corresponding Keycloak role.', async ({ page }) => {
   // setup
   await openmrs.login();
