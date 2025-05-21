@@ -1,5 +1,5 @@
-import { test, expect } from '@playwright/test';
-import { O3_URL, KEYCLOAK_URL } from '../utils/configs/globalSetup';
+import { expect } from '@playwright/test';
+import { test, O3_URL, KEYCLOAK_URL } from '../utils/configs/globalSetup';
 import { Keycloak, randomKeycloakRoleName } from '../utils/functions/keycloak';
 import { OpenMRS, delay, randomOpenMRSRoleName } from '../utils/functions/openmrs';
 

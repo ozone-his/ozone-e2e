@@ -1,5 +1,5 @@
-import { test, expect } from '@playwright/test';
-import { O3_URL, SUPERSET_URL } from '../utils/configs/globalSetup';
+import { expect } from '@playwright/test';
+import { test, O3_URL, SUPERSET_URL } from '../utils/configs/globalSetup';
 import { OpenMRS, patientName } from '../utils/functions/openmrs';
 import { Superset } from '../utils/functions/superset';
 
@@ -475,6 +475,5 @@ test(`Cancelling an OpenMRS appointment updates the appointment in Superset's ap
 
 test.afterEach(async ({ page }) => {
   await openmrs.logout();
-  await superset.logout();
   await page.close();
 });

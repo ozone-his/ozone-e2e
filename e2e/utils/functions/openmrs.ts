@@ -126,7 +126,7 @@ export class OpenMRS {
     await this.page.getByRole('button', { name: /actions/i, exact: true }).click();
     await this.page.getByRole('menuitem', { name: /end visit/i }).click();
     await this.page.getByRole('button', { name: /danger end Visit/i }).click();
-    await expect(this.page.getByText(/visit ended/i)).toBeVisible(), delay(3000);
+    await expect(this.page.getByText(/visit ended/i)).toBeVisible(), delay(7000);
   }
 
   async voidPatient() {
@@ -196,8 +196,8 @@ export class OpenMRS {
 
   async navigateToLabOrderForm() {
     await this.page.getByLabel(/order basket/i).click(), delay(2000);
-    await expect(this.page.getByRole('button', { name: 'Add', exact: true }).nth(1)).toBeVisible();
-    await this.page.getByRole('button', { name: 'Add', exact: true }).nth(1).click();
+    await expect(this.page.locator('text=Lab orders').locator('xpath=../..').locator('button:has-text("Add")')).toBeVisible();
+    await this.page.locator('text=Lab orders').locator('xpath=../..').locator('button:has-text("Add")').click();
   }
 
   async saveLabOrder() {
@@ -245,8 +245,8 @@ export class OpenMRS {
   async navigateToDrugOrderForm() {
     await expect(this.page.getByLabel(/order basket/i)).toBeVisible();
     await this.page.getByLabel(/order basket/i).click(), delay(2000);
-    await expect(this.page.getByRole('button', { name: 'Add', exact: true }).nth(0)).toBeVisible();
-    await this.page.getByRole('button', { name: 'Add', exact: true }).nth(0).click();
+    await expect(this.page.locator('text=Drug orders').locator('xpath=../..').locator('button:has-text("Add")')).toBeVisible();
+    await this.page.locator('text=Drug orders').locator('xpath=../..').locator('button:has-text("Add")').click();
   }
 
   async fillDrugOrderForm() {

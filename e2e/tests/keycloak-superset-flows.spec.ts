@@ -1,5 +1,5 @@
-import { test, expect } from '@playwright/test';
-import { KEYCLOAK_URL, SUPERSET_URL } from '../utils/configs/globalSetup';
+import { expect } from '@playwright/test';
+import { test, KEYCLOAK_URL, SUPERSET_URL } from '../utils/configs/globalSetup';
 import { Keycloak } from '../utils/functions/keycloak';
 import { OpenMRS, delay } from '../utils/functions/openmrs';
 import { Superset, randomSupersetRoleName} from '../utils/functions/superset';

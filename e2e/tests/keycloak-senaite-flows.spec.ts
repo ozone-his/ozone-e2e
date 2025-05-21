@@ -1,5 +1,5 @@
-import { test, expect } from '@playwright/test';
-import { KEYCLOAK_URL, SENAITE_URL } from '../utils/configs/globalSetup';
+import { expect } from '@playwright/test';
+import { test, KEYCLOAK_URL, SENAITE_URL } from '../utils/configs/globalSetup';
 import { Keycloak } from '../utils/functions/keycloak';
 import { OpenMRS } from '../utils/functions/openmrs';
 import { SENAITE } from '../utils/functions/senaite';
