@@ -1,0 +1,36 @@
+name: Publish to NPM Registry
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - '1.0.0-*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Authenticate with Nexus NPM registry
+        run: |
+          REGISTRY_URL="${NPM_REGISTRY_URL#https://}"
+          echo "//${REGISTRY_URL}:_authToken=${NPM_AUTH_TOKEN}" > ~/.npmrc
+        env:
+          NPM_REGISTRY_URL: ${{ vars.NPM_REGISTRY_URL }}
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+        shell: bash
+
+      - name: Publish to registry
+        run: npm publish
