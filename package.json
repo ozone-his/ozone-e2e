@@ -1,6 +1,6 @@
 {
   "name": "ozone-e2e",
-  "version": "next",
+  "version": "1.0.0-alpha.13",
   "license": "MPL-2.0",
   "description": "These are end-to-end automated tests covering all Ozone HIS workflows",
   "main": "index.js",
