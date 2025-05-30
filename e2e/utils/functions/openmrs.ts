@@ -390,6 +390,13 @@ export class OpenMRS {
     await this.page.getByRole('link', { name: /log out/i }).click();
   }
 
+  async navigateToRoles() {
+  await this.page.goto(`${O3_URL}/openmrs/admin/users/users.list`);
+  await this.page.getByRole('textbox').fill('admin');
+  await this.page.getByRole('button', { name: 'Search' }).click();
+  await this.page.getByRole('link', { name: 'admin', exact: true }).click();
+  }
+
   async logout() {
     await this.page.goto(`${O3_URL}`);
     await expect(this.page.getByLabel(/my account/i)).toBeVisible();
