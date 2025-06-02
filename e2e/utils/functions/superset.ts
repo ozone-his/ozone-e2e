@@ -37,6 +37,12 @@ export class Superset {
     await this.page.getByRole('button', { name: 'Run' }).click(), delay(5000);
   }
 
+  async navigateToUsers() {
+    await this.page.getByRole('button', { name: /settings/i }).click();
+    await expect(this.page.getByText('List Users')).toBeVisible();
+    await this.page.getByRole('link', { name: 'List Users' }).click();
+  }
+
   async addRole() {
     await this.page.getByRole('button', { name: /settings/i }).click();
     await expect(this.page.getByText('List Roles')).toBeVisible();
