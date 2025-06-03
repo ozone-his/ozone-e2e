@@ -8,8 +8,17 @@ export var randomKeycloakRoleName = {
   roleName : `${(Math.random() + 1).toString(36).substring(2)}`
 }
 
+export var user = {
+  userName : '',
+  firstName : '',
+  lastName : '',
+  email : '',
+  password: '',
+}
 export class Keycloak {
   constructor(readonly page: Page) {}
+
+  readonly addUserButton = () => this.page.getByTestId('add-user');
 
   async open() {
     await this.page.goto(`${KEYCLOAK_URL}/admin/master/console`);
@@ -118,6 +127,83 @@ export class Keycloak {
     await expect(this.page.getByText(`The role has been deleted`)).toBeVisible();
     await expect(this.page.getByText(`${randomSupersetRoleName.roleName}`)).not.toBeVisible();
     await delay(60000);
+  }
+
+  async createUser() {
+    user = {
+      userName : `${Array.from({ length: 5 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
+      firstName: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
+      lastName: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
+      email: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}@gmail.com`,
+      password: `${Array.from({ length: 5 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`
+    }
+    await this.page.locator('input[name="username"]').fill(`${user.userName}`);
+    await this.page.getByTestId('email-input').fill(`${user.email}`);
+    await this.page.locator('label').filter({ hasText: /yes/i }).locator('span').first().click(), delay(1000);
+    await this.page.getByTestId('firstName-input').fill(`${user.firstName}`);
+    await this.page.getByTestId('lastName-input').fill(`${user.lastName}`);
+    await this.saveUser();
+    await this.navigateToCredentials();
+    await this.enterUserPassword();
+    await this.confirmUserPassword();
+    await this.navigateToRoles();
+    await this.assignRolesToUser();
+  }
+
+  async saveUser() {
+    await this.page.getByTestId('create-user').click();
+    await expect(this.page.getByRole('heading', { name: /the user has been created/i })).toBeVisible(), delay(2000);
+  }
+
+  async navigateToCredentials() {
+    await this.page.getByTestId('credentials').click();
+  }
+
+  async enterUserPassword() {
+    await this.page.getByTestId('no-credentials-empty-action').click();
+    await this.page.getByTestId('passwordField').fill(`${user.password}`);
+    await this.page.getByTestId('passwordConfirmationField').fill(`${user.password}`);
+  }
+
+  async confirmUserPassword() {
+    await this.page.locator('label').filter({ hasText: /onoff/i }).locator('span').first().click(), delay(1000);
+    await this.page.getByTestId('confirm').click(), delay(1500);
+    await this.page.getByTestId('confirm').click();
+    await expect(this.page.getByRole('heading', { name: /the password has been set successfully/i })).toBeVisible(), delay(3000);
+  }
+
+  async navigateToRoles() {
+    await this.page.getByTestId('role-mapping-tab').click();
+    await this.page.getByTestId('assignRole').click();
+    await this.page.getByRole('button', { name: /filter by realm roles/i }).click();
+    await this.page.getByTestId('roles').click(), delay(2000);
+  }
+
+  async assignRolesToUser() {
+    await this.page.getByRole('textbox', { name: /search/i }).fill('Alpha');
+    await this.page.getByRole('textbox', { name: /search/i }).press('Enter');
+    await this.page.getByRole('checkbox', { name: /select row/i }).check();
+    await this.page.getByTestId('assign').click(), delay(5000)
+    await this.navigateToRoles();
+    await this.page.getByRole('textbox', { name: /search/i }).fill('Application: Has Super User Privileges');
+    await this.page.getByRole('textbox', { name: /search/i }).press('Enter');
+    await this.page.getByRole('checkbox', { name: /select row/i }).check();
+    await this.page.getByTestId('assign').click();
+    await expect(this.page.getByText(/user role mapping successfully updated/i)).toBeVisible();
+  }
+
+  async deleteUser() {
+    await this.page.goto(`${KEYCLOAK_URL}/admin/master/console/#/ozone/users`);
+    await this.page.getByRole('textbox', { name: 'search' }).fill(`${user.userName}`);
+    await this.page.getByRole('textbox', { name: 'search' }).press('Enter'), delay(1500);
+    await this.confirmDelete();
+  }
+
+  async confirmDelete() {
+    await this.page.getByRole('button', { name: /actions/i }).first().click();
+    await this.page.getByRole('menuitem', { name: /delete/i }).click();
+    await this.page.getByTestId('confirm').click();
+    await expect(this.page.getByText(/the user has been deleted/i).first()).toBeVisible();
   }
 
   async confirmLogout() {

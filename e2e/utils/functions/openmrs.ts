@@ -1,6 +1,6 @@
 import { Page, expect } from '@playwright/test';
 import { O3_URL } from '../configs/globalSetup';
-import { Keycloak } from './keycloak';
+import { Keycloak, user } from './keycloak';
 
 export var patientName = {
   firstName : '',
@@ -44,6 +44,21 @@ export class OpenMRS {
     await expect(this.page.getByRole('button', { name: /add Patient/i })).toBeEnabled();
     await expect(this.page.getByRole('button', { name: /my account/i })).toBeEnabled();
     await expect(this.page.getByRole('button', { name: /app Menu/i })).toBeEnabled();
+  }
+
+  async open() {
+    await this.page.locator('#username').fill(`${user.userName}`);
+    await this.page.getByRole('button', { name: /continue/i }).click();
+    await this.page.locator('#password').fill(`${user.password}`);
+    await this.page.getByRole('button', { name: /sign in/i }).click();
+    await this.page.locator('label').filter({ hasText: /inpatient ward/i }).locator('span').first().click();
+    await this.page.getByRole('button', { name: /confirm/i }).click();
+    await expect(this.page).toHaveURL(/.*home/);
+  }
+
+  async navigateToLoginPage() {
+    await this.page.goto(`${O3_URL}`), delay(4000);
+    await expect(this.page.locator('#username')).toBeVisible();
   }
 
   async enterLoginCredentials() {
@@ -109,10 +124,6 @@ export class OpenMRS {
   }
 
   async getPatientUuid() {
-    await this.page.goto(`${O3_URL}/openmrs/spa/home`);
-    await this.patientSearchIcon().click();
-    await this.patientSearchBar().type(`${patientName.firstName + ' ' + patientName.givenName}`);
-    await this.page.getByRole('link', { name: `${patientFullName}` }).first().click();
     let url = await this.page.url();
     return this.extractUuidFromURL(url);
   }
@@ -204,8 +215,8 @@ export class OpenMRS {
 
   async navigateToLabOrderForm() {
     await this.page.getByLabel(/order basket/i).click(), delay(2000);
-    await expect(this.page.getByRole('button', { name: 'Add', exact: true }).nth(1)).toBeVisible();
-    await this.page.getByRole('button', { name: 'Add', exact: true }).nth(1).click();
+    await expect(this.page.locator('text=Lab orders').locator('xpath=../..').locator('button:has-text("Add")')).toBeVisible();
+    await this.page.locator('text=Lab orders').locator('xpath=../..').locator('button:has-text("Add")').click();
   }
 
   async saveLabOrder() {
@@ -213,6 +224,10 @@ export class OpenMRS {
     await this.page.getByRole('button', { name: /save order/i }).click();
     await this.page.getByRole('button', { name: /sign and close/i }).click();
     await expect(this.page.getByText(/placed orders/i)).toBeVisible(), delay(5000);
+  }
+
+  async navigateToLabOrders() {
+    await this.page.getByRole('link', { name: /orders/i }).click();
   }
 
   async recordWeight() {
@@ -247,10 +262,9 @@ export class OpenMRS {
   }
 
   async navigateToDrugOrderForm() {
-    await expect(this.page.getByLabel(/order basket/i)).toBeVisible();
     await this.page.getByLabel(/order basket/i).click(), delay(2000);
-    await expect(this.page.getByRole('button', { name: 'Add', exact: true }).nth(0)).toBeVisible();
-    await this.page.getByRole('button', { name: 'Add', exact: true }).nth(0).click();
+    await expect(this.page.locator('text=Drug orders').locator('xpath=../..').locator('button:has-text("Add")')).toBeVisible();
+    await this.page.locator('text=Drug orders').locator('xpath=../..').locator('button:has-text("Add")').click();
   }
 
   async fillDrugOrderForm() {

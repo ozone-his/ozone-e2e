@@ -7,6 +7,9 @@ export var randomSupersetRoleName = {
   updatedRoleName : `${Array.from({ length: 8 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`
 }
 
+export const chartName = `Patient Chart ${Math.floor(Math.random() * 10000)}`;
+export const dashboardName = `Patient Dashboard ${Math.floor(Math.random() * 10000)}`;
+
 export class Superset {
   constructor(readonly page: Page) {}
 
@@ -80,6 +83,14 @@ export class Superset {
     await expect(this.page.getByText(`${randomSupersetRoleName.roleName}`)).not.toBeVisible();
   }
 
+  async navigateToDatasets() {
+    await this.page.getByRole('button', { name: 'Datasets', exact: true }).click();
+  } 
+
+  async pressEnterButton() {
+    await this.page.getByRole('textbox', { name: 'Type a value' }).press('Enter');
+  }
+
   async deleteUpdatedRole(){
     await this.page.goto(`${SUPERSET_URL}/roles/list`);
     await this.page.getByRole('row', { name: `${randomSupersetRoleName.updatedRoleName}` }).getByRole('checkbox').check();
@@ -94,5 +105,6 @@ export class Superset {
     await this.page.getByRole('button', { name: /settings/i }).click();
     await expect(this.page.getByRole('link', { name: /logout/i })).toBeVisible();
     await this.page.getByRole('link', { name: /logout/i }).click();
+    await expect(this.page).toHaveURL(/.*login/), delay(2000);
   }
 }
