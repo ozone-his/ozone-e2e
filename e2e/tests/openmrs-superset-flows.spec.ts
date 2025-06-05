@@ -13,7 +13,7 @@ test.beforeEach(async ({ page }) => {
   superset = new Superset(page);
   keycloak = new Keycloak(page);
 });
-/*
+
 test(`Creating an OpenMRS patient creates the patient in Superset's patients table.`, async ({ page }) => {
   // setup
   await openmrs.login();
@@ -485,7 +485,7 @@ test(`Cancelling an OpenMRS appointment updates the appointment in Superset's ap
   await superset.clearSQLEditor();
   await openmrs.voidPatient();
 });
-*/
+
 test(`Superset should contain dataset per flattened table on fresh install dataset`, async ({ page }) => {
   // setup
   await keycloak.open();
