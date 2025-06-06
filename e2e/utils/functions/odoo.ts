@@ -1,6 +1,7 @@
 import { expect, Page } from '@playwright/test';
 import { ODOO_URL } from '../configs/globalSetup';
 import { delay, patientName } from './openmrs';
+import { Keycloak } from './keycloak';
 
 export var randomOdooGroupName = {
   groupName : `${Array.from({ length: 8 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
@@ -12,17 +13,17 @@ export class Odoo {
 
   async open() {
     await this.page.goto(`${ODOO_URL}`);
-    if (`${process.env.TEST_PRO}` == 'true') {
-      await this.page.getByRole('link', { name: /login with single sign-on/i }).click();
-    } else {
-      await this.enterLoginCredentials();
+    await this.page.getByRole('link', { name: /login with single sign-on/i }).click(), delay(4000);
+    if(await this.page.locator('#username').isVisible()) {
+      const keycloak = new Keycloak(this.page);
+      await keycloak.enterCredentials();
     }
     await expect(this.page).toHaveURL(/.*web/);
   }
 
   async enterLoginCredentials() {
-    await this.page.locator('#login').fill(`${process.env.ODOO_USERNAME_ON_FOSS}`);
-    await this.page.locator('#password').fill(`${process.env.ODOO_PASSWORD_ON_FOSS}`);
+    await this.page.locator('#login').fill(`${process.env.ODOO_USERNAME}`);
+    await this.page.locator('#password').fill(`${process.env.ODOO_PASSWORD}`);
     await this.page.locator('button[type="submit"]').click();
   }
 

@@ -26,7 +26,6 @@ const config: PlaywrightTestConfig = {
         viewport: { width: 1920, height: 1080 },
         storageState: undefined
       },
-      
     },
   ],
 };

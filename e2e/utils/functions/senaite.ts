@@ -1,18 +1,18 @@
 import { expect, Page } from '@playwright/test';
 import { SENAITE_URL } from '../configs/globalSetup';
 import { delay, patientName } from './openmrs';
+import { Keycloak } from './keycloak';
 
 export class SENAITE {
   constructor(readonly page: Page) {}
 
   async open() {
     await this.page.goto(`${SENAITE_URL}`);
-    if ((`${process.env.TEST_PRO}` == 'false')) {
-      await this.page.locator('#__ac_name').fill(`${process.env.SENAITE_USERNAME_ON_FOSS}`), delay(500);
-      await this.page.locator('#__ac_password').fill(`${process.env.SENAITE_PASSWORD_ON_FOSS}`), delay(500);
-      await this.page.locator('#buttons-login').click();
+    if(await this.page.locator('#username').isVisible()) {
+      const keycloak = new Keycloak(this.page);
+      await keycloak.enterCredentials();
     }
-    await expect(this.page).toHaveURL(/.*senaite/);
+    await expect(this.page).toHaveURL(/.*senaite-dashboard/);
   }
 
   async searchClient() {
