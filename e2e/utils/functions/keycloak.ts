@@ -20,6 +20,13 @@ export class Keycloak {
     await delay(6000);
   }
 
+  async enterCredentials() {
+    await this.page.locator('#username').fill(`${process.env.OZONE_USERNAME}`);
+    await this.page.getByRole('button', { name: /continue/i }).click();
+    await this.page.locator('#password').fill(`${process.env.OZONE_PASSWORD}`);
+    await this.page.getByRole('button', { name: /sign in/i }).click();
+  }
+  
   async createRole() {
     await this.page.getByTestId('create-role').click();
     await this.page.getByLabel('Role name').fill(`${randomKeycloakRoleName.roleName}`);

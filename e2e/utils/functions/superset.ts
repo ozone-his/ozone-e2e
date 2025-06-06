@@ -1,6 +1,7 @@
 import { Page, expect } from '@playwright/test';
 import { SUPERSET_URL } from '../configs/globalSetup';
 import { delay } from './openmrs';
+import { Keycloak } from './keycloak';
 
 export var randomSupersetRoleName = {
   roleName : `${Array.from({ length: 8 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
@@ -12,12 +13,10 @@ export class Superset {
 
   async open() {
     await this.page.goto(`${SUPERSET_URL}`);
-    if ((`${process.env.TEST_PRO}` == 'false')) {
-      await this.page.locator('#username').fill(`${process.env.SUPERSET_USERNAME_ON_FOSS}`), delay(500);
-      await this.page.locator('#password').fill(`${process.env.SUPERSET_PASSWORD_ON_FOSS}`), delay(500);
-      await this.page.locator('input[type="submit"]').click();
-    } else {
-      await this.page.locator('#btn-signin-keycloak').click();
+    await this.page.locator('#btn-signin-keycloak').click(), delay(4000);
+    if(await this.page.locator('#username').isVisible()) {
+      const keycloak = new Keycloak(this.page);
+      await keycloak.enterCredentials();
     }
     await expect(this.page).toHaveURL(/.*superset/);
   }

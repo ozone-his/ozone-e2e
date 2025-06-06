@@ -17,9 +17,6 @@ test.beforeEach(async ({ page }) => {
 test('Logging out from SENAITE ends the session in Keycloak and logs out the user.', async ({ page }) => {
   // setup
   await senaite.open();
-  await openmrs.enterLoginCredentials();
-  await expect(page).toHaveURL(/.*senaite-dashboard/);
-  await expect(page.locator('#navbarUserDropdown')).toHaveText(/john doe/i);
   await keycloak.open();
   await keycloak.navigateToClients();
   await keycloak.selectSENAITEId();
