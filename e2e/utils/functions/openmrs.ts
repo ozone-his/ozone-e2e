@@ -29,14 +29,8 @@ export class OpenMRS {
 
   async login() {
     await this.page.goto(`${O3_URL}`);
-    if (`${process.env.TEST_PRO}` == 'true') {
-      await this.enterLoginCredentials();
-    } else {
-      await this.page.locator('#username').fill(`${process.env.O3_USERNAME_ON_FOSS}`), delay(500);
-      await this.page.getByRole('button', { name: /continue/i }).click();
-      await this.page.locator('#password').fill(`${process.env.O3_PASSWORD_ON_FOSS}`), delay(500);
-      await this.page.locator('button[type="submit"]').click();
-    }
+    const keycloak = new Keycloak(this.page);
+    await keycloak.enterCredentials();
     await this.page.locator('label').filter({ hasText: /inpatient ward/i }).locator('span').first().click();
     await this.page.getByRole('button', { name: /confirm/i }).click();
     await expect(this.page).toHaveURL(/.*home/);
@@ -59,13 +53,6 @@ export class OpenMRS {
   async navigateToLoginPage() {
     await this.page.goto(`${O3_URL}`), delay(4000);
     await expect(this.page.locator('#username')).toBeVisible();
-  }
-
-  async enterLoginCredentials() {
-    await this.page.locator('#username').fill(`${process.env.OZONE_USERNAME}`);
-    await this.page.getByRole('button', { name: /continue/i }).click();
-    await this.page.locator('#password').fill(`${process.env.OZONE_PASSWORD}`);
-    await this.page.getByRole('button', { name: /sign in/i }).click();
   }
 
   async createPatient() {

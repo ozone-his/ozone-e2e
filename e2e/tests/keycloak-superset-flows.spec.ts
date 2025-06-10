@@ -17,9 +17,6 @@ test.beforeEach(async ({ page }) => {
 test('Logging out from Superset ends the session in Keycloak and logs out the user.', async ({ page }) => {
   // setup
   await superset.open();
-  await openmrs.enterLoginCredentials();
-  await expect(page).toHaveURL(/.*superset/);
-  await expect(page.locator('#app div.header')).toHaveText(/home/i);
   await keycloak.open();
   await keycloak.navigateToClients();
   await keycloak.selectSupersetId();
@@ -52,7 +49,6 @@ test('Superset role assigned to a user in Keycloak is applied upon login in Supe
 
   // verify
   await superset.open();
-  await openmrs.enterLoginCredentials();
   await superset.navigateToUsers();
   await page.locator('tr:has-text("jdoe") a[data-original-title="Show record"]').click();
   const roleText = await page.locator('th:has-text("Role") + td span').textContent();
