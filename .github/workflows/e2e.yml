@@ -1,42 +1,27 @@
-name: E2E Test Profile
+name: Ozone E2E Tests
 
 on:
-  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 1,3,5'
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
+  workflow_dispatch:
     inputs:
-      o3_url:
-        description: 'O3 URL'
+      environment:
+        description: 'Choose test environment'
         required: true
-      odoo_url:
-        description: 'Odoo URL'
-        required: false
-      senaite_url:
-        description: 'SENAITE URL'
-        required: false
-      superset_url:
-        description: 'Superset URL'
-        required: false
-      test_pro:
-        description: 'Running Ozone Pro?'
-        required: true
-        default: 'true'
+        default: 'dev'
         type: choice
         options:
-          - true
-          - false
-      test_profile:
-        description: 'Choose test profile'
-        required: true
-        default: 'ozone-pro'
-        type: choice
-        options:
-          - ozone-pro
-          - ozone-foss
-          - openmrs-distro-his
+          - dev
+          - qa
+          - demo
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -57,16 +42,102 @@ jobs:
       - name: Run E2E tests
         id: jobStatusPretty
         env:
-          O3_URL_DEV: '${{ github.event.inputs.o3_url }}'
-          ODOO_URL_DEV: '${{ github.event.inputs.odoo_url }}'
-          SENAITE_URL_DEV: '${{ github.event.inputs.senaite_url }}'
-          SUPERSET_URL_DEV: '${{ github.event.inputs.superset_url }}'
-          TEST_PRO: '${{ github.event.inputs.test_pro }}'
-          TEST_ENVIRONMENT: '${{ github.event.inputs.environment }}'
-          TEST_PROFILE: '${{ github.event.inputs.test_profile }}'
-
+          TEST_ENVIRONMENT: '${{ vars.TEST_ENVIRONMENT }}'
+          O3_URL_DEV: '${{ vars.O3_URL_DEV }}'
+          O3_URL_QA: '${{ vars.O3_URL_QA }}'
+          O3_URL_DEMO: '${{ vars.O3_URL_DEMO }}'
+          ERPNEXT_URL_DEV: '${{ vars.ERPNEXT_URL_DEV }}'
+          ERPNEXT_URL_QA: '${{ vars.ERPNEXT_URL_QA }}'
+          ERPNEXT_URL_DEMO: '${{ vars.ERPNEXT_URL_DEMO }}'
+          KEYCLOAK_URL_DEV: '${{ vars.KEYCLOAK_URL_DEV }}'
+          KEYCLOAK_URL_QA: '${{ vars.KEYCLOAK_URL_QA }}'
+          ODOO_URL_DEV: '${{ vars.ODOO_URL_DEV }}'
+          ODOO_URL_QA: '${{ vars.ODOO_URL_QA }}'
+          ODOO_URL_DEMO: '${{ vars.ODOO_URL_DEMO }}'
+          ORTHANC_URL_DEV: '${{ vars.ORTHANC_URL_DEV }}'
+          ORTHANC_URL_QA: '${{ vars.ORTHANC_URL_QA }}'
+          ORTHANC_URL_DEMO: '${{ vars.ORTHANC_URL_DEMO }}'
+          SENAITE_URL_DEV: '${{ vars.SENAITE_URL_DEV }}'
+          SENAITE_URL_QA: '${{ vars.SENAITE_URL_QA }}'
+          SENAITE_URL_DEMO: '${{ vars.SENAITE_URL_DEMO }}'
+          SUPERSET_URL_DEV: '${{ vars.SUPERSET_URL_DEV }}'
+          SUPERSET_URL_QA: '${{ vars.SUPERSET_URL_QA }}'
+          SUPERSET_URL_DEMO: '${{ vars.SUPERSET_URL_DEMO }}'
+          KEYCLOAK_URL_DEMO: '${{ vars.KEYCLOAK_URL_DEMO }}'
+          ERPNEXT_USERNAME: '${{ secrets.ERPNEXT_USERNAME }}'
+          ERPNEXT_PASSWORD: '${{ secrets.ERPNEXT_PASSWORD }}'
+          KEYCLOAK_USERNAME: '${{ secrets.KEYCLOAK_USERNAME }}'
+          KEYCLOAK_PASSWORD: '${{ secrets.KEYCLOAK_PASSWORD }}'
+          ODOO_PASSWORD: '${{ secrets.ODOO_PASSWORD }}'
+          ODOO_USERNAME: '${{ secrets.ODOO_USERNAME }}'
+          ORTHANC_USERNAME: '${{ secrets.ORTHANC_USERNAME }}'
+          ORTHANC_PASSWORD: '${{ secrets.ORTHANC_PASSWORD }}'
+          OZONE_USERNAME: '${{ secrets.OZONE_USERNAME }}'
+          OZONE_PASSWORD: '${{ secrets.OZONE_PASSWORD }}'
         run: |
-          npm run $TEST_PROFILE
+          npm run ozone-e2e
+
+        if: ${{ github.event_name != 'pull_request' }}
+          if [[ ${{ job.status }} == "success" ]]; then
+            jobStatusPretty="✅ Passing"
+          else
+            jobStatusPretty="❌ Failing"
+          fi
+          echo "jobStatusPretty=$jobStatusPretty" >> "$GITHUB_ENV"
+
+      - name: Notify Slack
+        if: ${{ github.event_name != 'pull_request' }}
+        id: slack
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "rich_text",
+                  "elements": [
+                    {
+                      "type": "rich_text_section",
+                      "elements": [
+                        {
+                          "type": "text",
+                          "text": "GitHub Actions report from "
+                        },
+                        {
+                          "type": "link",
+                          "url": "https://github.com/ozone-his/ozone-e2e",
+                          "text": "${{ github.repository }}",
+                          "style": {
+                            "bold": false
+                          }
+                        },
+                        {
+                          "type": "text",
+                          "text": ":\n"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "rich_text_quote",
+                      "elements": [
+                        {
+                          "type": "link",
+                          "url": "https://ozone-dev.mekomsolutions.net",
+                          "text": "Ozone Dev"
+                        },
+                        {
+                          "type": "text",
+                          "text": " server QA status: ${{ env.jobStatusPretty }}"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
       - name: Upload report
         uses: actions/upload-artifact@v4
