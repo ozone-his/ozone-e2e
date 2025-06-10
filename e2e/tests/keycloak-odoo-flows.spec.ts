@@ -161,7 +161,3 @@ test('Deleting a synced Odoo group deletes the corresponding Keycloak role.', as
   await keycloak.searchOdooRole();
   await expect(page.getByText(`Accounting / ${randomOdooGroupName.groupName}`)).not.toBeVisible();
 });
-
-test.afterEach(async ({ page }) => {
-  await page.close();
-});

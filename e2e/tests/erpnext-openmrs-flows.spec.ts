@@ -218,5 +218,4 @@ test('Ordering a drug for an OpenMRS patient within a visit creates the correspo
 test.afterEach(async ({ page }) => {
   await openmrs.voidPatient();
   await openmrs.logout();
-  await page.close();
 });

@@ -296,7 +296,5 @@ test(`Recording a patient's weight in OpenMRS on the second order creates the we
 
 test.afterEach(async ({ page }) => {
   await openmrs.voidPatient();
-  await openmrs.logout();
   await odoo.logout();
-  await page.close();
 });

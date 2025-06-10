@@ -404,8 +404,6 @@ export class OpenMRS {
     await this.page.getByLabel(/my account/i).click();
     await expect(this.page.getByRole('button', { name: /logout/i })).toBeVisible();
     await this.page.getByRole('button', { name: /logout/i }).click();
-    let keycloak = new Keycloak(this.page);
-    await keycloak.confirmLogout();
     await expect(this.page).toHaveURL(/.*login/);
   }
 }
