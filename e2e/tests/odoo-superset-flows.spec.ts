@@ -237,8 +237,5 @@ test(`A (synced) sale order line in Odoo generates an entry in Superset's sale_o
 
 test.afterEach(async ({ page }) => {
   await openmrs.voidPatient();
-  await openmrs.logout();
-  await superset.logout();
   await odoo.logout();
-  await page.close();
 });
