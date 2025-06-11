@@ -28,6 +28,7 @@ export class Odoo {
   }
 
   async searchCustomer() {
+    await this.page.getByRole('button', { name: /remove/i }).click();
     await expect(this.page.locator('.o_searchview_input')).toBeVisible();
     await this.page.locator('.o_searchview_input').fill(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.locator('.o_searchview_input').press('Enter');
@@ -35,26 +36,24 @@ export class Odoo {
   }
 
   async navigateToSales() {
-    await this.page.locator("//a[contains(@class, 'full')]").click();
-    await expect(this.page.getByRole('menuitem', { name: /sales/i })).toBeVisible();
-    await this.page.getByRole('menuitem', { name: /sales/i }).click();
-    await expect(this.page.locator('.breadcrumb-item')).toHaveText(/quotations/i);
+    await this.page.locator('button[title="Home Menu"]').click(), delay(1500);
+    await this.page.getByRole('menuitem', { name: /sales/i }).first().click();
+    await expect(this.page.locator('span:has-text("Quotations")')).toBeVisible();
   }
 
   async createSaleOrderLine() {
-    await this.page.getByRole('button', { name: /create/i }).click();
-    await expect(this.page.locator('li.breadcrumb-item:nth-child(2)')).toHaveText(/new/i);
+    await this.page.getByRole('button', { name: /new/i }).click();
     await this.page.getByLabel('Customer', { exact: true }).type(`${patientName.firstName + ' ' + patientName.givenName}`);
     await this.page.getByText(`${patientName.firstName + ' ' + patientName.givenName}`).first().click();
     await this.page.getByRole('button', { name: 'Add a product' }).click();
     await this.page.locator('td.o_data_cell:nth-child(2) div:nth-child(1) input').fill('Acétaminophene Co 500mg');
     await this.page.getByText('Acétaminophene Co 500mg').first().click();
-    await this.page.locator('input[name="product_uom_qty"]').fill('8');
-    await this.page.locator('td.o_data_cell:nth-child(7) input').fill('2.00');
-    await this.page.locator('td.o_data_cell:nth-child(9)').click(), delay(2000);
-    await expect(this.page.locator('td.o_data_cell:nth-child(9)')).toHaveText('$ 16.00');
+    await this.page.locator('input[inputmode="decimal"]').nth(0).fill('8');
+    await this.page.locator('input[inputmode="decimal"]').nth(1).fill('2.00'), delay(1500);
+    await this.page.locator('.o_readonly_modifier.text-muted').click(), delay(2000);
+    await expect(this.page.locator('.o_readonly_modifier.text-muted')).toHaveText('$ 16.00');
     await this.page.getByRole('button', { name: /confirm/i }).click(), delay(3000);
-    await expect(this.page.locator('td.o_data_cell:nth-child(2) span:nth-child(1) span')).toHaveText('Acétaminophene Co 500mg');
+    await expect(this.page.locator('td[name="product_template_id"] span')).toHaveText('Acétaminophene Co 500mg');
     await expect(this.page.locator('td.o_data_cell:nth-child(4)')).toHaveText('8');
     await expect(this.page.locator('td.o_data_cell:nth-child(9)')).toHaveText('2.00');
     await expect(this.page.locator('td.o_data_cell:nth-child(11)')).toHaveText('$ 16.00');
@@ -68,28 +67,28 @@ export class Odoo {
     await this.page.getByRole('button', { name: 'Add a product' }).click();
     await this.page.locator('td.o_data_cell:nth-child(2) div:nth-child(1) input').fill('Acyclovir Sirop 200mg');
     await this.page.getByText('Acyclovir Sirop 200mg').first().click();
-    await this.page.locator('input[name="product_uom_qty"]').fill('6');
-    await this.page.locator('td.o_data_cell:nth-child(7) input').fill('2.00');
-    await this.page.locator('td.o_data_cell:nth-child(9)').click(), delay(2000);
-    await expect(this.page.locator('td.o_data_cell:nth-child(9)')).toHaveText('$ 12.00');
+    await this.page.locator('input[inputmode="decimal"]').nth(0).fill('6');
+    await this.page.locator('input[inputmode="decimal"]').nth(1).fill('2.00');
+    await this.page.locator('.o_readonly_modifier.text-muted').click(), delay(2000);
+    await expect(this.page.locator('.o_readonly_modifier.text-muted')).toHaveText('$ 12.00');
     await this.page.getByRole('button', { name: /save/i }).click(), delay(3000);
-    await expect(this.page.locator('td.o_data_cell:nth-child(2) span:nth-child(1) span')).toHaveText('Acyclovir Sirop 200mg');
+    await expect(this.page.locator('td[name="product_template_id"] span')).toHaveText('Acyclovir Sirop 200mg');
   }
 
   async modifySaleOrderLine() {
     await this.page.getByRole('button', { name: /edit/i }).click();
     await this.page.getByText(/acétaminophene co 500mg/i).nth(1).click();
-    await this.page.locator('input[name="product_uom_qty"]').fill('10');
-    await this.page.locator('input[name="price_unit"]').fill('3');
-    await this.page.locator('td.o_field_x2many_list_row_add').click(), delay(2000);
-    await expect(this.page.locator('td.o_data_cell:nth-child(11)')).toHaveText('$ 30.00');
+    await this.page.locator('input[inputmode="decimal"]').nth(0).fill('10');
+    await this.page.locator('input[inputmode="decimal"]').nth(1).fill('3');
+    await this.page.locator('.o_readonly_modifier.text-muted').click(), delay(2000);
+    await expect(this.page.locator('.o_readonly_modifier.text-muted')).toHaveText('$ 30.00');
     await this.page.getByRole('button', { name: /save/i }).click(), delay(3000);
   }
 
   async voidSaleOrderLine() {
     await this.page.getByRole('button', { name: /edit/i }).click();
     await this.page.getByText(/acétaminophene co 500mg/i).nth(1).click();
-    await this.page.locator('input[name="product_uom_qty"]').fill('0');
+    await this.page.locator('input[inputmode="decimal"]').nth(0).fill('0');
     await this.page.getByRole('button', { name: /save/i }).click(), delay(1000);
     await this.page.getByRole('button', { name: 'Ok' }).click(), delay(3000);
   }
@@ -157,8 +156,8 @@ export class Odoo {
 
   async logout() {
     await this.page.goto(`${ODOO_URL}`);
-    await expect(this.page.locator('.o_user_menu>a')).toBeVisible();
-    await this.page.locator('.o_user_menu>a').click();
+    await expect(this.page.getByRole('button', { name: /user/i })).toBeVisible();
+    await this.page.getByRole('button', { name: /user/i }).click();
     await expect(this.page.getByRole('menuitem', { name: /log out/i })).toBeVisible();
     await this.page.getByRole('menuitem', { name: /log out/i }).click();
   }

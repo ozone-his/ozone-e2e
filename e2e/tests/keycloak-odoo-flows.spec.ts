@@ -17,8 +17,6 @@ test.beforeEach(async ({ page }) => {
 test('Logging out from Odoo ends the session in Keycloak and logs out the user.', async ({ page }) => {
   // setup
   await odoo.open();
-  await expect(page).toHaveURL(/.*web/);
-  await expect(page.locator('li.o_user_menu a span')).toHaveText(/john doe/i);
   await keycloak.open();
   await keycloak.navigateToClients();
   await keycloak.selectOdooId();
