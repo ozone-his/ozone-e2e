@@ -76,9 +76,8 @@ jobs:
           OZONE_PASSWORD: '${{ secrets.OZONE_PASSWORD }}'
         run: |
           npm run ozone-e2e
-
-        if: ${{ github.event_name != 'pull_request' }}
-          if [[ ${{ job.status }} == "success" ]]; then
+          exit_code=$?
+          if [[ $exit_code -eq 0 ]]; then
             jobStatusPretty="✅ Passing"
           else
             jobStatusPretty="❌ Failing"
@@ -86,7 +85,7 @@ jobs:
           echo "jobStatusPretty=$jobStatusPretty" >> "$GITHUB_ENV"
 
       - name: Notify Slack
-        if: ${{ github.event_name != 'pull_request' }}
+        if: ${{ github.event_name == 'pull_request' }}
         id: slack
         uses: slackapi/slack-github-action@v1.24.0
         with:
