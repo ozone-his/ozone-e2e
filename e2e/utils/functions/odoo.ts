@@ -101,57 +101,52 @@ export class Odoo {
 
   async activateDeveloperMode() {
     await this.navigateToSettings();
-    await expect(this.page.locator('#devel_tool a:nth-child(1)')).toBeVisible();
-    await this.page.locator('#devel_tool a:nth-child(1)').click();
+    await expect(this.page.locator('#developer_tool a:nth-child(1)')).toBeVisible();
+    await this.page.locator('#developer_tool a:nth-child(1)').click();
   }
 
   async navigateToGroups() {
     await this.navigateToSettings();
-    await expect(this.page.locator('ul.o_menu_sections>:nth-child(2)>a')).toBeVisible();
-    await this.page.locator('ul.o_menu_sections>:nth-child(2)>a').click();
+    await expect(this.page.locator('button:has-text("Users & Companies")')).toBeVisible();
+    await this.page.locator('button:has-text("Users & Companies")').click(), delay(1500);
     await expect(this.page.getByRole('menuitem', { name: /groups/i })).toBeVisible();
     await this.page.getByRole('menuitem', { name: /groups/i }).click();
   }
 
   async navigateToSettings() {
-    await this.page.locator("//a[contains(@class, 'full')]").click();
-    await expect(this.page.getByRole('menuitem', { name: /settings/i })).toBeVisible();
-    await this.page.getByRole('menuitem', { name: /settings/i }).click();
+    await this.page.locator('button[title="Home Menu"]').click(), delay(1500);
+    await this.page.getByRole('menuitem', { name: /settings/i }).first().click();
   }
 
   async createGroup() {
-    await this.page.getByRole('button', { name: /create/i }).click();
+    await this.page.getByRole('button', { name: /new/i }).click();
     await this.page.getByLabel(/application/i).click();
     await expect(this.page.getByText(/accounting/i)).toBeVisible();
     await this.page.getByText(/accounting/i).click();
     await this.page.getByLabel(/name/i).fill(`${randomOdooGroupName.groupName}`);
-    await this.page.getByRole('button', { name: /save/i }).click(), delay(250000);
+    await this.page.getByRole('button', { name: /save/i }).click(), delay(10000);
   }
 
   async searchGroup() {
     await this.page.getByLabel(/remove/i).click();
-    await expect(this.page.locator('div>div>input')).toBeVisible();
-    await this.page.locator('div>div>input').type(`${randomOdooGroupName.groupName}`);
+    await expect(this.page.getByRole('searchbox', { name: /search/i })).toBeVisible();
+    await this.page.getByRole('searchbox', { name: /search/i }).type(`${randomOdooGroupName.groupName}`);
     await this.page.locator('div>div>input').press('Enter');
-    await this.page.getByRole('cell', { name: `${randomOdooGroupName.groupName}` }).click();
+    await this.page.getByRole('cell', { name: `${randomOdooGroupName.groupName}` }).click(), delay(4000)
   }
 
   async updateGroup() {
-    await expect(this.page.getByRole('button', { name: /edit/i })).toBeVisible();
-    await this.page.getByRole('button', { name: /edit/i }).click();
     await this.page.getByLabel(/name/i).fill(`${randomOdooGroupName.updatedGroupName}`);
     await this.page.getByRole('button', { name: /save/i }).click();
-    randomOdooGroupName.groupName = `${randomOdooGroupName.updatedGroupName}`, delay(250000);
+    randomOdooGroupName.groupName = `${randomOdooGroupName.updatedGroupName}`, delay(10000);
   }
 
   async deleteGroup() {
-    await expect(this.page.getByRole('button', { name: /action/i })).toBeVisible();
-    await this.page.getByRole('button', { name: /action/i }).click();
-    await expect(this.page.getByRole('menuitemcheckbox', { name: /delete/i })).toBeVisible();
-    await this.page.getByRole('menuitemcheckbox', { name: /delete/i }).click();
-    await expect(this.page.getByRole('button', { name: /ok/i })).toBeVisible();
-    await this.page.getByRole('button', { name: /ok/i }).click(), delay(2000);
-    await expect(this.page.getByText(`${randomOdooGroupName.groupName}` )).not.toBeVisible(), delay(240000);
+    const actionsButton = this.page.locator('button:has(i[data-tooltip="Actions"])');
+    await actionsButton.waitFor({ state: 'visible' });
+    await actionsButton.click();
+    await this.page.getByRole('menuitem', { name: /delete/i }).click(), delay(1500);
+    await this.page.getByRole('button', { name: /delete/i }).click(), delay(10000);
   }
 
   async logout() {

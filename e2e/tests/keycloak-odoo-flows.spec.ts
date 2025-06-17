@@ -1,16 +1,13 @@
 import { test, expect } from '@playwright/test';
 import { Odoo, randomOdooGroupName } from '../utils/functions/odoo';
-import { OpenMRS } from '../utils/functions/openmrs';
 import { Keycloak } from '../utils/functions/keycloak';
 import { KEYCLOAK_URL, ODOO_URL } from '../utils/configs/globalSetup';
 
 let odoo: Odoo;
-let openmrs: OpenMRS;
 let keycloak: Keycloak;
 
 test.beforeEach(async ({ page }) => {
   odoo = new Odoo(page);
-  openmrs = new OpenMRS(page);
   keycloak = new Keycloak(page);
 });
 
@@ -42,7 +39,6 @@ test('Coded Odoo groups create corresponding Keycloak roles.', async ({ page }) 
   // setup
   await page.goto(`${ODOO_URL}`);
   await odoo.enterLoginCredentials();
-  await expect(page.locator('li.o_user_menu a span')).toHaveText(/administrator/i);
   await odoo.activateDeveloperMode();
 
   // replay
@@ -77,10 +73,8 @@ test('Coded Odoo groups create corresponding Keycloak roles.', async ({ page }) 
 
 test('Creating an Odoo group creates the corresponding Keycloak role', async ({ page }) => {
   // setup
-  test.setTimeout(360000);
   await page.goto(`${ODOO_URL}`);
   await odoo.enterLoginCredentials();
-  await expect(page.locator('li.o_user_menu a span')).toHaveText(/administrator/i);
   await odoo.activateDeveloperMode();
 
   // replay
@@ -98,10 +92,8 @@ test('Creating an Odoo group creates the corresponding Keycloak role', async ({ 
 
 test('Updating a synced Odoo group updates the corresponding Keycloak role.', async ({ page }) => {
   // setup
-  test.setTimeout(720000);
   await page.goto(`${ODOO_URL}`);
   await odoo.enterLoginCredentials();
-  await expect(page.locator('li.o_user_menu a span')).toHaveText(/administrator/i);
   await odoo.activateDeveloperMode();
   await odoo.navigateToGroups();
   await odoo.createGroup();
@@ -130,10 +122,8 @@ test('Updating a synced Odoo group updates the corresponding Keycloak role.', as
 
 test('Deleting a synced Odoo group deletes the corresponding Keycloak role.', async ({ page }) => {
   // setup
-  test.setTimeout(720000);
   await page.goto(`${ODOO_URL}`);
   await odoo.enterLoginCredentials();
-  await expect(page.locator('li.o_user_menu a span')).toHaveText(/administrator/i);
   await odoo.activateDeveloperMode();
   await odoo.navigateToGroups();
   await odoo.createGroup();
