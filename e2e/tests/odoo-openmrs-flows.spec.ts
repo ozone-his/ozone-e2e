@@ -27,7 +27,7 @@ test('Ordering a lab test for an OpenMRS patient creates the corresponding Odoo 
   await odoo.searchCustomer();
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(4)')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Quotation');
-  await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(7) span')).toHaveText('$ 27.50');
+  await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(7) span')).toHaveText('$ 31.63');
 });
 
 test('Editing the details of an OpenMRS patient with a synced lab order edits the corresponding Odoo customer details.', async ({ page }) => {
@@ -72,7 +72,7 @@ test('Ordering a drug for an OpenMRS patient creates the corresponding Odoo cust
   await odoo.searchCustomer();
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(4)')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Quotation');
-  await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(7) span')).toHaveText('$ 14.88');
+  await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(7) span')).toHaveText('$ 17.11');
 });
 
 test('Editing the details of an OpenMRS patient with a synced drug order edits the corresponding Odoo customer details.', async ({ page }) => {
@@ -119,7 +119,7 @@ test('Revising details of a synced OpenMRS drug order modifies the corresponding
   const drugOrderItem = await page.locator('table tbody td.o_data_cell:nth-child(3) span');
   await expect(drugOrderItem).toContainText('4.0 Tablet');
   await expect(drugOrderItem).toContainText('Twice daily - 5 day');
-  await expect(page.locator('td.o_data_cell:nth-child(9) span')).toHaveText('$ 14.88');
+  await expect(page.locator('td[name="price_subtotal"]')).toHaveText('$ 14.88');
 
   // replay
   await page.goto(`${O3_URL}`);
@@ -133,7 +133,7 @@ test('Revising details of a synced OpenMRS drug order modifies the corresponding
   await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
   await expect(drugOrderItem).toContainText('8.0 Tablet');
   await expect(drugOrderItem).toContainText('Thrice daily - 6 day');
-  await expect(page.locator('td.o_data_cell:nth-child(9) span')).toHaveText('$ 9.92');
+  await expect(page.locator('td[name="price_subtotal"]')).toHaveText('$ 9.92');
 });
 
 test('Discontinuing a synced OpenMRS drug order for an Odoo customer with a single quotation line removes the corresponding quotation.', async ({ page }) => {
@@ -237,7 +237,7 @@ test('Discontinuing a synced OpenMRS lab order for an Odoo customer with a singl
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Cancelled');
 });
 
-test('Ordering a lab test for an OpenMRS patient with weight creates the weight on the corresponding Odoo quotation.', async ({ page }) => {
+test('Ordering a drug for an OpenMRS patient with weight creates the weight on the corresponding Odoo quotation.', async ({ page }) => {
   // setup
   await openmrs.recordWeight();
 
@@ -255,7 +255,7 @@ test('Ordering a lab test for an OpenMRS patient with weight creates the weight 
   await odoo.searchCustomer();
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(4)')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Quotation');
-  await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(7) span')).toHaveText('$ 14.88');
+  await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(7) span')).toHaveText('$ 17.11');
   await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
   await expect(page.locator('.o_group :nth-child(1) tbody :nth-child(3) :nth-child(2)>span')).toContainText('75');
 });
