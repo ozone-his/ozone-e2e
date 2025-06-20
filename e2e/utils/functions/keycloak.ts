@@ -36,6 +36,13 @@ export class Keycloak {
     await this.page.getByRole('button', { name: /sign in/i }).click();
   }
 
+  async enterUserCredentials() {
+    await this.page.locator('#username').fill(`${user.userName}`);
+    await this.page.getByRole('button', { name: /continue/i }).click();
+    await this.page.locator('#password').fill(`${user.password}`);
+    await this.page.getByRole('button', { name: /sign in/i }).click();
+  }
+
   async createRole() {
     await this.page.getByTestId('create-role').click();
     await this.page.getByLabel('Role name').fill(`${randomKeycloakRoleName.roleName}`);
@@ -189,13 +196,18 @@ export class Keycloak {
   async assignRolesToUser() {
     await this.page.getByRole('textbox', { name: /search/i }).fill('Alpha');
     await this.page.getByRole('textbox', { name: /search/i }).press('Enter');
-    await this.page.getByRole('checkbox', { name: /select row/i }).check();
+    await this.page.getByRole('checkbox', { name: /select row/i }).first().check();
     await this.page.getByTestId('assign').click(), delay(5000)
     await this.navigateToRoles();
     await this.page.getByRole('textbox', { name: /search/i }).fill('Application: Has Super User Privileges');
     await this.page.getByRole('textbox', { name: /search/i }).press('Enter');
-    await this.page.getByRole('checkbox', { name: /select row/i }).check();
-    await this.page.getByTestId('assign').click();
+    await this.page.getByRole('checkbox', { name: /select row/i }).first().check();
+    await this.page.getByTestId('assign').click(), delay(5000);
+    await this.navigateToRoles();
+    await this.page.getByRole('textbox', { name: /search/i }).fill('User types / Internal User');
+    await this.page.getByRole('textbox', { name: /search/i }).press('Enter');
+    await this.page.getByRole('checkbox', { name: /select row/i }).first().check();
+    await this.page.getByTestId('assign').click(), delay(5000);
     await expect(this.page.getByText(/user role mapping successfully updated/i)).toBeVisible();
   }
 

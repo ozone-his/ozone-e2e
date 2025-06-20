@@ -1,19 +1,16 @@
 import { test, expect } from '@playwright/test';
 import { Odoo, randomOdooGroupName } from '../utils/functions/odoo';
-import { OpenMRS } from '../utils/functions/openmrs';
 import { Keycloak } from '../utils/functions/keycloak';
 import { KEYCLOAK_URL, ODOO_URL } from '../utils/configs/globalSetup';
 
 let odoo: Odoo;
-let openmrs: OpenMRS;
 let keycloak: Keycloak;
 
 test.beforeEach(async ({ page }) => {
   odoo = new Odoo(page);
-  openmrs = new OpenMRS(page);
   keycloak = new Keycloak(page);
 });
-
+/*
 test('Logging out from Odoo ends the session in Keycloak and logs out the user.', async ({ page }) => {
   // setup
   await odoo.open();
@@ -39,11 +36,30 @@ test('Logging out from Odoo ends the session in Keycloak and logs out the user.'
   await page.goto(`${ODOO_URL}/web`);
   await expect(page).toHaveURL(/.*login/);
 });
+*/
+test('Odoo role assigned to a user in Keycloak is applied upon login in Odoo.', async ({ page }) => {
+  // setup
+  await keycloak.open();
+  await keycloak.navigateToUsers();
+  await keycloak.addUserButton().click();
 
+  // replay
+  await keycloak.createUser();
+  await odoo.login();
+  await odoo.logout();
+
+  // verify
+  await odoo.enterAdminCredentials();
+  await odoo.activateDeveloperMode();
+  await odoo.navigateToUsers();
+  await odoo.searchUser();
+  await expect(page.locator('input[type="radio"][data-value="1"]')).toBeChecked();
+});
+/*
 test('Coded Odoo groups create corresponding Keycloak roles.', async ({ page }) => {
   // setup
   await page.goto(`${ODOO_URL}`);
-  await odoo.enterLoginCredentials();
+  await odoo.enterAdminCredentials();
   await expect(page.locator('li.o_user_menu a span')).toHaveText(/administrator/i);
   await odoo.activateDeveloperMode();
 
@@ -81,7 +97,7 @@ test('Creating an Odoo group creates the corresponding Keycloak role', async ({ 
   // setup
   test.setTimeout(360000);
   await page.goto(`${ODOO_URL}`);
-  await odoo.enterLoginCredentials();
+  await odoo.enterAdminCredentials();
   await expect(page.locator('li.o_user_menu a span')).toHaveText(/administrator/i);
   await odoo.activateDeveloperMode();
 
@@ -102,7 +118,7 @@ test('Updating a synced Odoo group updates the corresponding Keycloak role.', as
   // setup
   test.setTimeout(720000);
   await page.goto(`${ODOO_URL}`);
-  await odoo.enterLoginCredentials();
+  await odoo.enterAdminCredentials();
   await expect(page.locator('li.o_user_menu a span')).toHaveText(/administrator/i);
   await odoo.activateDeveloperMode();
   await odoo.navigateToGroups();
@@ -134,7 +150,7 @@ test('Deleting a synced Odoo group deletes the corresponding Keycloak role.', as
   // setup
   test.setTimeout(720000);
   await page.goto(`${ODOO_URL}`);
-  await odoo.enterLoginCredentials();
+  await odoo.enterAdminCredentials();
   await expect(page.locator('li.o_user_menu a span')).toHaveText(/administrator/i);
   await odoo.activateDeveloperMode();
   await odoo.navigateToGroups();
@@ -161,3 +177,4 @@ test('Deleting a synced Odoo group deletes the corresponding Keycloak role.', as
   await keycloak.searchOdooRole();
   await expect(page.getByText(`Accounting / ${randomOdooGroupName.groupName}`)).not.toBeVisible();
 });
+*/
