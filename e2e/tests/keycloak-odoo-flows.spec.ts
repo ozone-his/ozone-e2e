@@ -10,7 +10,7 @@ test.beforeEach(async ({ page }) => {
   odoo = new Odoo(page);
   keycloak = new Keycloak(page);
 });
-/*
+
 test('Logging out from Odoo ends the session in Keycloak and logs out the user.', async ({ page }) => {
   // setup
   await odoo.open();
@@ -36,7 +36,7 @@ test('Logging out from Odoo ends the session in Keycloak and logs out the user.'
   await page.goto(`${ODOO_URL}/web`);
   await expect(page).toHaveURL(/.*login/);
 });
-*/
+
 test('Odoo role assigned to a user in Keycloak is applied upon login in Odoo.', async ({ page }) => {
   // setup
   await keycloak.open();
@@ -55,7 +55,7 @@ test('Odoo role assigned to a user in Keycloak is applied upon login in Odoo.', 
   await odoo.searchUser();
   await expect(page.locator('input[type="radio"][data-value="1"]')).toBeChecked();
 });
-/*
+
 test('Coded Odoo groups create corresponding Keycloak roles.', async ({ page }) => {
   // setup
   await page.goto(`${ODOO_URL}`);
@@ -177,4 +177,3 @@ test('Deleting a synced Odoo group deletes the corresponding Keycloak role.', as
   await keycloak.searchOdooRole();
   await expect(page.getByText(`Accounting / ${randomOdooGroupName.groupName}`)).not.toBeVisible();
 });
-*/
