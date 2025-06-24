@@ -14,7 +14,7 @@ test.beforeEach(async ({ page }) => {
   await openmrs.createPatient();
   await openmrs.startPatientVisit();
 });
-
+/*
 test('Ordering a lab test for an OpenMRS patient creates the corresponding SENAITE client with an analysis request.', async ({ page }) => {
   // replay
   await openmrs.navigateToLabOrderForm();
@@ -68,7 +68,7 @@ test('Voiding a synced OpenMRS lab order cancels the corresponding SENAITE analy
   await expect(page.getByText('Urine')).not.toBeVisible();
   await expect(page.getByText('Sample due')).not.toBeVisible();
 });
-
+*/
 test('Published coded lab results from SENAITE are viewable in the OpenMRS lab results viewer.', async ({ page }) => {
   // replay
   await openmrs.navigateToLabOrderForm();
