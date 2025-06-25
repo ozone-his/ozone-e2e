@@ -39,7 +39,7 @@ test(`Creating an Odoo sale order line generates an entry in Superset's sale_ord
   await odoo.navigateToSales();
   await odoo.createSaleOrderLine();
   const salesOrderId = await page.locator('.oe_title h1:nth-child(1) span').textContent();
-  await expect(page.locator('table tbody td.o_data_cell:nth-child(2) span:nth-child(1) span')).toHaveText('Acétaminophene Co 500mg');
+  await expect(page.locator('td[name="product_template_id"] span')).toHaveText('Acétaminophene Co 500mg');
 
   // verify
   await page.goto(`${SUPERSET_URL}/sqllab`);
@@ -72,7 +72,7 @@ test(`Revising an Odoo sale order line updates the corresponding entry in Supers
   await odoo.navigateToSales();
   await odoo.createSaleOrderLine();
   const salesOrderId = await page.locator('.oe_title h1:nth-child(1) span').textContent();
-  await expect(page.locator('table tbody td.o_data_cell:nth-child(2) span:nth-child(1) span')).toHaveText('Acétaminophene Co 500mg');
+  await expect(page.locator('td[name="product_template_id"] span')).toHaveText('Acétaminophene Co 500mg');
   await superset.open();
   await superset.selectDBSchema();
   await superset.clearSQLEditor();
@@ -114,7 +114,7 @@ test(`Voiding an Odoo sale order line updates the corresponding entry in Superse
   await odoo.navigateToSales();
   await odoo.createSaleOrderLine();
   const salesOrderId = await page.locator('.oe_title h1:nth-child(1) span').textContent();
-  await expect(page.locator('table tbody td.o_data_cell:nth-child(2) span:nth-child(1) span')).toHaveText('Acétaminophene Co 500mg');
+  await expect(page.locator('td[name="product_template_id"] span')).toHaveText('Acétaminophene Co 500mg');
   await superset.open();
   await superset.selectDBSchema();
   await superset.clearSQLEditor();
@@ -156,7 +156,7 @@ test(`Deleting an Odoo quotation line deletes the corresponding entry in Superse
   await odoo.navigateToSales();
   await odoo.createQuotationLine();
   const salesOrderId = await page.locator('.oe_title h1:nth-child(1) span').textContent();
-  await expect(page.locator('table tbody td.o_data_cell:nth-child(2) span:nth-child(1) span')).toHaveText(/acyclovir Sirop 200mg/i);
+  await expect(page.locator('td[name="product_template_id"] span')).toHaveText(/acyclovir Sirop 200mg/i);
   await superset.open();
   await superset.selectDBSchema();
   await superset.clearSQLEditor();
