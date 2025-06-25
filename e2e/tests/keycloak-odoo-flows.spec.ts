@@ -35,10 +35,29 @@ test('Logging out from Odoo ends the session in Keycloak and logs out the user.'
   await expect(page).toHaveURL(/.*login/);
 });
 
+test('Odoo role assigned to a user in Keycloak is applied upon login in Odoo.', async ({ page }) => {
+  // setup
+  await keycloak.open();
+  await keycloak.navigateToUsers();
+  await keycloak.addUserButton().click();
+
+  // replay
+  await keycloak.createUser();
+  await odoo.login();
+  await odoo.logout();
+
+  // verify
+  await odoo.enterAdminCredentials();
+  await odoo.activateDeveloperMode();
+  await odoo.navigateToUsers();
+  await odoo.searchUser();
+  await expect(page.locator('input[type="radio"][data-value="1"]')).toBeChecked();
+});
+
 test('Coded Odoo groups create corresponding Keycloak roles.', async ({ page }) => {
   // setup
   await page.goto(`${ODOO_URL}`);
-  await odoo.enterLoginCredentials();
+  await odoo.enterAdminCredentials();
   await odoo.activateDeveloperMode();
 
   // replay
@@ -74,7 +93,7 @@ test('Coded Odoo groups create corresponding Keycloak roles.', async ({ page }) 
 test('Creating an Odoo group creates the corresponding Keycloak role', async ({ page }) => {
   // setup
   await page.goto(`${ODOO_URL}`);
-  await odoo.enterLoginCredentials();
+  await odoo.enterAdminCredentials();
   await odoo.activateDeveloperMode();
 
   // replay
@@ -93,7 +112,7 @@ test('Creating an Odoo group creates the corresponding Keycloak role', async ({ 
 test('Updating a synced Odoo group updates the corresponding Keycloak role.', async ({ page }) => {
   // setup
   await page.goto(`${ODOO_URL}`);
-  await odoo.enterLoginCredentials();
+  await odoo.enterAdminCredentials();
   await odoo.activateDeveloperMode();
   await odoo.navigateToGroups();
   await odoo.createGroup();
@@ -123,7 +142,7 @@ test('Updating a synced Odoo group updates the corresponding Keycloak role.', as
 test('Deleting a synced Odoo group deletes the corresponding Keycloak role.', async ({ page }) => {
   // setup
   await page.goto(`${ODOO_URL}`);
-  await odoo.enterLoginCredentials();
+  await odoo.enterAdminCredentials();
   await odoo.activateDeveloperMode();
   await odoo.navigateToGroups();
   await odoo.createGroup();

@@ -21,7 +21,6 @@
     "registry": "https://nexus.mekomsolutions.net/repository/npm-public/"
   },
   "keywords": [],
-  "author": "",
   "devDependencies": {
     "@playwright/test": "^1.51.1",
     "@types/node": "^22.10.2",
