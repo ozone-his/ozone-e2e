@@ -194,17 +194,17 @@ export class Keycloak {
   }
 
   async assignRolesToUser() {
-    await this.page.getByRole('textbox', { name: /search/i }).fill('Alpha');
+    await this.page.locator('input[placeholder="Search by role name"]').fill('Alpha');
     await this.page.getByRole('textbox', { name: /search/i }).press('Enter');
     await this.page.getByRole('checkbox', { name: /select row/i }).first().check();
     await this.page.getByTestId('assign').click(), delay(5000)
     await this.navigateToRoles();
-    await this.page.getByRole('textbox', { name: /search/i }).fill('Organizational: Doctor');
+    await this.page.locator('input[placeholder="Search by role name"]').fill('Organizational: Doctor');
     await this.page.getByRole('textbox', { name: /search/i }).press('Enter');
     await this.page.getByRole('checkbox', { name: /select row/i }).first().check();
     await this.page.getByTestId('assign').click(), delay(5000);
     await this.navigateToRoles();
-    await this.page.getByRole('textbox', { name: /search/i }).fill('User types / Internal User');
+    await this.page.locator('input[placeholder="Search by role name"]').fill('User types / Internal User');
     await this.page.getByRole('textbox', { name: /search/i }).press('Enter');
     await this.page.getByRole('checkbox', { name: /select row/i }).first().check();
     await this.page.getByTestId('assign').click(), delay(5000);
