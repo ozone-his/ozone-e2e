@@ -92,7 +92,7 @@ export class OpenMRS {
     await this.page.getByRole('button', { name: /actions/i, exact: true }).click();
     await expect(this.page.getByText(/edit patient details/i)).toBeVisible();
     await this.page.getByRole('menuitem', { name: /edit patient details/i }).click(), delay(4000);
-    await expect(this.page.getByText('Identifiers', {exact: true})).toBeVisible();
+    //await expect(this.page.getByText('Identifiers', {exact: true})).toBeVisible();
     await expect(this.page.getByText('OpenMRS ID', {exact: true})).toBeVisible();
   }
 

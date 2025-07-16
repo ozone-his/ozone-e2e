@@ -199,7 +199,7 @@ export class Keycloak {
     await this.page.getByRole('checkbox', { name: /select row/i }).first().check();
     await this.page.getByTestId('assign').click(), delay(5000)
     await this.navigateToRoles();
-    await this.page.getByRole('textbox', { name: /search/i }).fill('Application: Has Super User Privileges');
+    await this.page.getByRole('textbox', { name: /search/i }).fill('Organizational: Doctor');
     await this.page.getByRole('textbox', { name: /search/i }).press('Enter');
     await this.page.getByRole('checkbox', { name: /select row/i }).first().check();
     await this.page.getByTestId('assign').click(), delay(5000);
