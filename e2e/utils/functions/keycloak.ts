@@ -195,17 +195,17 @@ export class Keycloak {
 
   async assignRolesToUser() {
     await this.page.locator('input[placeholder="Search by role name"]').fill('Alpha');
-    await this.page.getByRole('textbox', { name: /search/i }).press('Enter');
+    await this.page.locator('input[placeholder="Search by role name"]').press('Enter');
     await this.page.getByRole('checkbox', { name: /select row/i }).first().check();
     await this.page.getByTestId('assign').click(), delay(5000)
     await this.navigateToRoles();
     await this.page.locator('input[placeholder="Search by role name"]').fill('Organizational: Doctor');
-    await this.page.getByRole('textbox', { name: /search/i }).press('Enter');
+    await this.page.locator('input[placeholder="Search by role name"]').press('Enter');
     await this.page.getByRole('checkbox', { name: /select row/i }).first().check();
     await this.page.getByTestId('assign').click(), delay(5000);
     await this.navigateToRoles();
     await this.page.locator('input[placeholder="Search by role name"]').fill('User types / Internal User');
-    await this.page.getByRole('textbox', { name: /search/i }).press('Enter');
+        await this.page.locator('input[placeholder="Search by role name"]').press('Enter');
     await this.page.getByRole('checkbox', { name: /select row/i }).first().check();
     await this.page.getByTestId('assign').click(), delay(5000);
     await expect(this.page.getByText(/user role mapping successfully updated/i)).toBeVisible();
