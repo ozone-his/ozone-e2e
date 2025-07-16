@@ -3,17 +3,25 @@ import { O3_URL, ODOO_URL, SUPERSET_URL } from '../utils/configs/globalSetup';
 import { Odoo } from '../utils/functions/odoo';
 import { Superset } from '../utils/functions/superset';
 import { OpenMRS, patientName } from '../utils/functions/openmrs';
+import { Keycloak } from '../utils/functions/keycloak';
 
 let odoo: Odoo;
 let openmrs: OpenMRS;
 let superset: Superset;
+let keycloak: Keycloak;
 
 test.beforeEach(async ({ page }) => {
   openmrs = new OpenMRS(page);
   odoo = new Odoo(page);
+  keycloak = new Keycloak(page);
   superset = new Superset(page);
 
-  await openmrs.login();
+  await keycloak.open();
+  await keycloak.navigateToUsers();
+  await keycloak.addUserButton().click();
+  await keycloak.createUser();
+  await openmrs.navigateToLoginPage();
+  await openmrs.open();
   await openmrs.createPatient();
   await openmrs.startPatientVisit();
 });
@@ -235,7 +243,11 @@ test(`A (synced) sale order line in Odoo generates an entry in Superset's sale_o
   await expect(unitPrice).toBe(24);
 });
 
-test.afterEach(async ({ page }) => {
+test.afterEach(async ({ browser }) => {
   await openmrs.voidPatient();
   await odoo.logout();
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  const keycloak = new Keycloak(page);
+  await keycloak.deleteUser();
 });

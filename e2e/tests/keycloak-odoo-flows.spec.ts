@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { Odoo, randomOdooGroupName } from '../utils/functions/odoo';
-import { Keycloak } from '../utils/functions/keycloak';
+import { Keycloak, user } from '../utils/functions/keycloak';
 import { KEYCLOAK_URL, ODOO_URL } from '../utils/configs/globalSetup';
 
 let odoo: Odoo;
@@ -11,16 +11,26 @@ test.beforeEach(async ({ page }) => {
   keycloak = new Keycloak(page);
 });
 
+test.beforeEach(async ({ page }) => {
+  odoo = new Odoo(page);
+  keycloak = new Keycloak(page);
+
+  await keycloak.open();
+  await keycloak.navigateToUsers();
+  await keycloak.addUserButton().click();
+  await keycloak.createUser();
+});
+
 test('Logging out from Odoo ends the session in Keycloak and logs out the user.', async ({ page }) => {
   // setup
-  await odoo.open();
+  await odoo.login();
   await expect(page).toHaveURL(/.*web/);
-  await expect(page.locator('li.o_user_menu a span')).toHaveText(/john doe/i);
+  await expect(page.locator('li.o_user_menu a span')).toHaveText(`${user.firstName + ' ' + user.lastName}`);
   await keycloak.open();
   await keycloak.navigateToClients();
   await keycloak.selectOdooId();
   await keycloak.selectSessions();
-  await expect(page.locator('td:nth-child(1) a').nth(0)).toHaveText(/jdoe/i);
+  await expect(page.locator('td:nth-child(1) a').nth(0)).toHaveText(`${user.userName}`);
 
   // replay
   await odoo.logout();
@@ -39,18 +49,14 @@ test('Logging out from Odoo ends the session in Keycloak and logs out the user.'
 
 test('Odoo role assigned to a user in Keycloak is applied upon login in Odoo.', async ({ page }) => {
   // setup
-  await keycloak.open();
-  await keycloak.navigateToUsers();
-  await keycloak.addUserButton().click();
+  await page.goto(`${ODOO_URL}`);
+  await odoo.enterAdminCredentials();
 
   // replay
-  await keycloak.createUser();
-  await odoo.login();
-  await odoo.logout();
+  await odoo.activateDeveloperMode();
 
   // verify
-  await odoo.enterAdminCredentials();
-  await odoo.activateDeveloperMode();
+
   await odoo.navigateToUsers();
   await odoo.searchUser();
   await expect(page.locator('input[type="radio"][data-value="1"]')).toBeChecked();
@@ -72,7 +78,7 @@ test('Coded Odoo groups create corresponding Keycloak roles.', async ({ page }) 
   await expect(page.getByText('User types / Portal')).toBeVisible();
 
   // verify
-  await keycloak.open();
+  await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
   await keycloak.navigateToClients();
   await keycloak.selectOdooId();
   await keycloak.selectRoles();
@@ -106,7 +112,7 @@ test('Creating an Odoo group creates the corresponding Keycloak role', async ({ 
   await odoo.createGroup();
 
   // verify
-  await keycloak.open();
+  await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
   await keycloak.navigateToClients();
   await keycloak.selectOdooId();
   await keycloak.selectRoles();
@@ -123,7 +129,7 @@ test('Updating a synced Odoo group updates the corresponding Keycloak role.', as
   await odoo.activateDeveloperMode();
   await odoo.navigateToGroups();
   await odoo.createGroup();
-  await keycloak.open();
+  await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
   await keycloak.navigateToClients();
   await keycloak.selectOdooId();
   await keycloak.selectRoles();
@@ -155,7 +161,7 @@ test('Deleting a synced Odoo group deletes the corresponding Keycloak role.', as
   await odoo.activateDeveloperMode();
   await odoo.navigateToGroups();
   await odoo.createGroup();
-  await keycloak.open();
+  await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
   await keycloak.navigateToClients();
   await keycloak.selectOdooId();
   await keycloak.selectRoles();
@@ -176,4 +182,11 @@ test('Deleting a synced Odoo group deletes the corresponding Keycloak role.', as
   await keycloak.selectRoles();
   await keycloak.searchOdooRole();
   await expect(page.getByText(`Accounting / ${randomOdooGroupName.groupName}`)).not.toBeVisible();
+});
+
+test.afterEach(async ({ browser }) => {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  const keycloak = new Keycloak(page);
+  await keycloak.deleteUser();
 });

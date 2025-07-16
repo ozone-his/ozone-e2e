@@ -2,15 +2,23 @@ import { test, expect } from '@playwright/test';
 import { O3_URL, SENAITE_URL } from '../utils/configs/globalSetup';
 import { delay, OpenMRS, patientName } from '../utils/functions/openmrs';
 import { SENAITE } from '../utils/functions/senaite';
+import { Keycloak } from '../utils/functions/keycloak';
 
 let openmrs: OpenMRS;
 let senaite: SENAITE;
+let keycloak: Keycloak;
 
 test.beforeEach(async ({ page }) => {
   openmrs = new OpenMRS(page);
+  keycloak = new Keycloak(page);
   senaite = new SENAITE(page);
 
-  await openmrs.login();
+  await keycloak.open();
+  await keycloak.navigateToUsers();
+  await keycloak.addUserButton().click();
+  await keycloak.createUser();
+  await openmrs.navigateToLoginPage();
+  await openmrs.open();
   await openmrs.createPatient();
   await openmrs.startPatientVisit();
 });
@@ -123,7 +131,11 @@ test('Published free text lab results from SENAITE are viewable in the OpenMRS l
   await expect(page.locator('tr:nth-child(1) td:nth-child(2)')).toContainText('Positive');
 });
 
-test.afterEach(async ({ page }) => {
+test.afterEach(async ({browser}) => {
   await openmrs.voidPatient();
   await senaite.logout();
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  const keycloak = new Keycloak(page);
+  await keycloak.deleteUser();
 });
