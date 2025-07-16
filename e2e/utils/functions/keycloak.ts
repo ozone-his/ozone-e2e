@@ -197,19 +197,19 @@ export class Keycloak {
     await this.page.locator('input[placeholder="Search by role name"]').fill('Alpha');
     await this.page.locator('input[placeholder="Search by role name"]').press('Enter'), delay(2000);
     //await this.page.getByRole('checkbox', { name: /select row/i }).first().check();
-    await this.page.getByRole('checkbox', { name: 'Select row' }).check();
+    await this.page.getByRole('checkbox', { name: /select row 0/i }).check();
     await this.page.getByTestId('assign').click(), delay(5000)
     await this.navigateToRoles();
     await this.page.locator('input[placeholder="Search by role name"]').fill('Organizational: Doctor');
     await this.page.locator('input[placeholder="Search by role name"]').press('Enter'), delay(2000);
     // await this.page.getByRole('checkbox', { name: /select row/i }).first().check();
-    await this.page.getByRole('checkbox', { name: 'Select row' }).check();
+    await this.page.getByRole('checkbox', { name: /select row 0/i }).check();
     await this.page.getByTestId('assign').click(), delay(5000);
     await this.navigateToRoles();
     await this.page.locator('input[placeholder="Search by role name"]').fill('User types / Internal User');
     await this.page.locator('input[placeholder="Search by role name"]').press('Enter'), delay(2000);
     //await this.page.getByRole('checkbox', { name: /select row/i }).first().check();
-    await this.page.getByRole('checkbox', { name: 'Select row' }).check();
+    await this.page.getByRole('checkbox', { name: /select row 0/i }).check();
     await this.page.getByTestId('assign').click(), delay(5000);
     await expect(this.page.getByText(/user role mapping successfully updated/i)).toBeVisible();
   }
