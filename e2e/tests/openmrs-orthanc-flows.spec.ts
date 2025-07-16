@@ -51,5 +51,5 @@ test('Uploading a DICOM study in Orthanc creates the corresponding radiology ima
 
 test.afterEach(async ({}) => {
   await orthanc.removeAttachments();
-  await keycloak.deleteUser();
+  // await keycloak.deleteUser();
 });
