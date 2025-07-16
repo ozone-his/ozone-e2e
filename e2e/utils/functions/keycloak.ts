@@ -149,9 +149,10 @@ export class Keycloak {
       firstName: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
       lastName: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
       email: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}@gmail.com`,
-      password: `${Array.from({ length: 5 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`
+      password: `${Array.from({ length: 9 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`
     }
     await this.page.locator('input[name="username"]').fill(`${user.userName}`);
+    console.log('Username: ' + `${user.userName}`);
     await this.page.getByTestId('email-input').fill(`${user.email}`);
     await this.page.locator('label').filter({ hasText: /yes/i }).locator('span').first().click(), delay(1000);
     await this.page.getByTestId('firstName-input').fill(`${user.firstName}`);
@@ -177,6 +178,7 @@ export class Keycloak {
     await this.page.getByTestId('no-credentials-empty-action').click();
     await this.page.getByTestId('passwordField').fill(`${user.password}`);
     await this.page.getByTestId('passwordConfirmationField').fill(`${user.password}`);
+    console.log('Password: ' + `${user.password}`);
   }
 
   async confirmUserPassword() {
@@ -194,20 +196,25 @@ export class Keycloak {
   }
 
   async assignRolesToUser() {
-    await this.page.getByRole('textbox', { name: /search/i }).fill('Alpha');
-    await this.page.getByRole('textbox', { name: /search/i }).press('Enter');
-    await this.page.getByRole('checkbox', { name: /select row/i }).first().check();
-    await this.page.getByTestId('assign').click(), delay(5000)
-    await this.navigateToRoles();
-    await this.page.getByRole('textbox', { name: /search/i }).fill('Application: Has Super User Privileges');
-    await this.page.getByRole('textbox', { name: /search/i }).press('Enter');
-    await this.page.getByRole('checkbox', { name: /select row/i }).first().check();
+    await this.page.getByTestId('clients:rolesinput').getByRole('textbox', { name: 'Search' }).fill('Alpha');;
+    await this.page.getByTestId('clients:rolesinput').getByRole('textbox', { name: 'Search' }).press('Enter'), delay(2000);
+    const targetSupersetRole = await this.page.locator('tr', { hasText: 'Alpha' });
+    await targetSupersetRole.locator('input[type="checkbox"]').check();
     await this.page.getByTestId('assign').click(), delay(5000);
+
     await this.navigateToRoles();
-    await this.page.getByRole('textbox', { name: /search/i }).fill('User types / Internal User');
-    await this.page.getByRole('textbox', { name: /search/i }).press('Enter');
-    await this.page.getByRole('checkbox', { name: /select row/i }).first().check();
+    await this.page.getByTestId('clients:rolesinput').getByRole('textbox', { name: 'Search' }).fill('Organizational: Doctor');;
+    await this.page.getByTestId('clients:rolesinput').getByRole('textbox', { name: 'Search' }).press('Enter'), delay(2000);
+    const targetOpenMRSRole = await this.page.locator('tr', { hasText: 'Organizational: Doctor' });
+    await targetOpenMRSRole.locator('input[type="checkbox"]').check();
     await this.page.getByTestId('assign').click(), delay(5000);
+
+    await this.navigateToRoles();
+    await this.page.getByTestId('clients:rolesinput').getByRole('textbox', { name: 'Search' }).fill('User types / Internal User');
+    await this.page.getByTestId('clients:rolesinput').getByRole('textbox', { name: 'Search' }).press('Enter'), delay(2000);
+    const targetOdooRole = await this.page.locator('tr', { hasText: 'Internal User' });
+    await targetOdooRole.locator('input[type="checkbox"]').check();
+    await this.page.getByTestId('assign').click();
     await expect(this.page.getByText(/user role mapping successfully updated/i)).toBeVisible();
   }
 
