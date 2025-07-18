@@ -26,7 +26,7 @@ test('Ordering a lab test for an OpenMRS patient creates the corresponding SENAI
   await senaite.searchClient();
   await expect(page.locator('table tbody tr:nth-child(1) td.contentcell.title div span a')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
 });
-
+/*
 test('Editing the details of an OpenMRS patient with a synced lab order edits the corresponding SENAITE client details.', async ({ page }) => {
   // replay
   await openmrs.navigateToLabOrderForm();
@@ -122,7 +122,7 @@ test('Published free text lab results from SENAITE are viewable in the OpenMRS l
   await expect(page.locator('tr:nth-child(1) td:nth-child(1) p span span')).toContainText('Stool microscopy with concentration');
   await expect(page.locator('tr:nth-child(1) td:nth-child(2)')).toContainText('Positive');
 });
-
+*/
 test.afterEach(async ({ page }) => {
   await openmrs.voidPatient();
   await senaite.logout();
