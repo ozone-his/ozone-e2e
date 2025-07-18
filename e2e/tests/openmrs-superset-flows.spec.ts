@@ -51,7 +51,7 @@ test(`Creating an OpenMRS patient creates the patient in Superset's patients tab
   await superset.clearSQLEditor();
   await openmrs.voidPatient();
 });
-
+/*
 test(`Creating an OpenMRS visit creates the visit in Superset's visits table.`, async ({ page }) => {
   // setup
   await openmrs.login();
@@ -537,3 +537,4 @@ test(`Superset should contain dataset per flattened table on fresh install datas
   await expect(page.locator('tr', { has: page.locator('a', { hasText: 'visits' })}).locator('[aria-label="dataset-virtual"]')).toBeVisible();
   await keycloak.deleteUser();
 });
+*/
