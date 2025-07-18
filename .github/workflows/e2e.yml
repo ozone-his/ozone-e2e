@@ -85,7 +85,7 @@ jobs:
           echo "jobStatusPretty=$jobStatusPretty" >> "$GITHUB_ENV"
 
       - name: Notify Slack
-        if: ${{ github.event_name != 'pull_request' }}
+        if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
         id: slack
         uses: slackapi/slack-github-action@v1.24.0
         with:
