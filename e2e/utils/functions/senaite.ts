@@ -10,7 +10,7 @@ export class SENAITE {
     await this.page.goto(`${SENAITE_URL}`), delay(4000);
     if(await this.page.locator('#username').isVisible()) {
       const keycloak = new Keycloak(this.page);
-      await keycloak.enterCredentials();
+      await keycloak.enterUserCredentials();
     }
     await expect(this.page).toHaveURL(/.*senaite-dashboard/);
   }

@@ -1,27 +1,30 @@
 import { test, expect } from '@playwright/test';
 import { KEYCLOAK_URL, SENAITE_URL } from '../utils/configs/globalSetup';
-import { Keycloak } from '../utils/functions/keycloak';
-import { OpenMRS } from '../utils/functions/openmrs';
+import { Keycloak, user } from '../utils/functions/keycloak';
 import { SENAITE } from '../utils/functions/senaite';
 
-let openmrs: OpenMRS;
+
 let senaite: SENAITE;
 let keycloak: Keycloak;
 
 test.beforeEach(async ({ page }) => {
-  openmrs = new OpenMRS(page);
-  senaite = new SENAITE(page);
   keycloak = new Keycloak(page);
+  senaite = new SENAITE(page);
+
+  await keycloak.open();
+  await keycloak.navigateToUsers();
+  await keycloak.addUserButton().click();
+  await keycloak.createUser();
 });
 
 test('Logging out from SENAITE ends the session in Keycloak and logs out the user.', async ({ page }) => {
   // setup
   await senaite.open();
-  await keycloak.open();
+  await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
   await keycloak.navigateToClients();
   await keycloak.selectSENAITEId();
   await keycloak.selectSessions();
-  await expect(page.locator('td:nth-child(1) a').nth(0)).toHaveText(/jdoe/i);
+  await expect(page.locator('td:nth-child(1) a').nth(0)).toHaveText(`${user.userName}`);
 
   // replay
   await senaite.logout();
@@ -38,6 +41,9 @@ test('Logging out from SENAITE ends the session in Keycloak and logs out the use
   await expect(page.locator('#username')).toBeVisible();
 });
 
-test.afterEach(async ({ page }) => {
-  await page.close();
+test.afterEach(async ({ browser }) => {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  const keycloak = new Keycloak(page);
+  await keycloak.deleteUser();
 });

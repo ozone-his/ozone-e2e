@@ -2,15 +2,23 @@ import { test, expect } from '@playwright/test';
 import { O3_URL, ODOO_URL } from '../utils/configs/globalSetup';
 import { Odoo } from '../utils/functions/odoo';
 import { OpenMRS, patientName } from '../utils/functions/openmrs';
+import { Keycloak } from '../utils/functions/keycloak';
 
 let odoo: Odoo;
 let openmrs: OpenMRS;
+let keycloak: Keycloak;
 
 test.beforeEach(async ({ page }) => {
   openmrs = new OpenMRS(page);
   odoo = new Odoo(page);
+  keycloak = new Keycloak(page);
 
-  await openmrs.login();
+  await keycloak.open();
+  await keycloak.navigateToUsers();
+  await keycloak.addUserButton().click();
+  await keycloak.createUser();
+  await openmrs.navigateToLoginPage();
+  await openmrs.open();
   await openmrs.createPatient();
   await openmrs.startPatientVisit();
 });
@@ -294,7 +302,11 @@ test(`Recording a patient's weight in OpenMRS on the second order creates the we
   await expect(page.locator('.o_group :nth-child(1) tbody :nth-child(3) :nth-child(2)>span')).toContainText('75');
 });
 
-test.afterEach(async ({ page }) => {
+test.afterEach(async ({ browser }) => {
   await openmrs.voidPatient();
   await odoo.logout();
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  const keycloak = new Keycloak(page);
+  await keycloak.deleteUser();
 });

@@ -152,6 +152,3 @@ test('A synced role deleted from within Keycloak gets recreated in the subsequen
   await superset.logout();
 });
 
-test.afterEach(async ({ page }) => {
-  await page.close();
-});

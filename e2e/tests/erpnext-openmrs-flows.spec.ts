@@ -2,15 +2,23 @@ import { test, expect } from '@playwright/test';
 import { O3_URL, ERPNEXT_URL } from '../utils/configs/globalSetup';
 import { ERPNext } from '../utils/functions/erpnext';
 import { OpenMRS, patientName } from '../utils/functions/openmrs';
+import { Keycloak } from '../utils/functions/keycloak';
 
 let openmrs: OpenMRS;
 let erpnext: ERPNext;
+let keycloak: Keycloak;
 
 test.beforeEach(async ({ page }) => {
   openmrs = new OpenMRS(page);
+  keycloak = new Keycloak(page);
   erpnext = new ERPNext(page);
 
-  await openmrs.login();
+  await keycloak.open();
+  await keycloak.navigateToUsers();
+  await keycloak.addUserButton().click();
+  await keycloak.createUser();
+  await openmrs.navigateToLoginPage();
+  await openmrs.open();
   await openmrs.createPatient();
   await openmrs.startPatientVisit();
 });
@@ -215,7 +223,11 @@ test('Ordering a drug for an OpenMRS patient within a visit creates the correspo
   await expect(page.locator('div.list-row-container:nth-child(4) div:nth-child(3) span:nth-child(1) span')).toHaveText('Open');
 });
 
-test.afterEach(async ({ page }) => {
+test.afterEach(async ({ browser }) => {
   await openmrs.voidPatient();
   await openmrs.logout();
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  const keycloak = new Keycloak(page);
+  await keycloak.deleteUser();
 });

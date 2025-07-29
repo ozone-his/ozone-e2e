@@ -83,16 +83,15 @@ export class OpenMRS {
     await this.goToHomePage();
     await this.patientSearchIcon().click();
     await this.patientSearchBar().fill(searchText);
-    await this.page.getByRole('link', { name: `${patientFullName}` }).first().click();
+    await this.page.getByRole('link', { name: `${patientName.givenName}` }).first().click();
   }
 
   async searchPatientId() {
-    await this.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
+    await this.searchPatient(`${patientName.givenName}`);
     await expect(this.page.getByText(/actions/i, {exact: true})).toBeVisible();
     await this.page.getByRole('button', { name: /actions/i, exact: true }).click();
     await expect(this.page.getByText(/edit patient details/i)).toBeVisible();
     await this.page.getByRole('menuitem', { name: /edit patient details/i }).click(), delay(4000);
-    await expect(this.page.getByText('Identifiers', {exact: true})).toBeVisible();
     await expect(this.page.getByText('OpenMRS ID', {exact: true})).toBeVisible();
   }
 
@@ -120,7 +119,7 @@ export class OpenMRS {
     await this.page.getByRole('button', { name: /start a visit/i }).click();
     await this.page.locator('label').filter({ hasText: /facility Visit/i }).locator('span').first().click();
     await this.page.locator('form').getByRole('button', { name: /start visit/i }).click();
-    await expect(this.page.getByText(/facility Visit started successfully/i)).toBeVisible(), delay(4000);
+    await expect(this.page.getByText(/facility Visit started successfully/i)).toBeVisible(), delay(5000);
   }
 
   async endPatientVisit() {
