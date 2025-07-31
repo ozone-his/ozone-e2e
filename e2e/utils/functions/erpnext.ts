@@ -13,6 +13,11 @@ export class ERPNext {
     await expect(this.page).toHaveURL(/.*home/);
   }
 
+  async navigateToHomePage() {
+    await this.page.goto(`${ERPNEXT_URL}/app/home`);
+    await expect(this.page).toHaveURL(/.*home/);
+  }
+
   async searchCustomer() {
     await this.page.getByRole('link', { name: /selling/i }).click();
     await this.page.getByRole('link', { name: 'Customer', exact: true }).click();
