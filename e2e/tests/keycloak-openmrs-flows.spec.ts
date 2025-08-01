@@ -14,9 +14,21 @@ test.beforeEach(async ({ page }) => {
   await expect(page.locator('div:nth-child(1)>a')).toHaveText(/home/i);
 });
 
+test.beforeEach(async ({ page }) => {
+  openmrs = new OpenMRS(page);
+  keycloak = new Keycloak(page);
+
+  await keycloak.open();
+  await keycloak.navigateToUsers();
+  await keycloak.addUserButton().click();
+  await keycloak.createUser();
+  await openmrs.navigateToLoginPage();
+  await openmrs.open();
+});
+
 test('Logging out from OpenMRS ends the session in Keycloak and logs out the user.', async ({ page }) => {
   // setup
-  await keycloak.open();
+  await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
   await keycloak.navigateToClients();
   await keycloak.selectOpenMRSId();
   await keycloak.selectSessions();
@@ -38,17 +50,16 @@ test('Logging out from OpenMRS ends the session in Keycloak and logs out the use
 
 test('OpenMRS role assigned to a user in Keycloak is applied upon login in OpenMRS.', async ({ page }) => {
   // setup
-  await keycloak.open();
+  await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
 
   // replay
   await keycloak.navigateToUsers();
   await keycloak.searchUser();
-  await expect(page.getByText('System Developer')).toBeVisible();
+  await expect(page.getByText('Organizational: Doctor')).toBeVisible();
 
   // verify
   await openmrs.navigateToRoles();
-  await expect(page.getByLabel('Provider')).toBeChecked();
-  await expect(page.getByLabel('System Developer')).toBeChecked();
+  await expect(page.getByLabel('Organizational: Doctor')).toBeChecked();
   await openmrs.logout();
 });
 
@@ -61,7 +72,7 @@ test('Creating an OpenMRS role creates the corresponding Keycloak role.', async 
   await openmrs.addRole();
 
   // verify
-  await keycloak.open();
+  await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
   await keycloak.navigateToClients();
   await keycloak.selectOpenMRSId();
   await keycloak.selectRoles();
@@ -82,7 +93,7 @@ test('Updating a synced OpenMRS role updates the corresponding Keycloak role.', 
   test.setTimeout(420000);
   await page.goto(`${O3_URL}/openmrs/admin/users/role.list`);
   await openmrs.addRole();
-  await keycloak.open();
+  await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
   await keycloak.navigateToClients();
   await keycloak.selectOpenMRSId();
   await keycloak.selectRoles();
@@ -119,7 +130,7 @@ test('Deleting a synced OpenMRS role deletes the corresponding Keycloak role.', 
   test.setTimeout(420000);
   await page.goto(`${O3_URL}/openmrs/admin/users/role.list`);
   await openmrs.addRole();
-  await keycloak.open();
+  await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
   await keycloak.navigateToClients();
   await keycloak.selectOpenMRSId();
   await keycloak.selectRoles();
@@ -147,7 +158,7 @@ test('Deleting a synced OpenMRS role deletes the corresponding Keycloak role.', 
 
 test('A (non-synced) role created from within Keycloak gets deleted in the subsequent polling cycle.', async ({ page }) => {
   // setup
-  await keycloak.open();
+  await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
   await keycloak.navigateToClients();
   await keycloak.selectOpenMRSId();
   await keycloak.selectRoles();
@@ -170,6 +181,9 @@ test('A (non-synced) role created from within Keycloak gets deleted in the subse
   await openmrs.logout();
 });
 
-test.afterEach(async ({ page }) => {
-  await page.close();
+test.afterEach(async ({ browser }) => {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  const keycloak = new Keycloak(page);
+  await keycloak.deleteUser();
 });

@@ -217,11 +217,13 @@ test(`Creating an OpenMRS condition creates the condition in Superset's conditio
   const patientId = Number(await page.locator('div.virtual-table-cell').textContent());
   await page.getByRole('tab', { name: 'Results' }).click();
   await superset.clearSQLEditor();
-  let conditionQuery = `SELECT * FROM conditions WHERE patient_id=${patientId};`;
+  let conditionQuery = `SELECT patient_id, condition_id, clinical_status, onset_date, voided FROM conditions WHERE patient_id=${patientId};`;
   await page.getByRole('textbox').first().fill(conditionQuery);
   await superset.runSQLQuery();
-  await expect(page.locator('div.virtual-table-cell:nth-child(7)')).toHaveText('ACTIVE');
-  await expect(page.locator('div.virtual-table-cell:nth-child(9)')).toContainText('2023-07-27');
+  await expect(page.locator('div.virtual-table-cell:nth-child(1)').nth(0)).toHaveText(`${patientId}`);
+  await expect(page.locator('div.virtual-table-cell:nth-child(3)').nth(0)).toContainText('ACTIVE');
+  await expect(page.locator('div.virtual-table-cell:nth-child(4)').nth(0)).toContainText('2023-07-27');
+  await expect(page.locator('div.virtual-table-cell:nth-child(5)').nth(0)).toContainText('false');
   await page.getByRole('tab', { name: 'Query history' }).click();
   await superset.clearSQLEditor();
   await openmrs.voidPatient();

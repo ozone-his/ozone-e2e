@@ -67,9 +67,9 @@ export class OpenMRS {
     await this.page.locator('#givenName').fill(`${patientName.firstName}`);
     await this.page.locator('#familyName').fill(`${patientName.givenName}`);
     await this.page.locator('label').filter({ hasText: /^Male$/ }).locator('span').first().click();
-    await this.page.locator('div[aria-label="day, "]').fill('16');
-    await this.page.locator('div[aria-label="month, "]').fill('08');
-    await this.page.locator('div[aria-label="year, "]').fill('2002');
+    await this.page.getByRole('spinbutton', { name: 'day, Date of birth' }).fill('16');
+    await this.page.getByRole('spinbutton', { name: 'month, Date of birth' }).fill('08');
+    await this.page.getByRole('spinbutton', { name: 'year, Date of birth' }).fill('2002');
     await this.createPatientButton().click();
     await expect(this.page.getByText(/new patient created/i)).toBeVisible(), delay(3000);;
   }
@@ -117,18 +117,20 @@ export class OpenMRS {
 
   async startPatientVisit() {
     await this.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`);
-    await this.page.getByRole('button', { name: /start a visit/i }).click();
+    await this.page.getByRole('button', { name: /actions/i }).click();
+    await this.page.getByRole('menuitem', { name: /add visit/i }).click();
     await this.page.locator('label').filter({ hasText: /facility Visit/i }).locator('span').first().click();
-    await this.page.locator('form').getByRole('button', { name: /start visit/i }).click();
-    await expect(this.page.getByText(/facility Visit started successfully/i)).toBeVisible(), delay(4000);
+    await this.page.getByRole('button', { name: /start visit/i }).click();
+    await expect(this.page.getByText(/facility visit started successfully/i)).toBeVisible(), delay(5000);
   }
 
   async endPatientVisit() {
-    await this.searchPatient(`${patientName.firstName + ' ' + patientName.givenName}`)
-    await this.page.getByRole('button', { name: /actions/i, exact: true }).click();
-    await this.page.getByRole('menuitem', { name: /end visit/i }).click();
+    await this.searchPatient(`${patientName.givenName}`);
+    await this.page.getByRole('button', { name: /actions/i, exact: true }).click(), delay(3000);
+    await expect(this.page.getByRole('menuitem', { name: /end visit/i })).toBeVisible();
+    await this.page.getByRole('menuitem', { name: /end visit/i }).click(), delay(2000);
     await this.page.getByRole('button', { name: /danger end Visit/i }).click();
-    await expect(this.page.getByText(/visit ended/i)).toBeVisible(), delay(3000);
+    await expect(this.page.getByText(/visit ended/i)).toBeVisible(), delay(6000);
   }
 
   async voidPatient() {
@@ -146,8 +148,9 @@ export class OpenMRS {
     await this.page.getByText(/record conditions/i).click();
     await this.page.getByPlaceholder(/search conditions/i).fill('Typhoid fever');
     await this.page.getByRole('menuitem', { name: 'Typhoid fever' }).click();
-    await this.page.getByLabel('Onset date').fill('27/07/2023');
-    await this.page.getByLabel('Onset date').press('Enter');
+    await this.page.getByRole('spinbutton', { name: 'day, Onset date' }).fill('27');
+    await this.page.getByRole('spinbutton', { name: 'month, Onset date' }).fill('07');
+    await this.page.getByRole('spinbutton', { name: 'year, Onset date' }).fill('2023');
     await this.page.locator('label').filter({ hasText: /^Active$/ }).locator('span').first().click();
     await this.page.getByRole('button', { name: /save & close/i }).click();
     await expect(this.page.getByText(/condition saved successfully/i)).toBeVisible(), delay(2000);
@@ -257,11 +260,11 @@ export class OpenMRS {
   async fillDrugOrderForm() {
     await this.page.getByRole('button', { name: /order form/i }).click();
     await this.page.getByPlaceholder('Dose').fill('4');
-    await this.page.getByRole('button', { name: 'Open', exact: true }).nth(1).click();
-    await this.page.getByText('Intravenous', {exact: true}).click();
-    await this.page.getByRole('button', { name: 'Open', exact: true }).nth(2).click();
-    await this.page.getByText(/twice daily/i, {exact: true}).click();
-    await this.page.getByPlaceholder(/additional dosing instructions/i).fill('Take after eating');
+    await this.page.getByRole('combobox', { name: /route/i }).click(), delay(1500);
+    await this.page.getByText('Oral', { exact: true }).click(), delay(1500);
+    await this.page.getByRole('combobox', { name: /frequency/i }).click(), delay(1500);
+    await this.page.getByText(/twice daily/i, {exact: true}).click(), delay(1500);
+    await this.page.getByPlaceholder(/additional dosing instructions/i).fill('Take after meal');
     await this.page.getByLabel('Duration', { exact: true }).fill('5');
     await this.page.getByLabel(/quantity to dispense/i).fill('12');
     await this.page.getByLabel(/prescription refills/i).fill('3');
@@ -269,11 +272,8 @@ export class OpenMRS {
   }
 
   async saveDrugOrder() {
-    await this.page.getByRole('button', { name: /save order/i }).focus();
-    await expect(this.page.getByText(/save order/i)).toBeVisible();
     await this.page.getByRole('button', { name: /save order/i }).click();
-    await this.page.getByRole('button', { name: /sign and close/i }).focus();
-    await expect(this.page.getByText(/sign and close/i)).toBeVisible();
+    await expect(this.page.getByRole('button', { name: /sign and close/i })).toBeVisible();
     await this.page.getByRole('button', { name: /sign and close/i }).click(), delay(3000);
   }
 
@@ -302,16 +302,17 @@ export class OpenMRS {
     await this.page.getByRole('button', { name: /options/i, exact: true }).click();
     await this.page.getByRole('menuitem', { name: /modify/i, exact: true }).click();
     await this.page.getByPlaceholder('Dose').fill('8');
-    await this.page.getByLabel(/clear selected item/i).nth(2).click();
-    await this.page.getByPlaceholder(/frequency/i).click();
+    await this.page.getByRole('combobox', { name: 'Frequency' }).clear(),delay(1000);
     await this.page.getByText(/thrice daily/i).click();
     await this.page.getByLabel('Duration', { exact: true }).fill('6');
     await this.page.getByLabel(/quantity to dispense/i).fill('8');
+    await this.saveDrugOrder(), delay(5000);
     await this.page.getByRole('button', { name: /save order/i }).focus();
     await this.page.getByRole('button', { name: /save order/i }).dispatchEvent('click');
     await expect(this.page.getByText(/sign and close/i)).toBeVisible();
     await this.page.getByRole('button', { name: /sign and close/i }).focus();
-    await this.page.getByRole('button', { name: /sign and close/i }).dispatchEvent('click'), delay(5000);
+    await this.page.getByRole('button', { name: /sign and close/i }).dispatchEvent('click');
+    await expect(this.page.getByText(/updated/i)).toBeVisible(), delay(3000);
   }
 
   async discontinueDrugOrder() {
@@ -328,9 +329,9 @@ export class OpenMRS {
     await expect(this.page.locator('#givenName')).toBeVisible();
     await this.page.locator('#givenName').fill(`${patientName.updatedFirstName}`), delay(2000);
     await this.page.locator('label').filter({ hasText: /female/i }).locator('span').first().click();
-    await this.page.locator('div[aria-label="day, "]').fill('18');
-    await this.page.locator('div[aria-label="month, "]').fill('08');
-    await this.page.locator('div[aria-label="year, "]').fill('2003');
+    await this.page.getByRole('spinbutton', { name: 'day, Date of birth' }).fill('18');
+    await this.page.getByRole('spinbutton', { name: 'month, Date of birth' }).fill('08');
+    await this.page.getByRole('spinbutton', { name: 'year, Date of birth' }).fill('2003');
     await this.page.getByRole('button', { name: /update patient/i }).click();
     await expect(this.page.getByText(/patient details updated/i)).toBeVisible();
     patientName.firstName = `${patientName.updatedFirstName}`, delay(5000);
