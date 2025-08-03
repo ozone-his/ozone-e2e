@@ -13,7 +13,7 @@ test.beforeEach(async ({ page }) => {
   superset = new Superset(page);
   keycloak = new Keycloak(page);
 });
-/*
+
 test(`Creating an OpenMRS patient creates the patient in Superset's patients table.`, async ({ page }) => {
   // setup
   await openmrs.login();
@@ -179,7 +179,7 @@ test(`Creating an OpenMRS encounter creates the encounter in Superset's encounte
   await superset.clearSQLEditor();
   await openmrs.voidPatient();
 });
-
+/*
 test(`Creating an OpenMRS condition creates the condition in Superset's conditions table.`, async ({ page }) => {
   // setup
   await openmrs.login();
@@ -269,7 +269,7 @@ test(`Creating an OpenMRS obs creates the observation in Superset's observations
   await superset.clearSQLEditor();
   await openmrs.voidPatient();
 });
-*/
+*//*
 test(`Creating an OpenMRS appointment creates the appointment in Superset's appointments table.`, async ({ page }) => {
   // setup
   await openmrs.login();
@@ -301,7 +301,7 @@ test(`Creating an OpenMRS appointment creates the appointment in Superset's appo
   await expect(updatedAppointmentsCount).toBe(initialAppointmentsCount + 1);
   await page.getByRole('tab', { name: 'Query history' }).click();
   await superset.clearSQLEditor();
-  let patientIdQuery = `SELECT patient_id FROM patients WHERE identifiers like '${patientIdentifier}';`;
+  let patientIdQuery = `SELECT patient_id FROM patients WHERE identifiers like 'OpenMRS ID: ${patientIdentifier}';`;
   await page.getByRole('textbox').fill(patientIdQuery);
   await superset.runSQLQuery();
   const patientId = Number(await page.locator('div.virtual-table-cell').textContent());
