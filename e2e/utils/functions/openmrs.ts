@@ -301,8 +301,7 @@ export class OpenMRS {
     await this.page.getByRole('button', { name: /options/i, exact: true }).click();
     await this.page.getByRole('menuitem', { name: /modify/i, exact: true }).click();
     await this.page.getByPlaceholder('Dose').fill('8');
-    await this.page.getByLabel(/clear selected item/i).nth(2).click();
-    await this.page.getByPlaceholder(/frequency/i).click();
+    await this.page.getByRole('combobox', { name: 'Frequency' }).clear(),delay(1000);
     await this.page.getByText(/thrice daily/i).click();
     await this.page.getByLabel('Duration', { exact: true }).fill('6');
     await this.page.getByLabel(/quantity to dispense/i).fill('8');
@@ -310,7 +309,8 @@ export class OpenMRS {
     await this.page.getByRole('button', { name: /save order/i }).dispatchEvent('click');
     await expect(this.page.getByText(/sign and close/i)).toBeVisible();
     await this.page.getByRole('button', { name: /sign and close/i }).focus();
-    await this.page.getByRole('button', { name: /sign and close/i }).dispatchEvent('click'), delay(5000);
+    await this.page.getByRole('button', { name: /sign and close/i }).dispatchEvent('click');
+    await expect(this.page.getByText(/updated/i)).toBeVisible();
   }
 
   async discontinueDrugOrder() {
@@ -327,9 +327,9 @@ export class OpenMRS {
     await expect(this.page.locator('#givenName')).toBeVisible();
     await this.page.locator('#givenName').fill(`${patientName.updatedFirstName}`), delay(2000);
     await this.page.locator('label').filter({ hasText: /female/i }).locator('span').first().click();
-    await this.page.locator('div[aria-label="day, "]').fill('18');
-    await this.page.locator('div[aria-label="month, "]').fill('08');
-    await this.page.locator('div[aria-label="year, "]').fill('2003');
+    await this.page.getByRole('spinbutton', { name: 'day, Date of birth' }).fill('18');
+    await this.page.getByRole('spinbutton', { name: 'month, Date of birth' }).fill('08');
+    await this.page.getByRole('spinbutton', { name: 'year, Date of birth' }).fill('2003');
     await this.page.getByRole('button', { name: /update patient/i }).click();
     await expect(this.page.getByText(/patient details updated/i)).toBeVisible();
     patientName.firstName = `${patientName.updatedFirstName}`, delay(5000);

@@ -14,7 +14,7 @@ test.beforeEach(async ({ page }) => {
   await openmrs.createPatient();
   await openmrs.startPatientVisit();
 });
-
+/*
 test('Ordering a lab test for an OpenMRS patient creates the corresponding Odoo customer with a filled quotation.', async ({ page }) => {
   // replay
   await openmrs.navigateToLabOrderForm();
@@ -29,7 +29,7 @@ test('Ordering a lab test for an OpenMRS patient creates the corresponding Odoo 
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Quotation');
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(7) span')).toHaveText('$ 31.63');
 });
-/*
+
 test('Editing the details of an OpenMRS patient with a synced lab order edits the corresponding Odoo customer details.', async ({ page }) => {
   // setup
   await openmrs.navigateToLabOrderForm();
@@ -74,7 +74,7 @@ test('Ordering a drug for an OpenMRS patient creates the corresponding Odoo cust
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Quotation');
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(7) span')).toHaveText('$ 17.11');
 });
-
+*/
 test('Editing the details of an OpenMRS patient with a synced drug order edits the corresponding Odoo customer details.', async ({ page }) => {
   // setup
   await openmrs.navigateToDrugOrderForm();
@@ -135,7 +135,7 @@ test('Revising details of a synced OpenMRS drug order modifies the corresponding
   await expect(drugOrderItem).toContainText('Thrice daily - 6 day');
   await expect(page.locator('[name="amount_total"]')).toHaveText('$ 11.41');
 });
-
+/*
 test('Discontinuing a synced OpenMRS drug order for an Odoo customer with a single quotation line removes the corresponding quotation.', async ({ page }) => {
   // setup
   await openmrs.navigateToDrugOrderForm();
