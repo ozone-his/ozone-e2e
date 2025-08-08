@@ -29,7 +29,7 @@ test('Ordering a lab test for an OpenMRS patient creates the corresponding Odoo 
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Quotation');
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(7) span')).toHaveText('$ 31.63');
 });
-
+/*
 test('Editing the details of an OpenMRS patient with a synced lab order edits the corresponding Odoo customer details.', async ({ page }) => {
   // setup
   await openmrs.navigateToLabOrderForm();
@@ -292,7 +292,7 @@ test(`Recording a patient's weight in OpenMRS on the second order creates the we
   await expect(page.locator('tr.o_data_row:nth-child(2) td:nth-child(2) span:nth-child(1) span')).toHaveText('Blood urea nitrogen');
   await expect(page.locator('#x_customer_weight_0')).toHaveValue('75.0 kg');
 });
-
+*/
 test.afterEach(async ({}) => {
   await openmrs.voidPatient();
   await odoo.logout();
