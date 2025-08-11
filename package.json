@@ -14,7 +14,7 @@
     "!playwright-report/"
   ],
   "scripts": {
-    "ozone-e2e": "npx playwright test orthanc",
+    "ozone-e2e": "npx playwright test",
     "openmrs-distro-his": "npx playwright test odoo-openmrs openmrs-senaite"
   },
   "publishConfig": {
