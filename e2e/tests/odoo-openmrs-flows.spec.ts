@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { delay, OpenMRS, patientName } from '../utils/functions/openmrs';
+import { OpenMRS, patientName } from '../utils/functions/openmrs';
 import { Odoo } from '../utils/functions/odoo';
 import { Keycloak } from '../utils/functions/keycloak';
 
@@ -89,7 +89,7 @@ test('Editing the details of an OpenMRS patient with a synced order edits the co
   await expect(page.locator('.text-break>div>div>span')).not.toHaveText('08/16/2002');
   await expect(page.locator('.text-break>div>div>span')).toHaveText('08/18/2003');
 });
-/*
+
 test('Revising details of a synced OpenMRS drug order modifies the corresponding Odoo quotation line.', async ({}) => {
   // setup
   await odoo.open();
@@ -116,7 +116,7 @@ test('Revising details of a synced OpenMRS drug order modifies the corresponding
   await expect(drugOrderItem).toContainText('Thrice daily - 6 day');
   await expect(page.locator('[name="amount_total"]')).toHaveText('$ 11.41');
 });
-/*
+
 test('Discontinuing a synced OpenMRS lab order for an Odoo customer with a single quotation line cancels the corresponding quotation.', async ({}) => {
   // setup
   await odoo.open();
@@ -242,13 +242,9 @@ test(`Ordering a drug for an OpenMRS patient with weight creates the weight on t
   await expect(page.locator('tr.o_data_row:nth-child(2) td:nth-child(2) span:nth-child(1) span')).toHaveText('Hepatitis C test - qualitative');
   await expect(page.locator('#x_customer_weight_0')).toHaveValue('75.0 kg');
 });
-*/
-test.afterAll(async ({ browser }) => {
-  //await openmrs.voidPatient();
-  await odoo.logout();
 
-  browserContext = await browser.newContext();
-  page = await browserContext.newPage();
-  keycloak = new Keycloak(page);
+test.afterAll(async ({}) => {
+  await openmrs.voidPatient();
+  await odoo.logout();
   await keycloak.deleteUser();
 });

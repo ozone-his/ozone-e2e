@@ -51,6 +51,10 @@ export class Keycloak {
     await expect(this.page.getByText(/role created/i)).toBeVisible(), delay(2000);
   }
 
+  async navigateToHomePage() {
+    await this.page.goto(`${KEYCLOAK_URL}/admin/master/console`);
+  }
+  
   async navigateToClients() {
     await this.page.getByTestId('realmSelectorToggle').click();
     await expect(this.page.getByRole('menuitem', { name: 'ozone' })).toBeVisible();
@@ -68,6 +72,14 @@ export class Keycloak {
   async searchUser() {
     await expect(this.page.getByPlaceholder('Search user')).toBeVisible();
     await this.page.getByPlaceholder('Search user').fill(`${user.userName}`);
+    await this.page.getByPlaceholder('Search user').press('Enter');
+    await this.page.locator('tr td:nth-child(2) a').click();
+    await this.page.getByTestId('role-mapping-tab').click();
+  }
+
+  async searchAdminUser() {
+    await expect(this.page.getByPlaceholder('Search user')).toBeVisible();
+    await this.page.getByPlaceholder('Search user').fill('jdoe');
     await this.page.getByPlaceholder('Search user').press('Enter');
     await this.page.locator('tr td:nth-child(2) a').click();
     await this.page.getByTestId('role-mapping-tab').click();
@@ -130,16 +142,15 @@ export class Keycloak {
   }
 
   async selectSessions() {
-    await this.page.getByTestId('sessionsTab').click();
+    await this.page.getByTestId('sessionsTab').click(), delay(2500);
   }
 
   async deleteSyncedRole() {
     await this.page.getByRole('row', { name: `${randomSupersetRoleName.roleName}` }).getByLabel(/actions/i).click();
     await this.page.getByRole('menuitem', { name: 'Delete' }).click();
     await this.page.getByTestId('confirm').click();
-    await expect(this.page.getByText(`The role has been deleted`)).toBeVisible();
+    await expect(this.page.getByText(`The role has been deleted`)).toBeVisible(), delay(5000);
     await expect(this.page.getByText(`${randomSupersetRoleName.roleName}`)).not.toBeVisible();
-    await delay(60000);
   }
 
   async createUser() {
@@ -206,17 +217,16 @@ export class Keycloak {
     await targetOpenMRSRole.locator('input[type="checkbox"]').check();
     await this.page.getByTestId('assign').click(), delay(5000);
 
-    // await this.navigateToRoles();
-    // await this.page.getByTestId('clients:rolesinput').getByRole('textbox', { name: 'Search' }).fill('User types / Internal User');
-    // await this.page.getByTestId('clients:rolesinput').getByRole('textbox', { name: 'Search' }).press('Enter'), delay(2000);
-    // const targetOdooRole = await this.page.locator('tr', { hasText: 'Internal User' });
-    // await targetOdooRole.locator('input[type="checkbox"]').check();
-    // await this.page.getByTestId('assign').click();
+    await this.navigateToRoles();
+    await this.page.getByTestId('clients:rolesinput').getByRole('textbox', { name: 'Search' }).fill('User types / Internal User');
+    await this.page.getByTestId('clients:rolesinput').getByRole('textbox', { name: 'Search' }).press('Enter'), delay(2000);
+    const targetOdooRole = await this.page.locator('tr', { hasText: 'Internal User' });
+    await targetOdooRole.locator('input[type="checkbox"]').check();
+    await this.page.getByTestId('assign').click();
     await expect(this.page.getByText(/user role mapping successfully updated/i)).toBeVisible();
   }
 
   async deleteUser() {
-    await this.open();
     await this.page.goto(`${KEYCLOAK_URL}/admin/master/console/#/ozone/users`);
     await this.page.getByRole('textbox', { name: 'search' }).fill(`${user.userName}`);
     await this.page.getByRole('textbox', { name: 'search' }).press('Enter'), delay(1500);

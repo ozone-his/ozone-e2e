@@ -193,12 +193,8 @@ test('Ordering a drug for an OpenMRS patient within a visit creates the correspo
   await expect(page.locator('div.list-row-container:nth-child(4) div:nth-child(3) span:nth-child(1) span')).toHaveText('Open');
 });
 
-test.afterAll(async ({ browser }) => {
+test.afterAll(async ({}) => {
   await openmrs.voidPatient();
   await openmrs.logout();
-
-  browserContext = await browser.newContext();
-  page = await browserContext.newPage();
-  keycloak = new Keycloak(page);
   await keycloak.deleteUser();
 });

@@ -49,10 +49,7 @@ test('Uploading a DICOM study in Orthanc creates the corresponding radiology ima
   await expect(orthancPage.getByText(/radiology-image/i)).toBeVisible();
 });
 
-test.afterEach(async ({ browser }) => {
+test.afterEach(async ({}) => {
   await orthanc.removeAttachments();
-  const context = await browser.newContext();
-  const page = await context.newPage();
-  const keycloak = new Keycloak(page);
   await keycloak.deleteUser();
 });

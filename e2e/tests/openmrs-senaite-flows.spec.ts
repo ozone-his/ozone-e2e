@@ -13,7 +13,6 @@ let page;
 test.beforeAll(async ({ browser }) => {
   browserContext = await browser.newContext();
   page = await browserContext.newPage();
-
   openmrs = new OpenMRS(page);
   keycloak = new Keycloak(page);
   senaite = new SENAITE(page);
@@ -145,12 +144,8 @@ test('Published free text lab results from SENAITE are viewable in the OpenMRS l
   await expect(page.locator('tr:nth-child(1) td:nth-child(2)')).toContainText('Positive');
 });
 
-test.afterAll(async ({ browser }) => {
+test.afterAll(async ({}) => {
   await openmrs.voidPatient();
   await senaite.logout();
-
-  browserContext = await browser.newContext();
-  page = await browserContext.newPage();
-  keycloak = new Keycloak(page);
   await keycloak.deleteUser();
 });
