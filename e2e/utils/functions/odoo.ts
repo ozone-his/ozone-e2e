@@ -18,13 +18,20 @@ export class Odoo {
 
   async login() {
     await this.page.goto(`${ODOO_URL}`);
-    await this.page.getByRole('link', { name: /login with single sign-on/i }).click(), delay(4000);
     if(await this.page.locator('#username').isVisible()) {
       const keycloak = new Keycloak(this.page);
       await keycloak.enterUserCredentials();
     }
     await expect(this.page).toHaveURL(/.*web/);
   }
+
+  async loginAsAdmin() {
+    await this.page.goto(`${ODOO_URL}/web/login?no_autologin`);
+    await expect(this.page.locator('#login')).toBeVisible();
+    await this.enterAdminCredentials();
+    await expect(this.page).toHaveURL(/.*web/);
+  }
+
   async enterAdminCredentials() {
     await this.page.locator('#login').fill(`${process.env.ODOO_USERNAME}`);
     await this.page.locator('#password').fill(`${process.env.ODOO_PASSWORD}`);
@@ -34,9 +41,12 @@ export class Odoo {
   async searchCustomer() {
     await this.page.getByRole('button', { name: /remove/i }).click(), delay(2000);
     await expect(this.page.locator('.o_searchview_input')).toBeVisible();
-    await this.page.locator('.o_searchview_input').fill(`${patientName.firstName + ' ' + patientName.givenName}`);
-    await this.page.locator('.o_searchview_input').press('Enter');
-    await delay(2000);
+    await this.page.locator('.o_searchview_input').fill(`${patientName.givenName}`);
+    await this.page.locator('.o_searchview_input').press('Enter'), delay(2000);
+  }
+
+  async navigateToHomePage() {
+    await this.page.goto(`${ODOO_URL}/web`);
   }
 
   async navigateToSales() {
@@ -174,6 +184,7 @@ export class Odoo {
     await expect(this.page.getByRole('button', { name: /user/i })).toBeVisible();
     await this.page.getByRole('button', { name: /user/i }).click();
     await expect(this.page.getByRole('menuitem', { name: /log out/i })).toBeVisible();
-    await this.page.getByRole('menuitem', { name: /log out/i }).click();
+    await this.page.getByRole('menuitem', { name: /log out/i }).click(), delay(4000);
+    await expect(this.page.locator('#username')).toBeVisible();
   }
 }

@@ -19,9 +19,23 @@ export class Superset {
     await this.page.locator('#btn-signin-keycloak').click(), delay(4000);
     if(await this.page.locator('#username').isVisible()) {
       const keycloak = new Keycloak(this.page);
+      await keycloak.enterUserCredentials();
+    }
+    await expect(this.page).toHaveURL(/.*superset/);
+  }
+
+  async login() {
+    await this.page.goto(`${SUPERSET_URL}`);
+    await this.page.locator('#btn-signin-keycloak').click(), delay(4000);
+    if(await this.page.locator('#username').isVisible()) {
+      const keycloak = new Keycloak(this.page);
       await keycloak.enterCredentials();
     }
     await expect(this.page).toHaveURL(/.*superset/);
+  }
+
+  async navigateToHomePage() {
+    await this.page.goto(`${SUPERSET_URL}`);
   }
 
   async selectDBSchema() {
@@ -70,7 +84,8 @@ export class Superset {
     await this.page.getByPlaceholder('Name').fill(`${randomSupersetRoleName.updatedRoleName}`);
     await this.page.locator('button[type="submit"]').click(), delay(2000);
     await expect(this.page.getByText(/changed row/i)).toBeVisible();
-    await expect(this.page.getByText(`${randomSupersetRoleName.updatedRoleName}`)).toBeVisible(), delay(50000);
+    await expect(this.page.getByText(`${randomSupersetRoleName.updatedRoleName}`)).toBeVisible();
+    randomSupersetRoleName.roleName = `${randomSupersetRoleName.updatedRoleName}`, delay(5000);
   }
 
   async deleteRole(){
