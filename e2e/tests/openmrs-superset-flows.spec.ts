@@ -23,8 +23,6 @@ test.beforeAll(async ({ browser }) => {
   keycloak = new Keycloak(page);
 
   await keycloak.open();
-  await keycloak.navigateToUsers();
-  await keycloak.addUserButton().click();
   await keycloak.createUser();
 });
 
@@ -417,13 +415,12 @@ test(`Voiding an OpenMRS patient updates the patient in Superset's patients tabl
 
 test(`Superset should contain dataset per flattened table on fresh install dataset`, async ({}) => {
   // setup
-  await openmrs.navigateToLoginPage();
-
-  // replay
   await openmrs.open();
 
-  // verify
+  // replay
   await superset.open();
+
+  // verify
   await superset.navigateToDatasets();
   await page.getByRole('textbox', { name: 'Type a value' }).fill('patients');
   await superset.pressEnterButton();

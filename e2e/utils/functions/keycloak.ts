@@ -1,10 +1,10 @@
 import { Page, expect } from '@playwright/test';
 import { KEYCLOAK_URL } from '../configs/globalSetup';
-import { randomSupersetRoleName } from './superset';
-import { delay, randomOpenMRSRoleName } from './openmrs';
-import { randomOdooGroupName } from './odoo';
+import { supersetRoleName } from './superset';
+import { delay, openmrsRoleName } from './openmrs';
+import { odooGroupName } from './odoo';
 
-export var randomKeycloakRoleName = {
+export var keycloakRoleName = {
   roleName : `${(Math.random() + 1).toString(36).substring(2)}`
 }
 
@@ -45,7 +45,7 @@ export class Keycloak {
 
   async createRole() {
     await this.page.getByTestId('create-role').click();
-    await this.page.getByLabel('Role name').fill(`${randomKeycloakRoleName.roleName}`);
+    await this.page.getByLabel('Role name').fill(`${keycloakRoleName.roleName}`);
     await this.page.getByLabel('Description').fill('This is Keycloak test role');
     await this.page.getByTestId(/save/i).click();
     await expect(this.page.getByText(/role created/i)).toBeVisible(), delay(2000);
@@ -120,24 +120,24 @@ export class Keycloak {
 
   async searchOpenMRSRole() {
     await expect(this.page.getByPlaceholder(/search role by name/i)).toBeVisible();
-    await this.page.getByPlaceholder(/search role by name/i).fill(`${randomOpenMRSRoleName.roleName}`);
+    await this.page.getByPlaceholder(/search role by name/i).fill(`${openmrsRoleName.roleName}`);
     await this.page.getByRole('button', { name: 'Search' }).press('Enter');
   }
 
   async searchSupersetRole() {
     await expect(this.page.getByPlaceholder(/search role by name/i)).toBeVisible();
-    await this.page.getByPlaceholder(/search role by name/i).fill(`${randomSupersetRoleName.roleName}`);
+    await this.page.getByPlaceholder(/search role by name/i).fill(`${supersetRoleName.roleName}`);
     await this.page.getByRole('button', { name: 'Search' }).press('Enter');
   }
 
   async searchOdooRole() {
     await expect(this.page.getByPlaceholder(/search role by name/i)).toBeVisible();
-    await this.page.getByPlaceholder(/search role by name/i).fill(`${randomOdooGroupName.groupName}`);
+    await this.page.getByPlaceholder(/search role by name/i).fill(`${odooGroupName.groupName}`);
     await this.page.getByRole('button', { name: 'Search' }).press('Enter');
   }
 
   async navigateToClientAttributes() {
-    await this.page.getByRole('link', { name: `${randomOpenMRSRoleName.roleName}` }).click();
+    await this.page.getByRole('link', { name: `${openmrsRoleName.roleName}` }).click();
     await this.page.getByTestId('attributesTab').click();
   }
 
@@ -146,14 +146,16 @@ export class Keycloak {
   }
 
   async deleteSyncedRole() {
-    await this.page.getByRole('row', { name: `${randomSupersetRoleName.roleName}` }).getByLabel(/actions/i).click();
+    await this.page.getByRole('row', { name: `${supersetRoleName.roleName}` }).getByLabel(/actions/i).click();
     await this.page.getByRole('menuitem', { name: 'Delete' }).click();
     await this.page.getByTestId('confirm').click();
     await expect(this.page.getByText(`The role has been deleted`)).toBeVisible(), delay(5000);
-    await expect(this.page.getByText(`${randomSupersetRoleName.roleName}`)).not.toBeVisible();
+    await expect(this.page.getByText(`${supersetRoleName.roleName}`)).not.toBeVisible();
   }
 
   async createUser() {
+    await this.navigateToUsers();
+    await this.addUserButton().click();
     user = {
       userName : `${Array.from({ length: 5 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
       firstName: `${Array.from({ length: 6 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,

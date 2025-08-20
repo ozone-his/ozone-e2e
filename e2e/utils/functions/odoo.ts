@@ -3,7 +3,7 @@ import { ODOO_URL } from '../configs/globalSetup';
 import { delay, patientName } from './openmrs';
 import { Keycloak, user } from './keycloak';
 
-export var randomOdooGroupName = {
+export var odooGroupName = {
   groupName : `${Array.from({ length: 8 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
   updatedGroupName : `${Array.from({ length: 8 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`
 }
@@ -145,7 +145,7 @@ export class Odoo {
     await this.page.getByLabel(/application/i).click();
     await expect(this.page.getByText(/accounting/i)).toBeVisible();
     await this.page.getByText(/accounting/i).click();
-    await this.page.getByLabel(/name/i).fill(`${randomOdooGroupName.groupName}`);
+    await this.page.getByLabel(/name/i).fill(`${odooGroupName.groupName}`);
     await this.page.getByRole('button', { name: /save/i }).click(), delay(10000);
   }
 
@@ -160,15 +160,15 @@ export class Odoo {
   async searchGroup() {
     await this.page.getByLabel(/remove/i).click();
     await expect(this.page.getByRole('searchbox', { name: /search/i })).toBeVisible();
-    await this.page.getByRole('searchbox', { name: /search/i }).type(`${randomOdooGroupName.groupName}`);
+    await this.page.getByRole('searchbox', { name: /search/i }).type(`${odooGroupName.groupName}`);
     await this.page.locator('div>div>input').press('Enter');
-    await this.page.getByRole('cell', { name: `${randomOdooGroupName.groupName}` }).click(), delay(4000)
+    await this.page.getByRole('cell', { name: `${odooGroupName.groupName}` }).click(), delay(4000)
   }
 
   async updateGroup() {
-    await this.page.getByLabel(/name/i).fill(`${randomOdooGroupName.updatedGroupName}`);
+    await this.page.getByLabel(/name/i).fill(`${odooGroupName.updatedGroupName}`);
     await this.page.getByRole('button', { name: /save/i }).click();
-    randomOdooGroupName.groupName = `${randomOdooGroupName.updatedGroupName}`, delay(10000);
+    odooGroupName.groupName = `${odooGroupName.updatedGroupName}`, delay(10000);
   }
 
   async deleteGroup() {

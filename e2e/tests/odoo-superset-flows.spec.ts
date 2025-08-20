@@ -36,7 +36,7 @@ test(`A (synced) sale order line in Odoo generates an entry in Superset's sale_o
   await superset.clearSQLEditor();
   await openmrs.searchPatient(`${patientName.givenName}`);
   await openmrs.navigateToLabOrderForm();
-  await page.getByRole('searchbox').fill('Haemoglobin');
+  await page.getByRole('searchbox').fill('Complete blood count');
   await openmrs.saveLabOrder();
 
   // replay
@@ -47,7 +47,7 @@ test(`A (synced) sale order line in Odoo generates an entry in Superset's sale_o
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Quotation');
   await page.getByRole('cell', { name: `${patientName.firstName + ' ' + patientName.givenName}` }).click();
   const salesOrderId = await page.locator('.oe_title h1:nth-child(1) span').textContent();
-  await expect(page.locator('table tbody td.o_data_cell:nth-child(2) span:nth-child(1) span')).toHaveText('Haemoglobin');
+  await expect(page.locator('table tbody td.o_data_cell:nth-child(2) span:nth-child(1) span')).toHaveText('Complete blood count');
   let quantity = Number(await page.locator('td.o_data_cell:nth-child(4)').textContent());
   await expect(quantity).toBe(1);
   await expect(page.locator('td.o_data_cell:nth-child(7)')).toContainText('24');

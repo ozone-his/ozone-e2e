@@ -14,10 +14,7 @@ test.beforeEach(async ({ orthancPage }) => {
   keycloak = new Keycloak(orthancPage);
 
   await keycloak.open();
-  await keycloak.navigateToUsers();
-  await keycloak.addUserButton().click();
   await keycloak.createUser();
-  await openmrs.navigateToLoginPage();
   await openmrs.open();
 });
 

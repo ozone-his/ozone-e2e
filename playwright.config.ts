@@ -9,9 +9,9 @@ const config: PlaywrightTestConfig = {
   expect: {
     timeout: 40 * 1000,
   },
-  fullyParallel: false,
+  fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  workers: process.env.CI ? 1 : 1,
+  workers: process.env.CI ? 4 : 1,
   retries: 0,
   reporter: process.env.CI ? [['junit', { outputFile: 'results.xml' }], ['html']] : [['html']],
   globalSetup: require.resolve('./e2e/utils/configs/globalSetup'),

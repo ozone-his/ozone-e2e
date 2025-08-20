@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { Keycloak, user } from '../utils/functions/keycloak';
-import { Odoo, randomOdooGroupName } from '../utils/functions/odoo';
+import { Odoo, odooGroupName } from '../utils/functions/odoo';
 
 let odoo: Odoo;
 let keycloak: Keycloak;
@@ -14,8 +14,6 @@ test.beforeAll(async ({ browser }) => {
   odoo = new Odoo(page);
 
   await keycloak.open();
-  await keycloak.navigateToUsers();
-  await keycloak.addUserButton().click();
   await keycloak.createUser();
 });
 
@@ -106,7 +104,7 @@ test('Creating an Odoo group creates the corresponding Keycloak role', async ({}
   await keycloak.selectOdooId();
   await keycloak.selectRoles();
   await keycloak.searchOdooRole();
-  await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`Accounting / ${randomOdooGroupName.groupName}`);
+  await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`Accounting / ${odooGroupName.groupName}`);
 });
 
 test('Updating a synced Odoo group updates the corresponding Keycloak role.', async ({}) => {
@@ -116,7 +114,7 @@ test('Updating a synced Odoo group updates the corresponding Keycloak role.', as
   await keycloak.selectOdooId();
   await keycloak.selectRoles();
   await keycloak.searchOdooRole();
-  await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`Accounting / ${randomOdooGroupName.groupName}`);
+  await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`Accounting / ${odooGroupName.groupName}`);
 
   // replay
   await odoo.open();
@@ -131,7 +129,7 @@ test('Updating a synced Odoo group updates the corresponding Keycloak role.', as
   await keycloak.selectOdooId();
   await keycloak.selectRoles();
   await keycloak.searchOdooRole();
-  await expect(page.getByText(`Accounting / ${randomOdooGroupName.updatedGroupName}`)).toBeVisible();
+  await expect(page.getByText(`Accounting / ${odooGroupName.updatedGroupName}`)).toBeVisible();
 });
 
 test('Deleting a synced Odoo group deletes the corresponding Keycloak role.', async ({}) => {
@@ -141,7 +139,7 @@ test('Deleting a synced Odoo group deletes the corresponding Keycloak role.', as
   await keycloak.selectOdooId();
   await keycloak.selectRoles();
   await keycloak.searchOdooRole();
-  await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`Accounting / ${randomOdooGroupName.groupName}`);
+  await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`Accounting / ${odooGroupName.groupName}`);
 
   // replay
   await odoo.open();
@@ -156,7 +154,7 @@ test('Deleting a synced Odoo group deletes the corresponding Keycloak role.', as
   await keycloak.selectOdooId();
   await keycloak.selectRoles();
   await keycloak.searchOdooRole();
-  await expect(page.getByText(`Accounting / ${randomOdooGroupName.groupName}`)).not.toBeVisible();
+  await expect(page.getByText(`Accounting / ${odooGroupName.groupName}`)).not.toBeVisible();
 });
 
 test.afterAll(async ({}) => {

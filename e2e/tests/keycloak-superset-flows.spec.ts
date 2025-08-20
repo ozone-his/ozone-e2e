@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { SUPERSET_URL } from '../utils/configs/globalSetup';
 import { Keycloak, user } from '../utils/functions/keycloak';
 import { delay } from '../utils/functions/openmrs';
-import { Superset, randomSupersetRoleName} from '../utils/functions/superset';
+import { Superset, supersetRoleName} from '../utils/functions/superset';
 
 let keycloak: Keycloak;
 let superset: Superset;
@@ -16,8 +16,6 @@ test.beforeAll(async ({ browser }) => {
   keycloak = new Keycloak(page);
 
   await keycloak.open();
-  await keycloak.navigateToUsers();
-  await keycloak.addUserButton().click();
   await keycloak.createUser();
 });
 
@@ -74,7 +72,7 @@ test('Creating a Superset role creates the corresponding Keycloak role.', async 
   await keycloak.selectSupersetId();
   await keycloak.selectRoles();
   await keycloak.searchSupersetRole();
-  await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`${randomSupersetRoleName.roleName}`);
+  await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`${supersetRoleName.roleName}`);
 });
 
 test('Updating a synced Superset role updates the corresponding Keycloak role.', async ({}) => {
@@ -84,7 +82,7 @@ test('Updating a synced Superset role updates the corresponding Keycloak role.',
   await keycloak.selectSupersetId();
   await keycloak.selectRoles();
   await keycloak.searchSupersetRole();
-  await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`${randomSupersetRoleName.roleName}`);
+  await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`${supersetRoleName.roleName}`);
 
   // replay
   await superset.updateRole(), delay(50000);
@@ -95,7 +93,7 @@ test('Updating a synced Superset role updates the corresponding Keycloak role.',
   await keycloak.selectSupersetId();
   await keycloak.selectRoles();
   await keycloak.searchSupersetRole();
-  await expect(page.getByText(`${randomSupersetRoleName.updatedRoleName}`)).toBeVisible();
+  await expect(page.getByText(`${supersetRoleName.updatedRoleName}`)).toBeVisible();
 });
 
 test('Deleting a synced Superset role deletes the corresponding Keycloak role.', async ({}) => {
@@ -105,7 +103,7 @@ test('Deleting a synced Superset role deletes the corresponding Keycloak role.',
   await keycloak.selectSupersetId();
   await keycloak.selectRoles();
   await keycloak.searchSupersetRole();
-  await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`${randomSupersetRoleName.roleName}`);
+  await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`${supersetRoleName.roleName}`);
   
   // replay
   await superset.deleteRole(), delay(60000);
@@ -116,7 +114,7 @@ test('Deleting a synced Superset role deletes the corresponding Keycloak role.',
   await keycloak.selectSupersetId();
   await keycloak.selectRoles();
   await keycloak.searchSupersetRole();
-  await expect(page.getByText(`${randomSupersetRoleName.roleName}`)).not.toBeVisible();
+  await expect(page.getByText(`${supersetRoleName.roleName}`)).not.toBeVisible();
 });
 
 test('A synced role deleted from within Keycloak gets recreated in the subsequent polling cycle.', async ({}) => {
@@ -126,7 +124,7 @@ test('A synced role deleted from within Keycloak gets recreated in the subsequen
   await keycloak.selectSupersetId();
   await keycloak.selectRoles();
   await keycloak.searchSupersetRole();
-  await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`${randomSupersetRoleName.roleName}`);
+  await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`${supersetRoleName.roleName}`);
 
   // replay
   await keycloak.deleteSyncedRole(), delay(60000);
@@ -136,7 +134,7 @@ test('A synced role deleted from within Keycloak gets recreated in the subsequen
   await keycloak.selectSupersetId();
   await keycloak.selectRoles();
   await keycloak.searchSupersetRole();
-  await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`${randomSupersetRoleName.roleName}`);
+  await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`${supersetRoleName.roleName}`);
   await superset.deleteRole();
   await superset.logout();
 });

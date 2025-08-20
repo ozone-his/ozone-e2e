@@ -18,10 +18,7 @@ test.beforeAll(async ({ browser }) => {
   senaite = new SENAITE(page);
 
   await keycloak.open();
-  await keycloak.navigateToUsers();
-  await keycloak.addUserButton().click();
   await keycloak.createUser();
-  await openmrs.navigateToLoginPage();
   await openmrs.open();
   await openmrs.createPatient();
   await openmrs.startPatientVisit();
