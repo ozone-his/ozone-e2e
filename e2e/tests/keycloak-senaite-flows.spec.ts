@@ -1,43 +1,45 @@
 import { test, expect } from '@playwright/test';
-import { KEYCLOAK_URL, SENAITE_URL } from '../utils/configs/globalSetup';
-import { Keycloak } from '../utils/functions/keycloak';
-import { OpenMRS } from '../utils/functions/openmrs';
+import { Keycloak, user } from '../utils/functions/keycloak';
 import { SENAITE } from '../utils/functions/senaite';
 
-let openmrs: OpenMRS;
 let senaite: SENAITE;
 let keycloak: Keycloak;
+let browserContext;
+let page;
 
-test.beforeEach(async ({ page }) => {
-  openmrs = new OpenMRS(page);
-  senaite = new SENAITE(page);
+test.beforeAll(async ({ browser }) => {
+  browserContext = await browser.newContext();
+  page = await browserContext.newPage();
   keycloak = new Keycloak(page);
+  senaite = new SENAITE(page);
+
+  await keycloak.open();
+  await keycloak.createUser();
 });
 
-test('Logging out from SENAITE ends the session in Keycloak and logs out the user.', async ({ page }) => {
+test('Logging out from SENAITE ends the session in Keycloak and logs out the user.', async ({}) => {
   // setup
   await senaite.open();
-  await keycloak.open();
+  await keycloak.navigateToHomePage();
   await keycloak.navigateToClients();
   await keycloak.selectSENAITEId();
   await keycloak.selectSessions();
-  await expect(page.locator('td:nth-child(1) a').nth(0)).toHaveText(/jdoe/i);
+  await expect(page.getByText(`${user.userName}`)).toBeVisible();
 
   // replay
   await senaite.logout();
   await expect(page.locator('#username')).toBeVisible();
 
   // verify
-  await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
+  await keycloak.navigateToHomePage();
   await keycloak.navigateToClients();
   await keycloak.selectSENAITEId();
   await keycloak.selectSessions();
-  await expect(page.locator('h1.pf-c-title:nth-child(2)')).toHaveText(/no sessions/i);
-  await expect(page.locator('.pf-c-empty-state__body')).toHaveText(/there are currently no active sessions for this client/i);
-  await page.goto(`${SENAITE_URL}/senaite-dashboard`);
+  await expect(page.getByText(`${user.userName}`)).not.toBeVisible();
+  await senaite.navigateToHomePage();
   await expect(page.locator('#username')).toBeVisible();
 });
 
-test.afterEach(async ({ page }) => {
-  await page.close();
+test.afterAll(async ({}) => {
+  await keycloak.deleteUser();
 });

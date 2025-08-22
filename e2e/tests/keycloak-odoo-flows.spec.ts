@@ -1,64 +1,64 @@
 import { test, expect } from '@playwright/test';
-import { Keycloak } from '../utils/functions/keycloak';
-import { KEYCLOAK_URL, ODOO_URL } from '../utils/configs/globalSetup';
-import { Odoo, randomOdooGroupName } from '../utils/functions/odoo';
+import { Keycloak, user } from '../utils/functions/keycloak';
+import { Odoo, odooGroupName } from '../utils/functions/odoo';
 
 let odoo: Odoo;
 let keycloak: Keycloak;
+let browserContext;
+let page;
 
-test.beforeEach(async ({ page }) => {
-  odoo = new Odoo(page);
+test.beforeAll(async ({ browser }) => {
+  browserContext = await browser.newContext();
+  page = await browserContext.newPage();
   keycloak = new Keycloak(page);
-});
+  odoo = new Odoo(page);
 
-test('Logging out from Odoo ends the session in Keycloak and logs out the user.', async ({ page }) => {
-  // setup
-  await odoo.open();
   await keycloak.open();
-  await keycloak.navigateToClients();
-  await keycloak.selectOdooId();
-  await keycloak.selectSessions();
-  await expect(page.locator('td:nth-child(1) a').nth(0)).toHaveText(/jdoe/i);
-
-  // replay
-  await odoo.logout();
-  await expect(page).toHaveURL(/.*login/);
-
-  // verify
-  await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
-  await keycloak.navigateToClients();
-  await keycloak.selectOdooId();
-  await keycloak.selectSessions();
-  await expect(page.locator('h1.pf-c-title:nth-child(2)')).toHaveText(/no sessions/i);
-  await expect(page.locator('.pf-c-empty-state__body')).toHaveText(/there are currently no active sessions for this client/i);
-  await page.goto(`${ODOO_URL}/web`);
-  await expect(page).toHaveURL(/.*login/);
-});
-
-test('Odoo role assigned to a user in Keycloak is applied upon login in Odoo.', async ({ page }) => {
-  // setup
-  await keycloak.open();
-  await keycloak.navigateToUsers();
-  await keycloak.addUserButton().click();
-
-  // replay
   await keycloak.createUser();
+});
+
+test('Logging out from Odoo ends the session in Keycloak and logs out the user.', async ({}) => {
+  // setup
   await odoo.login();
+  await keycloak.navigateToHomePage();
+  await keycloak.navigateToClients();
+  await keycloak.selectOdooId();
+  await keycloak.selectSessions();
+  await expect(page.getByText(`${user.userName}`)).toBeVisible();
+
+  // replay
   await odoo.logout();
 
   // verify
-  await odoo.enterAdminCredentials();
+  await keycloak.navigateToHomePage();
+  await keycloak.navigateToClients();
+  await keycloak.selectOdooId();
+  await keycloak.selectSessions();
+  await expect(page.getByText(`${user.userName}`)).not.toBeVisible();
+  await odoo.navigateToHomePage();
+  await expect(page.locator('#username')).toBeVisible();
+});
+
+test('Odoo role assigned to a user in Keycloak is applied upon login in Odoo.', async ({}) => {
+ // setup
+  await keycloak.navigateToHomePage();
+
+  // replay
+  await keycloak.navigateToUsers();
+  await keycloak.searchUser();
+  await expect(page.getByText('User types / Internal User')).toBeVisible();
+
+  // verify
+  await odoo.loginAsAdmin();
   await odoo.activateDeveloperMode();
   await odoo.navigateToUsers();
   await odoo.searchUser();
   await expect(page.locator('input[type="radio"][data-value="1"]')).toBeChecked();
 });
 
-test('Coded Odoo groups create corresponding Keycloak roles.', async ({ page }) => {
+test('Coded Odoo groups create corresponding Keycloak roles.', async ({}) => {
   // setup
-  await page.goto(`${ODOO_URL}`);
-  await odoo.enterAdminCredentials();
-  await odoo.activateDeveloperMode();
+  await odoo.open();
 
   // replay
   await odoo.navigateToGroups();
@@ -69,7 +69,7 @@ test('Coded Odoo groups create corresponding Keycloak roles.', async ({ page }) 
   await expect(page.getByText('User types / Portal')).toBeVisible();
 
   // verify
-  await keycloak.open();
+  await keycloak.navigateToHomePage();
   await keycloak.navigateToClients();
   await keycloak.selectOdooId();
   await keycloak.selectRoles();
@@ -90,81 +90,73 @@ test('Coded Odoo groups create corresponding Keycloak roles.', async ({ page }) 
   await expect(page.getByText('User types / Portal')).toBeVisible();
 });
 
-test('Creating an Odoo group creates the corresponding Keycloak role', async ({ page }) => {
+test('Creating an Odoo group creates the corresponding Keycloak role', async ({}) => {
   // setup
-  await page.goto(`${ODOO_URL}`);
-  await odoo.enterAdminCredentials();
-  await odoo.activateDeveloperMode();
+  await odoo.open();
 
   // replay
   await odoo.navigateToGroups();
   await odoo.createGroup();
 
   // verify
-  await keycloak.open();
+  await keycloak.navigateToHomePage();
   await keycloak.navigateToClients();
   await keycloak.selectOdooId();
   await keycloak.selectRoles();
   await keycloak.searchOdooRole();
-  await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`Accounting / ${randomOdooGroupName.groupName}`);
+  await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`Accounting / ${odooGroupName.groupName}`);
 });
 
-test('Updating a synced Odoo group updates the corresponding Keycloak role.', async ({ page }) => {
+test('Updating a synced Odoo group updates the corresponding Keycloak role.', async ({}) => {
   // setup
-  await page.goto(`${ODOO_URL}`);
-  await odoo.enterAdminCredentials();
-  await odoo.activateDeveloperMode();
-  await odoo.navigateToGroups();
-  await odoo.createGroup();
-  await keycloak.open();
+  await keycloak.navigateToHomePage();
   await keycloak.navigateToClients();
   await keycloak.selectOdooId();
   await keycloak.selectRoles();
   await keycloak.searchOdooRole();
-  await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`Accounting / ${randomOdooGroupName.groupName}`);
+  await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`Accounting / ${odooGroupName.groupName}`);
 
   // replay
-  await page.goto(`${ODOO_URL}`);
+  await odoo.open();
   await odoo.navigateToSettings();
   await odoo.navigateToGroups();
   await odoo.searchGroup();
   await odoo.updateGroup();
 
   // verify
-  await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
+  await keycloak.navigateToHomePage();
   await keycloak.navigateToClients();
   await keycloak.selectOdooId();
   await keycloak.selectRoles();
   await keycloak.searchOdooRole();
-  await expect(page.getByText(`Accounting / ${randomOdooGroupName.updatedGroupName}`)).toBeVisible();
+  await expect(page.getByText(`Accounting / ${odooGroupName.updatedGroupName}`)).toBeVisible();
 });
 
-test('Deleting a synced Odoo group deletes the corresponding Keycloak role.', async ({ page }) => {
+test('Deleting a synced Odoo group deletes the corresponding Keycloak role.', async ({}) => {
   // setup
-  await page.goto(`${ODOO_URL}`);
-  await odoo.enterAdminCredentials();
-  await odoo.activateDeveloperMode();
-  await odoo.navigateToGroups();
-  await odoo.createGroup();
-  await keycloak.open();
+  await keycloak.navigateToHomePage();
   await keycloak.navigateToClients();
   await keycloak.selectOdooId();
   await keycloak.selectRoles();
   await keycloak.searchOdooRole();
-  await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`Accounting / ${randomOdooGroupName.groupName}`);
+  await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`Accounting / ${odooGroupName.groupName}`);
 
   // replay
-  await page.goto(`${ODOO_URL}`);
+  await odoo.open();
   await odoo.navigateToSettings();
   await odoo.navigateToGroups();
   await odoo.searchGroup();
   await odoo.deleteGroup();
 
   // verify
-  await page.goto(`${KEYCLOAK_URL}/admin/master/console`);
+  await keycloak.navigateToHomePage();
   await keycloak.navigateToClients();
   await keycloak.selectOdooId();
   await keycloak.selectRoles();
   await keycloak.searchOdooRole();
-  await expect(page.getByText(`Accounting / ${randomOdooGroupName.groupName}`)).not.toBeVisible();
+  await expect(page.getByText(`Accounting / ${odooGroupName.groupName}`)).not.toBeVisible();
+});
+
+test.afterAll(async ({}) => {
+  await keycloak.deleteUser();
 });

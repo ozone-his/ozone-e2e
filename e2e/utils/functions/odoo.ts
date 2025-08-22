@@ -3,7 +3,7 @@ import { ODOO_URL } from '../configs/globalSetup';
 import { delay, patientName } from './openmrs';
 import { Keycloak, user } from './keycloak';
 
-export var randomOdooGroupName = {
+export var odooGroupName = {
   groupName : `${Array.from({ length: 8 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
   updatedGroupName : `${Array.from({ length: 8 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`
 }
@@ -18,13 +18,20 @@ export class Odoo {
 
   async login() {
     await this.page.goto(`${ODOO_URL}`);
-    await this.page.getByRole('link', { name: /login with single sign-on/i }).click(), delay(4000);
     if(await this.page.locator('#username').isVisible()) {
       const keycloak = new Keycloak(this.page);
       await keycloak.enterUserCredentials();
     }
     await expect(this.page).toHaveURL(/.*web/);
   }
+
+  async loginAsAdmin() {
+    await this.page.goto(`${ODOO_URL}/web/login?no_autologin`);
+    await expect(this.page.locator('#login')).toBeVisible();
+    await this.enterAdminCredentials();
+    await expect(this.page).toHaveURL(/.*web/);
+  }
+
   async enterAdminCredentials() {
     await this.page.locator('#login').fill(`${process.env.ODOO_USERNAME}`);
     await this.page.locator('#password').fill(`${process.env.ODOO_PASSWORD}`);
@@ -34,9 +41,12 @@ export class Odoo {
   async searchCustomer() {
     await this.page.getByRole('button', { name: /remove/i }).click(), delay(2000);
     await expect(this.page.locator('.o_searchview_input')).toBeVisible();
-    await this.page.locator('.o_searchview_input').fill(`${patientName.firstName + ' ' + patientName.givenName}`);
-    await this.page.locator('.o_searchview_input').press('Enter');
-    await delay(2000);
+    await this.page.locator('.o_searchview_input').fill(`${patientName.givenName}`);
+    await this.page.locator('.o_searchview_input').press('Enter'), delay(2000);
+  }
+
+  async navigateToHomePage() {
+    await this.page.goto(`${ODOO_URL}/web`);
   }
 
   async navigateToSales() {
@@ -135,7 +145,7 @@ export class Odoo {
     await this.page.getByLabel(/application/i).click();
     await expect(this.page.getByText(/accounting/i)).toBeVisible();
     await this.page.getByText(/accounting/i).click();
-    await this.page.getByLabel(/name/i).fill(`${randomOdooGroupName.groupName}`);
+    await this.page.getByLabel(/name/i).fill(`${odooGroupName.groupName}`);
     await this.page.getByRole('button', { name: /save/i }).click(), delay(10000);
   }
 
@@ -150,15 +160,15 @@ export class Odoo {
   async searchGroup() {
     await this.page.getByLabel(/remove/i).click();
     await expect(this.page.getByRole('searchbox', { name: /search/i })).toBeVisible();
-    await this.page.getByRole('searchbox', { name: /search/i }).type(`${randomOdooGroupName.groupName}`);
+    await this.page.getByRole('searchbox', { name: /search/i }).type(`${odooGroupName.groupName}`);
     await this.page.locator('div>div>input').press('Enter');
-    await this.page.getByRole('cell', { name: `${randomOdooGroupName.groupName}` }).click(), delay(4000)
+    await this.page.getByRole('cell', { name: `${odooGroupName.groupName}` }).click(), delay(4000)
   }
 
   async updateGroup() {
-    await this.page.getByLabel(/name/i).fill(`${randomOdooGroupName.updatedGroupName}`);
+    await this.page.getByLabel(/name/i).fill(`${odooGroupName.updatedGroupName}`);
     await this.page.getByRole('button', { name: /save/i }).click();
-    randomOdooGroupName.groupName = `${randomOdooGroupName.updatedGroupName}`, delay(10000);
+    odooGroupName.groupName = `${odooGroupName.updatedGroupName}`, delay(10000);
   }
 
   async deleteGroup() {
@@ -174,6 +184,7 @@ export class Odoo {
     await expect(this.page.getByRole('button', { name: /user/i })).toBeVisible();
     await this.page.getByRole('button', { name: /user/i }).click();
     await expect(this.page.getByRole('menuitem', { name: /log out/i })).toBeVisible();
-    await this.page.getByRole('menuitem', { name: /log out/i }).click();
+    await this.page.getByRole('menuitem', { name: /log out/i }).click(), delay(4000);
+    await expect(this.page.locator('#username')).toBeVisible();
   }
 }

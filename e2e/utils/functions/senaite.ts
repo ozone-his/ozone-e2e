@@ -10,9 +10,13 @@ export class SENAITE {
     await this.page.goto(`${SENAITE_URL}`), delay(4000);
     if(await this.page.locator('#username').isVisible()) {
       const keycloak = new Keycloak(this.page);
-      await keycloak.enterCredentials();
+      await keycloak.enterUserCredentials();
     }
     await expect(this.page).toHaveURL(/.*senaite-dashboard/);
+  }
+
+  async navigateToHomePage() {
+    await this.page.goto(`${SENAITE_URL}/senaite-dashboard`), delay(2000);
   }
 
   async searchClient() {

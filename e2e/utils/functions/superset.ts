@@ -3,7 +3,7 @@ import { SUPERSET_URL } from '../configs/globalSetup';
 import { delay } from './openmrs';
 import { Keycloak } from './keycloak';
 
-export var randomSupersetRoleName = {
+export var supersetRoleName = {
   roleName : `${Array.from({ length: 8 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`,
   updatedRoleName : `${Array.from({ length: 8 }, () => String.fromCharCode(Math.floor(Math.random() * 26) + 97)).join('')}`
 }
@@ -19,9 +19,23 @@ export class Superset {
     await this.page.locator('#btn-signin-keycloak').click(), delay(4000);
     if(await this.page.locator('#username').isVisible()) {
       const keycloak = new Keycloak(this.page);
+      await keycloak.enterUserCredentials();
+    }
+    await expect(this.page).toHaveURL(/.*superset/);
+  }
+
+  async login() {
+    await this.page.goto(`${SUPERSET_URL}`);
+    await this.page.locator('#btn-signin-keycloak').click(), delay(4000);
+    if(await this.page.locator('#username').isVisible()) {
+      const keycloak = new Keycloak(this.page);
       await keycloak.enterCredentials();
     }
     await expect(this.page).toHaveURL(/.*superset/);
+  }
+
+  async navigateToHomePage() {
+    await this.page.goto(`${SUPERSET_URL}`);
   }
 
   async selectDBSchema() {
@@ -50,7 +64,7 @@ export class Superset {
     await expect(this.page.getByText('List Roles')).toBeVisible();
     await this.page.getByRole('link', { name: 'List Roles' }).click();
     await this.page.getByRole('link', { name: 'Add' }).click();
-    await this.page.getByPlaceholder('Name').fill(`${randomSupersetRoleName.roleName}`);
+    await this.page.getByPlaceholder('Name').fill(`${supersetRoleName.roleName}`);
     await this.page.getByPlaceholder('Select Value').click();
     await this.page.getByRole('option', { name: 'can read on SavedQuery' }).click();
     await this.page.getByRole('searchbox').click();
@@ -61,25 +75,26 @@ export class Superset {
     await this.page.getByRole('option', { name: 'can read on Query' }).click();
     await this.page.locator('button[type="submit"]').click(), delay(2000);
     await expect(this.page.getByText(/added row/i)).toBeVisible();
-    await expect(this.page.getByText(`${randomSupersetRoleName.roleName}`)).toBeVisible(), delay(50000);
+    await expect(this.page.getByText(`${supersetRoleName.roleName}`)).toBeVisible(), delay(50000);
   }
 
   async updateRole() {
     await this.page.goto(`${SUPERSET_URL}/roles/list/`);
-    await this.page.getByRole('row', { name: `${randomSupersetRoleName.roleName}` }).getByRole('link').nth(1).click(), delay(2000);
-    await this.page.getByPlaceholder('Name').fill(`${randomSupersetRoleName.updatedRoleName}`);
+    await this.page.getByRole('row', { name: `${supersetRoleName.roleName}` }).getByRole('link').nth(1).click(), delay(2000);
+    await this.page.getByPlaceholder('Name').fill(`${supersetRoleName.updatedRoleName}`);
     await this.page.locator('button[type="submit"]').click(), delay(2000);
     await expect(this.page.getByText(/changed row/i)).toBeVisible();
-    await expect(this.page.getByText(`${randomSupersetRoleName.updatedRoleName}`)).toBeVisible(), delay(50000);
+    await expect(this.page.getByText(`${supersetRoleName.updatedRoleName}`)).toBeVisible();
+    supersetRoleName.roleName = `${supersetRoleName.updatedRoleName}`, delay(5000);
   }
 
   async deleteRole(){
     await this.page.goto(`${SUPERSET_URL}/roles/list`);
-    await this.page.getByRole('row', { name: `${randomSupersetRoleName.roleName}` }).getByRole('checkbox').check();
-    await this.page.getByRole('row', { name: `${randomSupersetRoleName.roleName}` }).getByRole('link').nth(2).click(), delay(2000);
+    await this.page.getByRole('row', { name: `${supersetRoleName.roleName}` }).getByRole('checkbox').check();
+    await this.page.getByRole('row', { name: `${supersetRoleName.roleName}` }).getByRole('link').nth(2).click(), delay(2000);
     await this.page.getByRole('link', { name: 'OK' }).click(), delay(2500);
     await expect(this.page.getByText(/deleted row/i)).toBeVisible();
-    await expect(this.page.getByText(`${randomSupersetRoleName.roleName}`)).not.toBeVisible();
+    await expect(this.page.getByText(`${supersetRoleName.roleName}`)).not.toBeVisible();
   }
 
   async navigateToDatasets() {
@@ -92,11 +107,11 @@ export class Superset {
 
   async deleteUpdatedRole(){
     await this.page.goto(`${SUPERSET_URL}/roles/list`);
-    await this.page.getByRole('row', { name: `${randomSupersetRoleName.updatedRoleName}` }).getByRole('checkbox').check();
-    await this.page.getByRole('row', { name: `${randomSupersetRoleName.updatedRoleName}` }).getByRole('link').nth(2).click(), delay(2000);
+    await this.page.getByRole('row', { name: `${supersetRoleName.updatedRoleName}` }).getByRole('checkbox').check();
+    await this.page.getByRole('row', { name: `${supersetRoleName.updatedRoleName}` }).getByRole('link').nth(2).click(), delay(2000);
     await this.page.getByRole('link', { name: 'OK' }).click(), delay(2500);
     await expect(this.page.getByText(/deleted row/i)).toBeVisible();
-    await expect(this.page.getByText(`${randomSupersetRoleName.updatedRoleName}`)).not.toBeVisible();
+    await expect(this.page.getByText(`${supersetRoleName.updatedRoleName}`)).not.toBeVisible();
   }
 
   async logout() {
