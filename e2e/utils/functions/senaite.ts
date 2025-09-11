@@ -62,6 +62,7 @@ export class SENAITE {
     await expect(this.page.locator('#navbarUserDropdown')).toBeVisible();
     await this.page.locator('#navbarUserDropdown').click();
     await expect(this.page.getByRole('link', { name: /log out/i })).toBeVisible();
-    await this.page.getByRole('link', { name: /log out/i }).click();
+    await this.page.getByRole('link', { name: /log out/i }).click(), delay(5000);
+    await expect(this.page.locator('#username')).toBeVisible();
   }
 }
