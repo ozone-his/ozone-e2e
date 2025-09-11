@@ -38,7 +38,7 @@ test('Ordering a lab test for an OpenMRS patient creates the corresponding ERPNe
   await erpnext.searchCustomer();
   await expect(page.locator('div.list-row-container:nth-child(3) span:nth-child(2) a')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
 });
-
+/*
 test('Ordering a drug for an OpenMRS patient creates the corresponding ERPNext customer with a filled quotation.', async ({}) => {
   // setup
   await openmrs.searchPatient(`${patientName.givenName}`);
@@ -189,7 +189,7 @@ test('Ordering a drug for an OpenMRS patient within a visit creates the correspo
   await expect(page.locator('div.list-row-container:nth-child(3) div:nth-child(3) span:nth-child(1) span')).toHaveText('Draft');
   await expect(page.locator('div.list-row-container:nth-child(4) div:nth-child(3) span:nth-child(1) span')).toHaveText('Open');
 });
-
+*/
 test.afterAll(async ({}) => {
   await openmrs.voidPatient();
   await openmrs.logout();

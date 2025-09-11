@@ -54,7 +54,7 @@ test('Editing the details of an OpenMRS patient with a synced lab order edits th
   await senaite.searchClient();
   await expect(page.locator('table tbody tr:nth-child(1) td.contentcell.title div span a')).toContainText(`${patientName.updatedFirstName}` + ' ' + `${patientName.givenName }`);
 });
-/*
+
 test('Voiding a synced OpenMRS lab order cancels the corresponding SENAITE analysis request.', async ({}) => {
   // setup
   await senaite.open();
@@ -140,7 +140,7 @@ test('Published free text lab results from SENAITE are viewable in the OpenMRS l
   await expect(page.locator('tr:nth-child(1) td:nth-child(1) p span span')).toContainText('Stool microscopy with concentration');
   await expect(page.locator('tr:nth-child(1) td:nth-child(2)')).toContainText('Positive');
 });
-*/
+
 test.afterAll(async ({}) => {
   await openmrs.voidPatient();
   await senaite.logout();

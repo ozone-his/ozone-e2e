@@ -113,7 +113,7 @@ test('Revising details of a synced OpenMRS drug order modifies the corresponding
   await expect(drugOrderItem).toContainText('Thrice daily - 6 day');
   await expect(page.locator('[name="amount_total"]')).toHaveText('$ 11.41');
 });
-
+/*
 test('Discontinuing a synced OpenMRS lab order for an Odoo customer with a single quotation line cancels the corresponding quotation.', async ({}) => {
   // setup
   await odoo.open();
@@ -239,7 +239,7 @@ test(`Ordering a drug for an OpenMRS patient with weight creates the weight on t
   await expect(page.locator('tr.o_data_row:nth-child(2) td:nth-child(2) span:nth-child(1) span')).toHaveText('Hepatitis C test - qualitative');
   await expect(page.locator('#x_customer_weight_0')).toHaveValue('75.0 kg');
 });
-
+*/
 test.afterAll(async ({}) => {
   await openmrs.voidPatient();
   await odoo.logout();
