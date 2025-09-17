@@ -169,6 +169,11 @@ export class Keycloak {
     await this.page.getByTestId('firstName-input').fill(`${user.firstName}`);
     await this.page.getByTestId('lastName-input').fill(`${user.lastName}`);
     await this.saveUser();
+    await this.page.getByTestId('attributes').click();
+    await this.page.getByTestId('attributes-add-row').click();
+    await this.page.getByTestId('attributes-key').fill('gender');
+    await this.page.getByTestId('attributes-value').fill('M');
+    await this.page.getByTestId('save-attributes').click(), delay(2000);
     await this.navigateToCredentials();
     await this.enterUserPassword();
     await this.confirmUserPassword();
