@@ -58,7 +58,7 @@ test('Ordering a drug for an OpenMRS patient creates the corresponding Odoo cust
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(4)')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Quotation');
   await page.getByRole('cell', { name: `${patientName.givenName}` }).click();
-  await expect(page.locator('tr', { has: page.locator('td', { hasText: 'Aspirin 325mg' }),}).locator('td[name="price_subtotal"]')).toHaveText('$ 14.88'), delay(2000);
+  await expect(page.locator('tr', { has: page.locator('td', { hasText: 'Aspirin 325mg' }),}).locator('td[name="price_subtotal"]')).toHaveText('$ 14.88');
 });
 
 test('Editing the details of an OpenMRS patient with a synced order edits the corresponding Odoo customer details.', async ({}) => {
