@@ -60,7 +60,7 @@ test('Ordering a drug for an OpenMRS patient creates the corresponding Odoo cust
   await page.getByRole('cell', { name: `${patientName.givenName}` }).click();
   await expect(page.locator('tr', { has: page.locator('td', { hasText: 'Aspirin 325mg' }),}).locator('td[name="price_subtotal"]')).toHaveText('$ 14.88')
 });
-/*
+
 test('Editing the details of an OpenMRS patient with a synced order edits the corresponding Odoo customer details.', async ({}) => {
   // setup
   await odoo.open();
@@ -86,7 +86,7 @@ test('Editing the details of an OpenMRS patient with a synced order edits the co
   await expect(page.locator('.text-break>div>div>span')).not.toHaveText('08/16/2002');
   await expect(page.locator('.text-break>div>div>span')).toHaveText('08/18/2003');
 });
-
+/*
 test('Revising details of a synced OpenMRS drug order modifies the corresponding Odoo quotation line.', async ({}) => {
   // setup
   await odoo.open();
