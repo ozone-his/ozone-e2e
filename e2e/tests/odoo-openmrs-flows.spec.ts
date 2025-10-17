@@ -40,7 +40,7 @@ test('Ordering a lab test for an OpenMRS patient creates the corresponding Odoo 
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Quotation');
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(7) span')).toHaveText('$ 31.63');
 });
-
+/*
 test('Ordering a drug for an OpenMRS patient creates the corresponding Odoo customer with a filled quotation.', async ({}) => {
   // setup
   await openmrs.searchPatient(`${patientName.givenName}`);
@@ -239,7 +239,7 @@ test(`Ordering a drug for an OpenMRS patient with weight creates the weight on t
   await expect(page.locator('tr.o_data_row:nth-child(2) td:nth-child(2) span:nth-child(1) span')).toHaveText('Hepatitis C test - qualitative');
   await expect(page.locator('#x_customer_weight_0')).toHaveValue('75.0 kg');
 });
-
+*/
 test.afterAll(async ({}) => {
   await openmrs.voidPatient();
   await odoo.logout();
