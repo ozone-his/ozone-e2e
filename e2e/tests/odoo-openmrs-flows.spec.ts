@@ -242,6 +242,6 @@ test(`Ordering a drug for an OpenMRS patient with weight creates the weight on t
 */
 test.afterAll(async ({}) => {
   await openmrs.voidPatient();
-  await odoo.logout();
+  // await odoo.logout();
   await keycloak.deleteUser();
 });
