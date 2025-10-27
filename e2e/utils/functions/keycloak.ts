@@ -56,10 +56,33 @@ export class Keycloak {
   }
   
   async navigateToClients() {
+    await this.selectOzoneRealm();
+    await this.page.getByRole('link', { name: 'Clients' }).click(), delay(2000);
+  }
+
+  async navigateToAuthentication() {
+    await this.selectOzoneRealm();
+    await this.page.getByRole('link', { name: 'Authentication' }).click(), delay(2000);
+  }
+
+  async selectOzoneRealm() {
     await this.page.getByTestId('realmSelectorToggle').click();
     await expect(this.page.getByRole('menuitem', { name: 'ozone' })).toBeVisible();
     await this.page.getByRole('menuitem', { name: 'ozone' }).click();
-    await this.page.getByRole('link', { name: 'Clients' }).click(), delay(2000);
+  }
+
+  async activateAutoLogin() {
+    await this.page.getByRole('link', { name: 'auto login' }).click();
+    await this.page.getByRole('button', { name: 'Action' }).click();
+    await this.page.getByText('Bind flow').click();
+    await expect(this.page.getByText('Flow successfully updated')).toBeVisible();
+  }
+
+  async deActivateAutoLogin() {
+    await this.page.getByRole('link', { name: 'browser' }).click();
+    await this.page.getByRole('button', { name: 'Action' }).click();
+    await this.page.getByText('Bind flow').click();
+    await expect(this.page.getByText('Flow successfully updated')).toBeVisible();
   }
 
   async navigateToUsers() {
