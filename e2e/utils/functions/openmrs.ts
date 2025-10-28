@@ -34,10 +34,10 @@ export class OpenMRS {
     await this.page.locator('label').filter({ hasText: /inpatient ward/i }).locator('span').first().click();
     await this.page.getByRole('button', { name: /confirm/i }).click();
     await expect(this.page).toHaveURL(/.*home/);
-    await expect(this.page.getByRole('button', { name: /search patient/i })).toBeEnabled();
-    await expect(this.page.getByRole('button', { name: /add Patient/i })).toBeEnabled();
+    await expect(this.page.getByRole('button', { name: /search patient button/i })).toBeEnabled();
+    await expect(this.page.getByRole('button', { name: /add patient/i })).toBeEnabled();
     await expect(this.page.getByRole('button', { name: /my account/i })).toBeEnabled();
-    await expect(this.page.getByRole('button', { name: /app Menu/i })).toBeEnabled();
+    await expect(this.page.getByRole('button', { name: /app menu/i })).toBeEnabled();
   }
 
   async open() {

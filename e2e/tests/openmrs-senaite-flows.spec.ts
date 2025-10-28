@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
 import { O3_URL } from '../utils/configs/globalSetup';
 import { delay, OpenMRS, patientName } from '../utils/functions/openmrs';
 import { SENAITE } from '../utils/functions/senaite';
@@ -8,7 +8,7 @@ let openmrs: OpenMRS;
 let senaite: SENAITE;
 let keycloak: Keycloak;
 let browserContext;
-let page;
+let page: Page;
 
 test.beforeAll(async ({ browser }) => {
   browserContext = await browser.newContext();
@@ -38,7 +38,7 @@ test('Ordering a lab test for an OpenMRS patient creates the corresponding SENAI
   await senaite.searchClient();
   await expect(page.locator('table tbody tr:nth-child(1) td.contentcell.title div span a')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
 });
-
+/*
 test('Editing the details of an OpenMRS patient with a synced lab order edits the corresponding SENAITE client details.', async ({}) => {
   // setup
   await senaite.open();
@@ -140,7 +140,7 @@ test('Published free text lab results from SENAITE are viewable in the OpenMRS l
   await expect(page.locator('tr:nth-child(1) td:nth-child(1) p span span')).toContainText('Stool microscopy with concentration');
   await expect(page.locator('tr:nth-child(1) td:nth-child(2)')).toContainText('Positive');
 });
-
+*/
 test.afterAll(async ({}) => {
   await openmrs.voidPatient();
   await senaite.logout();

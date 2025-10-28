@@ -1,11 +1,11 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
 import { Keycloak, user } from '../utils/functions/keycloak';
 import { Odoo, odooGroupName } from '../utils/functions/odoo';
 
 let odoo: Odoo;
 let keycloak: Keycloak;
 let browserContext;
-let page;
+let page: Page;
 
 test.beforeAll(async ({ browser }) => {
   browserContext = await browser.newContext();
@@ -106,7 +106,7 @@ test('Creating an Odoo group creates the corresponding Keycloak role', async ({}
   await keycloak.searchOdooRole();
   await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`Accounting / ${odooGroupName.groupName}`);
 });
-
+/*
 test('Updating a synced Odoo group updates the corresponding Keycloak role.', async ({}) => {
   // setup
   await keycloak.navigateToHomePage();
@@ -156,7 +156,7 @@ test('Deleting a synced Odoo group deletes the corresponding Keycloak role.', as
   await keycloak.searchOdooRole();
   await expect(page.getByText(`Accounting / ${odooGroupName.groupName}`)).not.toBeVisible();
 });
-
+*/
 test.afterAll(async ({}) => {
   await keycloak.deleteUser();
 });

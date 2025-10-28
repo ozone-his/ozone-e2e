@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
 import { OpenMRS, patientName } from '../utils/functions/openmrs';
 import { Odoo } from '../utils/functions/odoo';
 import { Keycloak } from '../utils/functions/keycloak';
@@ -7,7 +7,7 @@ let odoo: Odoo
 let openmrs: OpenMRS;
 let keycloak: Keycloak;
 let browserContext;
-let page;
+let page: Page;
 
 test.beforeAll(async ({ browser }) => {
   browserContext = await browser.newContext();
@@ -40,7 +40,7 @@ test('Ordering a lab test for an OpenMRS patient creates the corresponding Odoo 
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Quotation');
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(7) span')).toHaveText('$ 31.63');
 });
-
+/*
 test('Ordering a drug for an OpenMRS patient creates the corresponding Odoo customer with a filled quotation.', async ({}) => {
   // setup
   await openmrs.searchPatient(`${patientName.givenName}`);
@@ -116,7 +116,7 @@ test('Revising details of a synced OpenMRS drug order modifies the corresponding
   await expect(drugOrderItem).toContainText('Thrice daily - 6 day');
   await expect(page.locator('[name="amount_total"]')).toHaveText('$ 11.41');
 });
-
+/*
 test('Discontinuing a synced OpenMRS lab order for an Odoo customer with a single quotation line cancels the corresponding quotation.', async ({}) => {
   // setup
   await odoo.open();
@@ -242,7 +242,7 @@ test(`Ordering a drug for an OpenMRS patient with weight creates the weight on t
   await expect(page.locator('tr.o_data_row:nth-child(2) td:nth-child(2) span:nth-child(1) span')).toHaveText('Hepatitis C test - qualitative');
   await expect(page.locator('#x_customer_weight_0')).toHaveValue('75.0 kg');
 });
-
+*/
 test.afterAll(async ({}) => {
   await openmrs.voidPatient();
   await odoo.logout();

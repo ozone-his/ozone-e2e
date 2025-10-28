@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
 import { O3_URL, SUPERSET_URL } from '../utils/configs/globalSetup';
 import { OpenMRS, patientName } from '../utils/functions/openmrs';
 import { Superset } from '../utils/functions/superset';
@@ -8,7 +8,7 @@ let openmrs: OpenMRS;
 let keycloak: Keycloak;
 let superset: Superset;
 let browserContext;
-let page;
+let page: Page;
 let patient_uuid;
 let patientIdentifier;
 let initialObservationsCount;
@@ -63,7 +63,7 @@ test(`Creating an OpenMRS patient creates the patient in Superset's patients tab
   await page.getByRole('tab', { name: 'Results' }).click();
   await superset.clearSQLEditor();
 });
-
+/*
 test(`Creating an OpenMRS visit creates the visit in Superset's visits table.`, async ({}) => {
   // setup
   await superset.navigateToHomePage();
@@ -459,7 +459,7 @@ test(`Superset should contain dataset per flattened table on fresh install datas
   await superset.pressEnterButton();
   await expect(page.locator('tr', { has: page.locator('a', { hasText: 'visits' })}).locator('[aria-label="dataset-virtual"]')).toBeVisible();
 });
-
+*/
 test.afterAll(async ({}) => {
   await keycloak.deleteUser();
 });

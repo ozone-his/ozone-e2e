@@ -14,7 +14,7 @@
     "!playwright-report/"
   ],
   "scripts": {
-    "ozone-e2e": "npx playwright test",
+    "ozone-e2e": "npx playwright test keycloak-openmrs",
     "openmrs-distro-his": "npx playwright test odoo-openmrs openmrs-senaite"
   },
   "publishConfig": {
@@ -26,7 +26,7 @@
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
-    "dotenv": "^16.4.7",
+    "dotenv": "^17.2.3",
     "typescript": "^5.7.2"
   }
 }

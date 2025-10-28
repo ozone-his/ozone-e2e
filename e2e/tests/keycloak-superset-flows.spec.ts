@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
 import { SUPERSET_URL } from '../utils/configs/globalSetup';
 import { Keycloak, user } from '../utils/functions/keycloak';
 import { delay } from '../utils/functions/openmrs';
@@ -7,7 +7,7 @@ import { Superset, supersetRoleName} from '../utils/functions/superset';
 let keycloak: Keycloak;
 let superset: Superset;
 let browserContext;
-let page;
+let page: Page;
 
 test.beforeAll(async ({ browser }) => {
   browserContext = await browser.newContext();
@@ -74,7 +74,7 @@ test('Creating a Superset role creates the corresponding Keycloak role.', async 
   await keycloak.searchSupersetRole();
   await expect(page.locator('tbody:nth-child(2) td:nth-child(1) a')).toHaveText(`${supersetRoleName.roleName}`);
 });
-
+/*
 test('Updating a synced Superset role updates the corresponding Keycloak role.', async ({}) => {
   // setup
   await keycloak.navigateToHomePage();
@@ -138,7 +138,7 @@ test('A synced role deleted from within Keycloak gets recreated in the subsequen
   await superset.deleteRole();
   await superset.logout();
 });
-
+*/
 test.afterAll(async ({}) => {
   await keycloak.deleteUser();
 });

@@ -1,11 +1,11 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
 import { Keycloak, user } from '../utils/functions/keycloak';
 import { SENAITE } from '../utils/functions/senaite';
 
 let senaite: SENAITE;
 let keycloak: Keycloak;
 let browserContext;
-let page;
+let page: Page;
 
 test.beforeAll(async ({ browser }) => {
   browserContext = await browser.newContext();

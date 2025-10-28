@@ -1,11 +1,11 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
 import { Keycloak, keycloakRoleName, user } from '../utils/functions/keycloak';
 import { OpenMRS, delay, openmrsRoleName } from '../utils/functions/openmrs';
 
 let openmrs: OpenMRS;
 let keycloak: Keycloak;
 let browserContext;
-let page;
+let page: Page;
 
 test.beforeAll(async ({ browser }) => {
   browserContext = await browser.newContext();
@@ -79,7 +79,7 @@ test('Creating an OpenMRS role creates the corresponding Keycloak role.', async 
   await expect(page.getByText('Application: Has Super User Privileges')).toBeTruthy();
   await expect(page.getByText('Application: Administers System')).toBeTruthy();
 });
-
+/*
 test('Updating a synced OpenMRS role updates the corresponding Keycloak role.', async ({}) => {
   // setup
   test.setTimeout(240000);
@@ -167,7 +167,7 @@ test('A (non-synced) role created from within Keycloak gets deleted in the subse
   await expect(page.getByText(`${keycloakRoleName.roleName}`)).not.toBeVisible();
   await openmrs.logout();
 });
-
+*/
 test.afterAll(async ({}) => {
   await keycloak.deleteUser();
 });

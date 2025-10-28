@@ -11,7 +11,7 @@ const config: PlaywrightTestConfig = {
   },
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  workers: process.env.CI ? 4 : 1,
+  workers: process.env.CI ? 1 : 1,
   retries: 0,
   reporter: process.env.CI ? [['junit', { outputFile: 'results.xml' }], ['html']] : [['html']],
   globalSetup: require.resolve('./e2e/utils/configs/globalSetup'),
@@ -24,7 +24,8 @@ const config: PlaywrightTestConfig = {
       use: {
         ...devices['Desktop Chromium'],
         viewport: { width: 1920, height: 1080 },
-        storageState: undefined
+        storageState: undefined,
+        screenshot: 'only-on-failure'
       },  
     },
   ],
