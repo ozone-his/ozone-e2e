@@ -54,7 +54,7 @@ test('Editing the details of an OpenMRS patient with a synced lab order edits th
   await senaite.searchClient();
   await expect(page.locator('table tbody tr:nth-child(1) td.contentcell.title div span a')).toContainText(`${patientName.updatedFirstName}` + ' ' + `${patientName.givenName }`);
 });
-/*
+
 test('Voiding a synced OpenMRS lab order cancels the corresponding SENAITE analysis request.', async ({}) => {
   // setup
   await senaite.open();
@@ -76,7 +76,7 @@ test('Voiding a synced OpenMRS lab order cancels the corresponding SENAITE analy
   await expect(page.getByText('Urine')).not.toBeVisible();
   await expect(page.getByText('Sample due')).not.toBeVisible();
 });
-
+/*
 test('Published coded lab results from SENAITE are viewable in the OpenMRS lab results viewer.', async ({ 
 }) => {
   // setup
