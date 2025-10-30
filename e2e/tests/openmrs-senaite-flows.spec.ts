@@ -38,7 +38,7 @@ test('Ordering a lab test for an OpenMRS patient creates the corresponding SENAI
   await senaite.searchClient();
   await expect(page.locator('table tbody tr:nth-child(1) td.contentcell.title div span a')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
 });
-/*
+
 test('Editing the details of an OpenMRS patient with a synced lab order edits the corresponding SENAITE client details.', async ({}) => {
   // setup
   await senaite.open();
@@ -54,7 +54,7 @@ test('Editing the details of an OpenMRS patient with a synced lab order edits th
   await senaite.searchClient();
   await expect(page.locator('table tbody tr:nth-child(1) td.contentcell.title div span a')).toContainText(`${patientName.updatedFirstName}` + ' ' + `${patientName.givenName }`);
 });
-
+/*
 test('Voiding a synced OpenMRS lab order cancels the corresponding SENAITE analysis request.', async ({}) => {
   // setup
   await senaite.open();
