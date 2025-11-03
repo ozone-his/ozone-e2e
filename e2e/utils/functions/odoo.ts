@@ -39,7 +39,6 @@ export class Odoo {
   }
 
   async searchCustomer() {
-    await this.page.getByRole('button', { name: /remove/i }).click(), delay(2000);
     await expect(this.page.locator('.o_searchview_input')).toBeVisible();
     await this.page.locator('.o_searchview_input').fill(`${patientName.givenName}`);
     await this.page.locator('.o_searchview_input').press('Enter'), delay(2000);
