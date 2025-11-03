@@ -78,7 +78,7 @@ export class Keycloak {
     await expect(this.page.getByText('Flow successfully updated')).toBeVisible();
   }
 
-  async deActivateAutoLogin() {
+  async deactivateAutoLogin() {
     await this.page.getByRole('link', { name: 'browser' }).click();
     await this.page.getByRole('button', { name: 'Action' }).click();
     await this.page.getByText('Bind flow').click();
