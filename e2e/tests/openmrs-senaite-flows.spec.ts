@@ -7,24 +7,22 @@ import { Keycloak } from '../utils/functions/keycloak';
 let openmrs: OpenMRS;
 let senaite: SENAITE;
 let keycloak: Keycloak;
-let browserContext;
-let page;
 
-test.beforeAll(async ({ browser }) => {
-  browserContext = await browser.newContext();
-  page = await browserContext.newPage();
+test.beforeEach(async ({ page }) => {
   openmrs = new OpenMRS(page);
   keycloak = new Keycloak(page);
   senaite = new SENAITE(page);
 
   await keycloak.open();
   await keycloak.createUser();
+  await keycloak.assignRolesToUser();
+
   await openmrs.open();
   await openmrs.createPatient();
   await openmrs.startPatientVisit();
 });
 
-test('Ordering a lab test for an OpenMRS patient creates the corresponding SENAITE client with an analysis request.', async ({}) => {
+test('Ordering a lab test for an OpenMRS patient creates the corresponding SENAITE client with an analysis request.', async ({page}) => {
   // setup
   await openmrs.searchPatient(`${patientName.givenName}`);
   
@@ -39,8 +37,12 @@ test('Ordering a lab test for an OpenMRS patient creates the corresponding SENAI
   await expect(page.locator('table tbody tr:nth-child(1) td.contentcell.title div span a')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
 });
 
-test('Editing the details of an OpenMRS patient with a synced lab order edits the corresponding SENAITE client details.', async ({}) => {
+test('Editing the details of an OpenMRS patient with a synced lab order edits the corresponding SENAITE client details.', async ({page}) => {
   // setup
+  await openmrs.searchPatient(`${patientName.givenName}`);
+  await openmrs.navigateToLabOrderForm();
+  await page.getByRole('searchbox').fill('Blood urea nitrogen');
+  await openmrs.saveLabOrder();
   await senaite.open();
   await senaite.searchClient();
   await expect(page.locator('table tbody tr:nth-child(1) td.contentcell.title div span a')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
@@ -55,8 +57,12 @@ test('Editing the details of an OpenMRS patient with a synced lab order edits th
   await expect(page.locator('table tbody tr:nth-child(1) td.contentcell.title div span a')).toContainText(`${patientName.updatedFirstName}` + ' ' + `${patientName.givenName }`);
 });
 
-test('Voiding a synced OpenMRS lab order cancels the corresponding SENAITE analysis request.', async ({}) => {
+test('Voiding a synced OpenMRS lab order cancels the corresponding SENAITE analysis request.', async ({page}) => {
   // setup
+  await openmrs.searchPatient(`${patientName.givenName}`);
+  await openmrs.navigateToLabOrderForm();
+  await page.getByRole('searchbox').fill('Blood urea nitrogen');
+  await openmrs.saveLabOrder();
   await senaite.open();
   await senaite.searchClient();
   await expect(page.locator('table tbody tr:nth-child(1) td.contentcell.title div')).toContainText(`${patientName.firstName + ' ' + patientName.givenName}`);
@@ -76,9 +82,8 @@ test('Voiding a synced OpenMRS lab order cancels the corresponding SENAITE analy
   await expect(page.getByText('Urine')).not.toBeVisible();
   await expect(page.getByText('Sample due')).not.toBeVisible();
 });
-
-test('Published coded lab results from SENAITE are viewable in the OpenMRS lab results viewer.', async ({ 
-}) => {
+ 
+test('Published coded lab results from SENAITE are viewable in the OpenMRS lab results viewer.', async ({page}) => {
   // setup
   await openmrs.searchPatient(`${patientName.givenName}`);
   await openmrs.navigateToLabOrderForm();
@@ -99,7 +104,7 @@ test('Published coded lab results from SENAITE are viewable in the OpenMRS lab r
   await expect(page.locator('tr:nth-child(1) td:nth-child(2)')).toContainText('Negative');
 });
 
-test('Published numeric lab results from SENAITE are viewable in the OpenMRS lab results viewer.', async ({}) => {
+test('Published numeric lab results from SENAITE are viewable in the OpenMRS lab results viewer.', async ({page}) => {
   // setup
   await openmrs.searchPatient(`${patientName.givenName}`);
   await openmrs.navigateToLabOrderForm();
@@ -120,7 +125,7 @@ test('Published numeric lab results from SENAITE are viewable in the OpenMRS lab
   await expect(page.locator('tr:nth-child(1) td:nth-child(2)')).toContainText('64');
 });
 
-test('Published free text lab results from SENAITE are viewable in the OpenMRS lab results viewer.', async ({}) => {
+test('Published free text lab results from SENAITE are viewable in the OpenMRS lab results viewer.', async ({page}) => {
   // setup
   await openmrs.searchPatient(`${patientName.givenName}`);
   await openmrs.navigateToLabOrderForm();
@@ -141,7 +146,7 @@ test('Published free text lab results from SENAITE are viewable in the OpenMRS l
   await expect(page.locator('tr:nth-child(1) td:nth-child(2)')).toContainText('Positive');
 });
 
-test.afterAll(async ({}) => {
+test.afterEach(async ({}) => {
   await openmrs.voidPatient();
   await senaite.logout();
   await keycloak.deleteUser();

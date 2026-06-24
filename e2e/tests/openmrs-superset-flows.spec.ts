@@ -24,6 +24,7 @@ test.beforeAll(async ({ browser }) => {
 
   await keycloak.open();
   await keycloak.createUser();
+  await keycloak.assignRolesToUser();
 });
 
 test(`Creating an OpenMRS patient creates the patient in Superset's patients table.`, async ({}) => {

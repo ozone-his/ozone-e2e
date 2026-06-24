@@ -44,7 +44,6 @@ export class OpenMRS {
     await this.page.goto(`${O3_URL}`), delay(4000);
     await expect(this.page.locator('#username')).toBeVisible();
     await this.page.locator('#username').fill(`${user.userName}`);
-    await this.page.getByRole('button', { name: /continue/i }).click();
     await this.page.locator('#password').fill(`${user.password}`);
     await this.page.getByRole('button', { name: /sign in/i }).click();
     await this.page.locator('label').filter({ hasText: /inpatient ward/i }).locator('span').first().click();
@@ -310,8 +309,7 @@ export class OpenMRS {
     await this.page.getByRole('combobox', { name: 'Frequency' }).clear(),delay(1000);
     await this.page.getByText(/thrice daily/i).click();
     await this.page.getByLabel('Duration', { exact: true }).fill('6');
-    await this.page.getByLabel(/quantity to dispense/i).fill('8');
-    await this.saveDrugOrder(), delay(5000);
+    await this.page.getByLabel(/quantity to dispense/i).fill('8'), delay(2000);
     await this.page.getByRole('button', { name: /save order/i }).focus();
     await this.page.getByRole('button', { name: /save order/i }).dispatchEvent('click');
     await expect(this.page.getByText(/sign and close/i)).toBeVisible();

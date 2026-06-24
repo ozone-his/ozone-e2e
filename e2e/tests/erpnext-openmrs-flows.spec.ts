@@ -19,6 +19,7 @@ test.beforeAll(async ({ browser }) => {
 
   await keycloak.open();
   await keycloak.createUser();
+  await keycloak.assignRolesToUser();
   await openmrs.open();
   await openmrs.createPatient();
   await openmrs.startPatientVisit();

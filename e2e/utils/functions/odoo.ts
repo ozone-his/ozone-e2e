@@ -13,6 +13,8 @@ export class Odoo {
 
   async open() {
     await this.page.goto(`${ODOO_URL}`);
+    const keycloak = new Keycloak(this.page);
+    await keycloak.enterUserCredentials();
     await expect(this.page).toHaveURL(/.*web/);
   }
 
