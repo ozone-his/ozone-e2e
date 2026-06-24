@@ -44,7 +44,6 @@ export class OpenMRS {
     await this.page.goto(`${O3_URL}`), delay(4000);
     await expect(this.page.locator('#username')).toBeVisible();
     await this.page.locator('#username').fill(`${user.userName}`);
-    await this.page.getByRole('button', { name: /continue/i }).click();
     await this.page.locator('#password').fill(`${user.password}`);
     await this.page.getByRole('button', { name: /sign in/i }).click();
     await this.page.locator('label').filter({ hasText: /inpatient ward/i }).locator('span').first().click();

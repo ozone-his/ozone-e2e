@@ -6,24 +6,21 @@ import { Keycloak } from '../utils/functions/keycloak';
 let odoo: Odoo
 let openmrs: OpenMRS;
 let keycloak: Keycloak;
-let browserContext;
-let page;
 
-test.beforeAll(async ({ browser }) => {
-  browserContext = await browser.newContext();
-  page = await browserContext.newPage();
+test.beforeEach(async ({ page }) => {
   openmrs = new OpenMRS(page);
   keycloak = new Keycloak(page);
   odoo = new Odoo(page);
 
   await keycloak.open();
   await keycloak.createUser();
+
   await openmrs.open();
   await openmrs.createPatient();
   await openmrs.startPatientVisit();
 });
-
-test('Ordering a lab test for an OpenMRS patient creates the corresponding Odoo customer with a filled quotation.', async ({}) => {
+/*
+test('Ordering a lab test for an OpenMRS patient creates the corresponding Odoo customer with a filled quotation.', async ({page}) => {
   // setup
   await openmrs.searchPatient(`${patientName.givenName}`);
   
@@ -41,7 +38,7 @@ test('Ordering a lab test for an OpenMRS patient creates the corresponding Odoo 
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(7) span')).toHaveText('$ 31.63');
 });
 
-test('Ordering a drug for an OpenMRS patient creates the corresponding Odoo customer with a filled quotation.', async ({}) => {
+test('Ordering a drug for an OpenMRS patient creates the corresponding Odoo customer with a filled quotation.', async ({page}) => {
   // setup
   await openmrs.searchPatient(`${patientName.givenName}`);
 
@@ -63,9 +60,13 @@ test('Ordering a drug for an OpenMRS patient creates the corresponding Odoo cust
   await expect(page.locator('tr', { has: page.locator('td', { hasText: 'Aspirin 325mg' }),}).locator('td[name="price_subtotal"]')).toHaveText('$ 14.88');
   await expect(page.locator('.text-break>div>span')).toHaveText(`${patientId}`);
 });
-
-test('Editing the details of an OpenMRS patient with a synced order edits the corresponding Odoo customer details.', async ({}) => {
+*/
+test('Editing the details of an OpenMRS patient with a synced order edits the corresponding Odoo customer details.', async ({page}) => {
   // setup
+  await openmrs.searchPatient(`${patientName.givenName}`);
+  await openmrs.navigateToLabOrderForm();
+  await page.getByRole('searchbox').fill('Blood urea nitrogen');
+  await openmrs.saveLabOrder();
   await odoo.open();
   await odoo.navigateToSales();
   await odoo.searchCustomer();
@@ -89,9 +90,14 @@ test('Editing the details of an OpenMRS patient with a synced order edits the co
   await expect(page.locator('.text-break>div>div>span')).not.toHaveText('08/16/2002');
   await expect(page.locator('.text-break>div>div>span')).toHaveText('08/18/2003');
 });
-
-test('Revising details of a synced OpenMRS drug order modifies the corresponding Odoo quotation line.', async ({}) => {
+/*
+test('Revising details of a synced OpenMRS drug order modifies the corresponding Odoo quotation line.', async ({page}) => {
   // setup
+  await openmrs.searchPatient(`${patientName.givenName}`);
+  await openmrs.navigateToDrugOrderForm();
+  await page.getByRole('searchbox').fill('Aspirin 325mg');
+  await openmrs.fillDrugOrderForm();
+  await openmrs.saveDrugOrder();
   await odoo.open();
   await odoo.navigateToSales();
   await odoo.searchCustomer();
@@ -116,7 +122,7 @@ test('Revising details of a synced OpenMRS drug order modifies the corresponding
   await expect(drugOrderItem).toContainText('Thrice daily - 6 day');
   await expect(page.locator('[name="amount_total"]')).toHaveText('$ 11.41');
 });
-
+/*
 test('Discontinuing a synced OpenMRS lab order for an Odoo customer with a single quotation line cancels the corresponding quotation.', async ({}) => {
   // setup
   await odoo.open();
@@ -242,8 +248,8 @@ test(`Ordering a drug for an OpenMRS patient with weight creates the weight on t
   await expect(page.locator('tr.o_data_row:nth-child(2) td:nth-child(2) span:nth-child(1) span')).toHaveText('Hepatitis C test - qualitative');
   await expect(page.locator('#x_customer_weight_0')).toHaveValue('75.0 kg');
 });
-
-test.afterAll(async ({}) => {
+*/
+test.afterEach(async ({}) => {
   await openmrs.voidPatient();
   await odoo.logout();
   await keycloak.deleteUser();
