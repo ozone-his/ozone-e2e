@@ -60,7 +60,7 @@ test('Ordering a drug for an OpenMRS patient creates the corresponding Odoo cust
   await expect(page.locator('tr', { has: page.locator('td', { hasText: 'Aspirin 325mg' }),}).locator('td[name="price_subtotal"]')).toHaveText('$ 14.88');
   await expect(page.locator('.text-break>div>span')).toHaveText(`${patientId}`);
 });
-*/
+*//*
 test('Editing the details of an OpenMRS patient with a synced order edits the corresponding Odoo customer details.', async ({page}) => {
   // setup
   await openmrs.searchPatient(`${patientName.givenName}`);
@@ -122,12 +122,10 @@ test('Revising details of a synced OpenMRS drug order modifies the corresponding
   await expect(drugOrderItem).toContainText('Thrice daily - 6 day');
   await expect(page.locator('[name="amount_total"]')).toHaveText('$ 11.41');
 });
-/*
+*/
 test('Discontinuing a synced OpenMRS lab order for an Odoo customer with a single quotation line cancels the corresponding quotation.', async ({page}) => {
   // setup
   await openmrs.searchPatient(`${patientName.givenName}`);
-  
-  // replay
   await openmrs.navigateToLabOrderForm();
   await page.getByRole('searchbox').fill('Blood urea nitrogen');
   await openmrs.saveLabOrder();
@@ -150,9 +148,14 @@ test('Discontinuing a synced OpenMRS lab order for an Odoo customer with a singl
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(4)')).toContainText(`${patientName.givenName}`);
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Cancelled');
 });
-/*
-test('Discontinuing a synced OpenMRS drug order for an Odoo customer with a single quotation line removes the corresponding quotation.', async ({}) => {
+
+test('Discontinuing a synced OpenMRS drug order for an Odoo customer with a single quotation line removes the corresponding quotation.', async ({page}) => {
   // setup
+  await openmrs.searchPatient(`${patientName.givenName}`);
+  await openmrs.navigateToDrugOrderForm();
+  await page.getByRole('searchbox').fill('Aspirin 325mg');
+  await openmrs.fillDrugOrderForm();
+  await openmrs.saveDrugOrder();
   await odoo.open();
   await odoo.navigateToSales();
   await odoo.searchCustomer();
@@ -175,7 +178,7 @@ test('Discontinuing a synced OpenMRS drug order for an Odoo customer with a sing
   await page.getByRole('cell', { name: `${patientName.givenName}` }).click();
   await expect(page.getByText('Aspirin 325mg')).not.toBeVisible();
 });
-
+/*
 test('Discontinuing a synced OpenMRS drug order for an Odoo customer with multiple quotation lines removes the corresponding quotation.', async ({}) => {
   // setup
   await openmrs.searchPatient(`${patientName.givenName}`);
