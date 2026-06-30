@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { OpenMRS, patientName } from '../utils/functions/openmrs';
 import { Odoo } from '../utils/functions/odoo';
-import { Keycloak } from '../utils/functions/keycloak';
+import { Keycloak, user } from '../utils/functions/keycloak';
 
 let odoo: Odoo
 let openmrs: OpenMRS;
@@ -19,7 +19,7 @@ test.beforeEach(async ({ page }) => {
   await openmrs.createPatient();
   await openmrs.startPatientVisit();
 });
-/*
+
 test('Ordering a lab test for an OpenMRS patient creates the corresponding Odoo customer with a filled quotation.', async ({page}) => {
   // setup
   await openmrs.searchPatient(`${patientName.givenName}`);
@@ -60,7 +60,7 @@ test('Ordering a drug for an OpenMRS patient creates the corresponding Odoo cust
   await expect(page.locator('tr', { has: page.locator('td', { hasText: 'Aspirin 325mg' }),}).locator('td[name="price_subtotal"]')).toHaveText('$ 14.88');
   await expect(page.locator('.text-break>div>span')).toHaveText(`${patientId}`);
 });
-*//*
+
 test('Editing the details of an OpenMRS patient with a synced order edits the corresponding Odoo customer details.', async ({page}) => {
   // setup
   await openmrs.searchPatient(`${patientName.givenName}`);
@@ -122,7 +122,7 @@ test('Revising details of a synced OpenMRS drug order modifies the corresponding
   await expect(drugOrderItem).toContainText('Thrice daily - 6 day');
   await expect(page.locator('[name="amount_total"]')).toHaveText('$ 11.41');
 });
-*/
+
 test('Discontinuing a synced OpenMRS lab order for an Odoo customer with a single quotation line cancels the corresponding quotation.', async ({page}) => {
   // setup
   await openmrs.searchPatient(`${patientName.givenName}`);
@@ -178,12 +178,12 @@ test('Discontinuing a synced OpenMRS drug order for an Odoo customer with a sing
   await page.getByRole('cell', { name: `${patientName.givenName}` }).click();
   await expect(page.getByText('Aspirin 325mg')).not.toBeVisible();
 });
-/*
-test('Discontinuing a synced OpenMRS drug order for an Odoo customer with multiple quotation lines removes the corresponding quotation.', async ({}) => {
+
+test('Discontinuing a synced OpenMRS drug order for an Odoo customer with multiple quotation lines removes the corresponding quotation.', async ({page}) => {
   // setup
   await openmrs.searchPatient(`${patientName.givenName}`);
   await openmrs.navigateToLabOrderForm();
-  await page.getByRole('searchbox').fill('Complete blood count');
+  await page.getByRole('searchbox').fill('Blood urea nitrogen');
   await openmrs.saveLabOrder();
   await openmrs.searchPatient(`${patientName.givenName}`);
   await openmrs.navigateToDrugOrderForm();
@@ -213,7 +213,7 @@ test('Discontinuing a synced OpenMRS drug order for an Odoo customer with multip
   await expect(page.getByText('Aspirin 81mg')).not.toBeVisible();
 });
 
-test('Ordering a drug with a free text medication dosage for an OpenMRS patient creates the corresponding Odoo customer with a filled quotation.', async ({}) => {
+test('Ordering a drug with a free text medication dosage for an OpenMRS patient creates the corresponding Odoo customer with a filled quotation.', async ({page}) => {
   // setup
   await openmrs.searchPatient(`${patientName.givenName}`);
 
@@ -227,11 +227,16 @@ test('Ordering a drug with a free text medication dosage for an OpenMRS patient 
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(4)')).toContainText(`${patientName.givenName}`);
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Quotation');
   await page.getByRole('cell', { name: `${patientName.givenName}` }).click();
-  await expect(page.locator("td.o_data_cell.o_field_cell.o_list_text.o_section_and_note_text_cell.o_required_modifier span")).toHaveText('Acetaminophen 325 mg | 18.0 Tablet | 3 day - 2 Tablets - Every after eight hours - To be taken after a meal. | Orderer: John Doe');
+  await expect(page.locator("td.o_data_cell.o_field_cell.o_list_text.o_section_and_note_text_cell.o_required_modifier span")).toHaveText(`Aspirin 325mg | 18.0 Tablet | 3 day - 2 Tablets - Every after eight hours - To be taken after a meal. | Orderer: ${user.firstName} ${user.lastName}`);
 });
 
-test(`Ordering a drug for an OpenMRS patient with weight creates the weight on the corresponding Odoo quotation.`, async ({}) => {
+test(`Ordering a drug for an OpenMRS patient with weight creates the weight on the corresponding Odoo quotation.`, async ({page}) => {
   // setup
+  await openmrs.searchPatient(`${patientName.givenName}`);
+  await openmrs.navigateToDrugOrderForm();
+  await page.getByRole('searchbox').fill('Aspirin 325mg');
+  await openmrs.fillDrugOrderForm();
+  await openmrs.saveDrugOrder();
   await odoo.open();
   await odoo.navigateToSales();
   await odoo.searchCustomer();
@@ -245,7 +250,6 @@ test(`Ordering a drug for an OpenMRS patient with weight creates the weight on t
   await openmrs.searchPatient(`${patientName.givenName}`);
   await openmrs.recordWeight();
   await openmrs.navigateToLabOrderForm();
-  await page.getByLabel('Order basket').click();
   await page.getByRole('searchbox').fill('Hepatitis C test - qualitative');
   await openmrs.saveLabOrder();
 
@@ -257,7 +261,7 @@ test(`Ordering a drug for an OpenMRS patient with weight creates the weight on t
   await expect(page.locator('tr.o_data_row:nth-child(2) td:nth-child(2) span:nth-child(1) span')).toHaveText('Hepatitis C test - qualitative');
   await expect(page.locator('#x_customer_weight_0')).toHaveValue('75.0 kg');
 });
-*/
+
 test.afterEach(async ({}) => {
   await openmrs.voidPatient();
   await odoo.logout();
