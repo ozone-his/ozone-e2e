@@ -90,7 +90,7 @@ test('Editing the details of an OpenMRS patient with a synced order edits the co
   await expect(page.locator('.text-break>div>div>span')).not.toHaveText('08/16/2002');
   await expect(page.locator('.text-break>div>div>span')).toHaveText('08/18/2003');
 });
-/*
+
 test('Revising details of a synced OpenMRS drug order modifies the corresponding Odoo quotation line.', async ({page}) => {
   // setup
   await openmrs.searchPatient(`${patientName.givenName}`);
@@ -123,7 +123,7 @@ test('Revising details of a synced OpenMRS drug order modifies the corresponding
   await expect(page.locator('[name="amount_total"]')).toHaveText('$ 11.41');
 });
 /*
-test('Discontinuing a synced OpenMRS lab order for an Odoo customer with a single quotation line cancels the corresponding quotation.', async ({}) => {
+test('Discontinuing a synced OpenMRS lab order for an Odoo customer with a single quotation line cancels the corresponding quotation.', async ({page}) => {
   // setup
   await odoo.open();
   await odoo.navigateToSales();
@@ -144,7 +144,7 @@ test('Discontinuing a synced OpenMRS lab order for an Odoo customer with a singl
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(4)')).toContainText(`${patientName.givenName}`);
   await expect(page.locator('tr.o_data_row:nth-child(1) td:nth-child(8) span')).toHaveText('Cancelled');
 });
-
+/*
 test('Discontinuing a synced OpenMRS drug order for an Odoo customer with a single quotation line removes the corresponding quotation.', async ({}) => {
   // setup
   await odoo.open();
