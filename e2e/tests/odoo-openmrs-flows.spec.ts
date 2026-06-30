@@ -125,6 +125,12 @@ test('Revising details of a synced OpenMRS drug order modifies the corresponding
 /*
 test('Discontinuing a synced OpenMRS lab order for an Odoo customer with a single quotation line cancels the corresponding quotation.', async ({page}) => {
   // setup
+  await openmrs.searchPatient(`${patientName.givenName}`);
+  
+  // replay
+  await openmrs.navigateToLabOrderForm();
+  await page.getByRole('searchbox').fill('Blood urea nitrogen');
+  await openmrs.saveLabOrder();
   await odoo.open();
   await odoo.navigateToSales();
   await odoo.searchCustomer();

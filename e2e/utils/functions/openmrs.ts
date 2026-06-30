@@ -310,7 +310,12 @@ export class OpenMRS {
     await this.page.getByText(/thrice daily/i).click();
     await this.page.getByLabel('Duration', { exact: true }).fill('6');
     await this.page.getByLabel(/quantity to dispense/i).fill('8');
-    await this.saveDrugOrder(), delay(4000);
+    await this.page.getByRole('button', { name: /save order/i }).focus();
+    await this.page.getByRole('button', { name: /save order/i }).dispatchEvent('click');
+    await expect(this.page.getByText(/sign and close/i)).toBeVisible();
+    await this.page.getByRole('button', { name: /sign and close/i }).focus();
+    await this.page.getByRole('button', { name: /sign and close/i }).dispatchEvent('click');
+    await expect(this.page.getByText(/updated/i)).toBeVisible(), delay(3000);
   }
 
   async discontinueDrugOrder() {
