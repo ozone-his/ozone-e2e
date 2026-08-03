@@ -27,7 +27,7 @@ test('Ordering a lab test for an OpenMRS patient creates the corresponding Odoo 
   
   // replay
   await openmrs.navigateToLabOrderForm();
-  await page.getByRole('searchbox').fill('Blood urea nitrogen');
+  await page.getByRole('searchbox').fill('Complete blood count');
   await openmrs.saveLabOrder();
 
   // verify

@@ -1,5 +1,5 @@
 import { expect, Page } from '@playwright/test';
-import { ODOO_URL } from '../configs/globalSetup';
+import { MG_ODOO_URL, ODOO_URL } from '../configs/globalSetup';
 import { delay, patientName } from './openmrs';
 import { Keycloak, user } from './keycloak';
 
@@ -32,6 +32,16 @@ export class Odoo {
     await expect(this.page.locator('#login')).toBeVisible();
     await this.enterAdminCredentials();
     await expect(this.page).toHaveURL(/.*web/);
+  }
+
+  async signIn() {
+    await this.page.goto(`${MG_ODOO_URL}`);
+    const keycloak = new Keycloak(this.page);
+    await keycloak.enterUserCredentials();
+  }
+
+  async goToHomePage() {
+    await this.page.goto(`${MG_ODOO_URL}`);
   }
 
   async enterAdminCredentials() {

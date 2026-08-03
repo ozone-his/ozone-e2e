@@ -75,7 +75,7 @@ jobs:
           OZONE_USERNAME: '${{ secrets.OZONE_USERNAME }}'
           OZONE_PASSWORD: '${{ secrets.OZONE_PASSWORD }}'
         run: |
-          npm run ozone-e2e odoo-openmrs
+          npm run ozone-e2e
           exit_code=$?
           if [[ $exit_code -eq 0 ]]; then
             jobStatusPretty="✅ Passing"

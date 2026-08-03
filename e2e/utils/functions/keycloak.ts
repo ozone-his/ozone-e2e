@@ -45,7 +45,6 @@ export class Keycloak {
 
   async enterUserCredentials() {
     await this.page.locator('#username').fill(`${user.userName}`);
-    await this.page.getByRole('button', { name: /continue/i }).click();
     await this.page.locator('#password').fill(`${user.password}`);
     await this.page.getByRole('button', { name: /sign in/i }).click();
   }
@@ -362,7 +361,7 @@ export class Keycloak {
     const targetTenthOegRole = await this.page.locator('tr', { hasText: 'User Account Administrator' }).nth(0);
     await targetTenthOegRole.locator('input[type="checkbox"]').check();
     await this.page.getByTestId('assign').click();
-    await expect(this.page.getByText(/user role mapping successfully updated/i)).toBeVisible();
+    await expect(this.page.getByText(/user role mapping successfully updated/i).nth(0)).toBeVisible();
   }
 
   async deleteUser() {
