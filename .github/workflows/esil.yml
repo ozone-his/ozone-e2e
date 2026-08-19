@@ -40,6 +40,7 @@ jobs:
       - name: Run E2E tests
         env:
           TEST_ENVIRONMENT: '${{ vars.TEST_ENVIRONMENT }}'
+          O3_URL_DEV: '${{ vars.O3_URL_DEV }}'
           MG_KEYCLOAK_URL_DEV: '${{ vars.MG_KEYCLOAK_URL_DEV }}'
           MG_ODOO_URL_DEV: '${{ vars.MG_ODOO_URL_DEV }}'
           MG_OEG_URL_DEV: '${{ vars.MG_OEG_URL_DEV }}'

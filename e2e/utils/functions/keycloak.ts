@@ -271,97 +271,45 @@ export class Keycloak {
     await expect(this.page.getByText(/user role mapping successfully updated/i)).toBeVisible();
   }
 
+  private async assignRole(searchTerm: string, rowText: string) {
+    await this.navigateToRoles();
+
+    const search = this.page.getByRole('textbox', { name: 'Search' });
+
+    await search.fill(searchTerm);
+    await search.press('Enter');
+
+    const roleRow = this.page.locator('tr', { hasText: rowText }).first();
+
+    await roleRow.locator('input[type="checkbox"]').nth(0).check();
+
+    await this.page.getByTestId('assign').click();
+  }
+
   async assignOdooAndOEGRolesToUser() {
-    await this.page.getByRole('textbox', { name: 'Search' }).fill('Administration / Settings');;
-    await this.page.getByRole('textbox', { name: 'Search' }).press('Enter'), delay(2000);
-    const targetSecondOdooRole = await this.page.locator('tr', { hasText: 'Settings' });
-    await targetSecondOdooRole.locator('input[type="checkbox"]').check();
-    await this.page.getByTestId('assign').click(), delay(4000);
+    const roles = [
+      { search: 'Administration / Settings', row: 'Settings' },
+      { search: 'Sales / Administrator', row: 'Administrator' },
+      { search: 'Purchase / Administrator', row: 'Administrator' },
+      { search: 'oeg-Reports-AllLabUnits', row: 'Reports-AllLabUnits' },
+      { search: 'oeg-Results-AllLabUnits', row: 'Results-AllLabUnits' },
+      { search: 'oeg-Pathologist', row: 'Pathologist' },
+      { search: 'oeg-Audit Trail', row: 'Audit Trail' },
+      { search: 'oeg-Cytopathologist', row: 'Cytopathologist' },
+      { search: 'oeg-Global Administrator', row: 'oeg-Global Administrator' },
+      { search: 'oeg-Validation-AllLabUnits', row: 'Validation-AllLabUnits' },
+      { search: 'oeg-Reception-AllLabUnits', row: 'Reception-AllLabUnits' },
+      { search: 'oeg-Analyser Import', row: 'Analyser Import' },
+      { search: 'oeg-User Account Administrator', row: 'User Account Administrator' },
+    ];
 
-    await this.navigateToRoles();
-    await this.page.getByRole('textbox', { name: 'Search' }).fill('Sales / Administrator');
-    await this.page.getByRole('textbox', { name: 'Search' }).press('Enter'), delay(2000);
-    const targetFirstOdooRole = await this.page.locator('tr', { hasText: 'Administrator' });
-    await targetFirstOdooRole.locator('input[type="checkbox"]').check();
-    await this.page.getByTestId('assign').click(), delay(4000);
+    for (const role of roles) {
+      await this.assignRole(role.search, role.row);
+    }
 
-    await this.navigateToRoles();
-    await this.page.getByRole('textbox', { name: 'Search' }).fill('Purchase / Administrator');
-    await this.page.getByRole('textbox', { name: 'Search' }).press('Enter'), delay(2000);
-    const targetThirdOdooRole = await this.page.locator('tr', { hasText: 'Administrator' });
-    await targetThirdOdooRole.locator('input[type="checkbox"]').nth(1).check();
-    await this.page.getByTestId('assign').click();
-
-    await this.navigateToRoles();
-    await this.page.getByRole('textbox', { name: 'Search' }).fill('oeg-Reports-AllLabUnits');
-    await this.page.getByRole('textbox', { name: 'Search' }).press('Enter'), delay(2000);
-    const targetFirstOegRole = await this.page.locator('tr', { hasText: 'Reports-AllLabUnits' }).nth(0);
-    await targetFirstOegRole.locator('input[type="checkbox"]').check();
-    await this.page.getByTestId('assign').click();
-
-    await this.navigateToRoles();
-    await this.page.getByRole('textbox', { name: 'Search' }).fill('oeg-Results-AllLabUnits');
-    await this.page.getByRole('textbox', { name: 'Search' }).press('Enter'), delay(2000);
-    const targetSecondOegRole = await this.page.locator('tr', { hasText: 'Results-AllLabUnits' }).nth(0);
-    await targetSecondOegRole.locator('input[type="checkbox"]').check();
-    await this.page.getByTestId('assign').click();
-
-    await this.navigateToRoles();
-    await this.page.getByRole('textbox', { name: 'Search' }).fill('oeg-Pathologist');
-    await this.page.getByRole('textbox', { name: 'Search' }).press('Enter'), delay(2000);
-    const targetThirdOegRole = await this.page.locator('tr', { hasText: 'Pathologist' }).nth(0);
-    await targetThirdOegRole.locator('input[type="checkbox"]').check();
-    await this.page.getByTestId('assign').click();
-
-    await this.navigateToRoles();
-    await this.page.getByRole('textbox', { name: 'Search' }).fill('oeg-Audit Trail');
-    await this.page.getByRole('textbox', { name: 'Search' }).press('Enter'), delay(2000);
-    const targetFourthOegRole = await this.page.locator('tr', { hasText: 'Audit Trail' }).nth(0);
-    await targetFourthOegRole.locator('input[type="checkbox"]').check();
-    await this.page.getByTestId('assign').click();
-
-    await this.navigateToRoles();
-    await this.page.getByRole('textbox', { name: 'Search' }).fill('oeg-Cytopathologist');
-    await this.page.getByRole('textbox', { name: 'Search' }).press('Enter'), delay(2000);
-    const targetFifthOegRole = await this.page.locator('tr', { hasText: 'Cytopathologist' }).nth(0);
-    await targetFifthOegRole.locator('input[type="checkbox"]').check();
-    await this.page.getByTestId('assign').click();
-
-    await this.navigateToRoles();
-    await this.page.getByRole('textbox', { name: 'Search' }).fill('oeg-Global Administrator');
-    await this.page.getByRole('textbox', { name: 'Search' }).press('Enter'), delay(2000);
-    const targetSixthOegRole = await this.page.locator('tr', { hasText: 'oeg-Global Administrator' }).nth(0);
-    await targetSixthOegRole.locator('input[type="checkbox"]').check();
-    await this.page.getByTestId('assign').click();
-
-    await this.navigateToRoles();
-    await this.page.getByRole('textbox', { name: 'Search' }).fill('oeg-Validation-AllLabUnits');
-    await this.page.getByRole('textbox', { name: 'Search' }).press('Enter'), delay(2000);
-    const targetSeventhOegRole = await this.page.locator('tr', { hasText: 'Validation-AllLabUnits' }).nth(0);
-    await targetSeventhOegRole.locator('input[type="checkbox"]').check();
-    await this.page.getByTestId('assign').click();
-
-    await this.navigateToRoles();
-    await this.page.getByRole('textbox', { name: 'Search' }).fill('oeg-Reception-AllLabUnits');
-    await this.page.getByRole('textbox', { name: 'Search' }).press('Enter'), delay(2000);
-    const targetEighthOegRole = await this.page.locator('tr', { hasText: 'Reception-AllLabUnits' }).nth(0);
-    await targetEighthOegRole.locator('input[type="checkbox"]').check();
-    await this.page.getByTestId('assign').click();
-
-    await this.navigateToRoles();
-    await this.page.getByRole('textbox', { name: 'Search' }).fill('oeg-Analyser Import');
-    await this.page.getByRole('textbox', { name: 'Search' }).press('Enter'), delay(2000);
-    const targetNinethOegRole = await this.page.locator('tr', { hasText: 'Analyser Import' }).nth(0);
-    await targetNinethOegRole.locator('input[type="checkbox"]').check();
-    await this.page.getByTestId('assign').click();
-
-    await this.navigateToRoles();
-    await this.page.getByRole('textbox', { name: 'Search' }).fill('oeg-User Account Administrator');
-    await this.page.getByRole('textbox', { name: 'Search' }).press('Enter'), delay(2000);
-    const targetTenthOegRole = await this.page.locator('tr', { hasText: 'User Account Administrator' }).nth(0);
-    await targetTenthOegRole.locator('input[type="checkbox"]').check();
-    await this.page.getByTestId('assign').click();
-    await expect(this.page.getByText(/user role mapping successfully updated/i).nth(0)).toBeVisible();
+    await expect(
+      this.page.getByText(/user role mapping successfully updated/i).first(),
+    ).toBeVisible();
   }
 
   async deleteUser() {
