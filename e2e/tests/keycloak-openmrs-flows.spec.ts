@@ -15,6 +15,7 @@ test.beforeAll(async ({ browser }) => {
 
   await keycloak.open();
   await keycloak.createUser();
+  await keycloak.assignRolesToUser();
 });
 
 test('Logging out from OpenMRS ends the session in Keycloak and logs out the user.', async ({}) => {

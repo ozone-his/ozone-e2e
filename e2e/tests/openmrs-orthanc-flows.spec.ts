@@ -15,6 +15,7 @@ test.beforeEach(async ({ orthancPage }) => {
 
   await keycloak.open();
   await keycloak.createUser();
+  await keycloak.assignRolesToUser();
   await openmrs.open();
 });
 

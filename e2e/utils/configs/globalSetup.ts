@@ -18,6 +18,9 @@ export const ORTHANC_URL = `${process.env.TEST_ENVIRONMENT}` == 'demo' ? `${proc
 export const SENAITE_URL = `${process.env.TEST_ENVIRONMENT}` == 'demo' ? `${process.env.SENAITE_URL_DEMO}` : `${process.env.TEST_ENVIRONMENT}` == 'qa' ? `${process.env.SENAITE_URL_QA}`: `${process.env.SENAITE_URL_DEV}`;
 export const KEYCLOAK_URL = `${process.env.TEST_ENVIRONMENT}` == 'demo' ? `${process.env.KEYCLOAK_URL_DEMO}` : `${process.env.TEST_ENVIRONMENT}` == 'qa' ? `${process.env.KEYCLOAK_URL_QA}`: `${process.env.KEYCLOAK_URL_DEV}`;
 export const SUPERSET_URL = `${process.env.TEST_ENVIRONMENT}` == 'demo' ? `${process.env.SUPERSET_URL_DEMO}` : `${process.env.TEST_ENVIRONMENT}` == 'qa' ? `${process.env.SUPERSET_URL_QA}`: `${process.env.SUPERSET_URL_DEV}`;
+export const MG_KEYCLOAK_URL = `${process.env.TEST_ENVIRONMENT}` == 'demo' ? `${process.env.MG_KEYCLOAK_URL_DEMO}` : `${process.env.TEST_ENVIRONMENT}` == 'qa' ? `${process.env.MG_KEYCLOAK_URL_UAT}`: `${process.env.MG_KEYCLOAK_URL_DEV}`;
+export const MG_OEG_URL = `${process.env.TEST_ENVIRONMENT}` == 'demo' ? `${process.env.MG_OEG_URL_DEMO}` : `${process.env.TEST_ENVIRONMENT}` == 'qa' ? `${process.env.MG_OEG_URL_UAT}`: `${process.env.MG_OEG_URL_DEV}`;
+export const MG_ODOO_URL = `${process.env.TEST_ENVIRONMENT}` == 'demo' ? `${process.env.MG_ODOO_URL_DEMO}` : `${process.env.TEST_ENVIRONMENT}` == 'qa' ? `${process.env.MG_ODOO_URL_UAT}`: `${process.env.MG_ODOO_URL_DEV}`;
 
 async function globalSetup() {
   const requestContext = await request.newContext();

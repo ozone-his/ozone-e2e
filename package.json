@@ -15,14 +15,14 @@
   ],
   "scripts": {
     "ozone-e2e": "npx playwright test",
-    "openmrs-distro-his": "npx playwright test odoo-openmrs openmrs-senaite"
+    "ozone-esil": "npx playwright test odoo-openelis"
   },
   "publishConfig": {
     "registry": "https://nexus.mekomsolutions.net/repository/npm-public/"
   },
   "keywords": [],
   "devDependencies": {
-    "@playwright/test": "^1.59.1",
+    "@playwright/test": "^1.61.1",
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",

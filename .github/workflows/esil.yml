@@ -1,0 +1,56 @@
+name: Ozone ESIL E2E Tests
+
+on:
+  schedule:
+    - cron: '0 0 * * 1,4'
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Choose test environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - qa
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium
+
+      - name: Run E2E tests
+        env:
+          TEST_ENVIRONMENT: '${{ vars.TEST_ENVIRONMENT }}'
+          O3_URL_DEV: '${{ vars.O3_URL_DEV }}'
+          MG_KEYCLOAK_URL_DEV: '${{ vars.MG_KEYCLOAK_URL_DEV }}'
+          MG_ODOO_URL_DEV: '${{ vars.MG_ODOO_URL_DEV }}'
+          MG_OEG_URL_DEV: '${{ vars.MG_OEG_URL_DEV }}'
+        run: |
+          npm run ozone-esil
+
+      - name: Upload report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
